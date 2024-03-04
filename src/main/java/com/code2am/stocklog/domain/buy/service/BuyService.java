@@ -2,6 +2,7 @@ package com.code2am.stocklog.domain.buy.service;
 
 import com.code2am.stocklog.domain.buy.infra.JournalsRepo;
 import com.code2am.stocklog.domain.buy.dao.BuyDAO;
+import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.repository.BuyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class BuyService {
 
     @Autowired
     private BuyRepository buyRepository;
+
+    @Autowired
+    private BuyDAO buyDAO;
 
     /**
      * 매수 등록
@@ -38,5 +42,13 @@ public class BuyService {
         buyRepository.save(buy);
 
         return "등록 성공";
+    }
+
+    /**
+     * 매수 조회
+     * */
+    public List<BuyDTO> readBuyByUserId(Integer userId) {
+
+        return buyDAO.readBuyByUserId(userId);
     }
 }

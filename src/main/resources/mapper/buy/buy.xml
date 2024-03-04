@@ -12,14 +12,14 @@
         <result property="status" column="STATUS"/>
     </resultMap>
 
-    <select id="readBuyListByJournalId" resultMap="Buy">
+    <select id="readBuyByUserId" resultMap="Buy">
         SELECT
             *
         FROM
             TBL_BUY
         WHERE
-            JOURNAL_ID = #{journalId}
+            JOURNAL_ID = #{userId}
         AND
-            NOTE_STATUS = 'Y'
+            STATUS = 'Y'
     </select>
 </mapper>
