@@ -1,248 +1,54 @@
 package com.code2am.stocklog.domain.journals.service;
 
-import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
-import com.code2am.stocklog.domain.journals.model.dto.JournalDTO;
-import com.code2am.stocklog.domain.journals.model.dto.TradeDTO;
-import com.code2am.stocklog.domain.journals.model.entitiy.Journal;
-import com.code2am.stocklog.domain.journals.model.entitiy.Trade;
+import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
+import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.journals.repository.JournalsRepository;
-import com.code2am.stocklog.domain.journals.repository.TradesRepository;
-import com.code2am.stocklog.domain.notes.dao.NotesDAO;
-import com.code2am.stocklog.domain.journals.dao.TradesDAO;
-import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
-import com.code2am.stocklog.domain.notes.models.entity.Notes;
-import com.code2am.stocklog.domain.notes.models.vo.NotesVo;
-import com.code2am.stocklog.domain.notes.service.NotesService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 public class JournalsService {
 
     @Autowired
-    JournalsRepository journalsRepository;
+    private JournalsRepository journalsRepository;
+    public String createJournalsByUserId(JournalsDTO journals, Integer userId) {
 
-    @Autowired
-    TradesRepository tradesRepository;
-
-    @Autowired
-    NotesService notesService;
-
-    @Autowired
-    JournalsDAO journalsDAO;
-
-    @Autowired
-    TradesDAO tradesDAO;
-
-    @Autowired
-    NotesDAO notesDAO;
-
-    // 새 매매일지를 등록하는 매소드
-    @Transactional
-    public void createJournal(JournalDTO journalDTO) {
-
-        // 먼저 매매일지를 저장하고 저장된 매매일지 객체를 반환받는다
-        Journal savedJournal = journalsRepository.save(convertToJournal(journalDTO));
-
-        // 반환 받은 매매일지의 pk를 기준으로 매매기록(들)을 저장한다
-        tradesRepository.saveAll(createTrades(savedJournal));
-
-        // 반환 받은 매매일지의 pk를 기준으로 매매노트(들)을 저장한다
-        List<NotesDTO> notesDTOS = journalDTO.getNotes();
-        for( NotesDTO notesDTO : notesDTOS){
-            notesDTO.setJournalId(savedJournal.getJournalId());
-            notesService.createNoteByJournalId(notesDTO);
+        if(journals.getFee() <= 0){
+            return "수수료가 0 이하 값이 될 수는 없습니다.";
         }
 
-    }
-
-
-    // 유저의 매매일지를 조회하는 매소드
-    @Transactional
-    public List<JournalDTO> readJournalsByUserId(Integer userId){
-
-        List<JournalDTO> journals = journalsDAO.readJournalsByUserId(userId);
-
-        System.out.println("journals: "+journals);
-
-        // 매매일지에 관련된 매매기록을 가져온다
-        for (JournalDTO journal : journals){
-            List<TradeDTO> trades = tradesDAO.readTradesByJournalId(journal.getJournalId());
-
-            journal.setTrades(trades);
+        if(journals.getStockName().equals("")){
+            return "종목을 선택하지 않았습니다.";
         }
 
-        // 매매일지에 관련된 노트를 가져온다
-        for (JournalDTO journal : journals){
-            List<NotesVo> notes = notesDAO.readNotesByJournalId(journal.getJournalId());
-
-            journal.setNotesVo(notes);
+        if(journals.getBuyPrice() <= 0){
+            return "정상적인 매수가가 아닙니다.";
         }
 
-        return journals;
-    }
-
-
-    // 매매일지를 변경하는 메소드
-    @Transactional
-    public void updateJournal(JournalDTO journalDTO) {
-
-        Journal updatedJournal = convertToJournal(journalDTO);
-
-        // 관련된 매매기록을 변경한다
-        if (!(Objects.isNull(journalDTO.getTrades()))){
-            List<Trade> updatedTrades = updatedJournal.getTrades();
-            updatedTrades = linkTradesToJournal(updatedTrades, updatedJournal);
-
-            tradesRepository.saveAll(updatedTrades);
+        if(journals.getBuyQuantity() <= 0){
+            return "매매주가 없습니다.";
         }
 
-
-        // 관련된 매매노트를 변경한다
-
-
-        // notes가 있는 경우 변경
-        if ((!Objects.isNull(journalDTO.getNotes()))){
-            List<NotesDTO> updatedNotes = journalDTO.getNotes();
-
-            updatedNotes = linkNotesDTOToJournalDTO(updatedNotes, journalDTO);
-
-            for (NotesDTO note : updatedNotes){
-                notesService.deleteNoteByNoteId(note);
-            }
+        if(journals.getStrategyId() < 0){
+            return "불가능한 매매전략 값입니다.";
         }
+        
+        Journals newJournal = new Journals();
+        newJournal.setStockName(journals.getStockName());
+        newJournal.setJournalDate(LocalDateTime.now());
+        newJournal.setLastedTradeDate(journals.getJournalDate());
+        newJournal.setAvgBuyPrice(journals.getBuyPrice());
+        newJournal.setTotalQuantity(journals.getBuyQuantity());
+        newJournal.setAvgSellPrice(0);
+        newJournal.setStrategyId(journals.getStrategyId());
+        newJournal.setFee(journals.getFee());
+        newJournal.setProfit(0);
+        newJournal.setUserId(userId);
 
-        // 먼저 매매일지를 저장하고 저장된 매매일지 객체를 반환받는다
-        journalsRepository.save(convertToJournal(journalDTO));
+        journalsRepository.save(newJournal);
 
+        return "등록 성공";
     }
-
-
-    // 매매일지를 지우는 매소드
-    @Transactional
-    public String deleteJournalByJournalId(JournalDTO journal) {
-
-        Journal deleteJournal = convertToJournal(journal);
-
-        // 해당 매매일지의 매매기록들의 상태를 변환한다
-        List<Trade> deleteTrades = deleteJournal.getTrades();
-        deleteTrades = linkTradesToJournal(deleteTrades, deleteJournal);
-
-        for (Trade trade : deleteTrades) {
-            trade.setActivateStatus("N");
-        }
-
-        tradesRepository.saveAll(deleteTrades);
-
-        // 해당 매매일지의 매매노트들의 상태를 변환한다
-        List<NotesDTO> deleteNotes = journal.getNotes();
-
-        deleteNotes = linkNotesDTOToJournalDTO(deleteNotes, journal);
-
-        for (NotesDTO note : deleteNotes){
-            notesService.deleteNoteByNoteId(note);
-        }
-
-        // 매매일지의 상태를 변환한다
-        deleteJournal.setStatus("N");
-
-        journalsRepository.save(deleteJournal);
-
-        return "삭제 성공";
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // 매매기록에 연관관계를 주입하는 메소드
-    public List<Trade> linkTradesToJournal(List<Trade> trades, Journal journal){
-        for (Trade trade : trades){
-            trade.setJournalId(journal.getJournalId());
-        }
-        return trades;
-    }
-
-    // 매매노트에 연관관계를 주입하는 메소드
-    public List<NotesDTO> linkNotesDTOToJournalDTO(List<NotesDTO> notesDTOS, JournalDTO journalDTO){
-        for (NotesDTO notesDTO : notesDTOS){
-            notesDTO.setJournalId(journalDTO.getJournalId());
-        }
-        return notesDTOS;
-    }
-
-
-
-
-
-
-    public List<Trade> createTrades(Journal journal){
-
-        List<Trade> trades = journal.getTrades();
-
-        for (Trade trade : trades) {
-            trade.setJournalId(journal.getJournalId());
-        }
-
-        return trades;
-
-    }
-
-    public Journal convertToJournal(JournalDTO journalDTO){
-        Journal journal = new Journal();
-
-        journal.setTrades(convertToTradeList(journalDTO.getTrades()));
-        journal.setJournalId(journalDTO.getJournalId());
-        journal.setStockCode(journalDTO.getStockCode());
-        journal.setLastTradedDate(journalDTO.getLastTradedDate());
-        journal.setBuyPrice(journalDTO.getBuyPrice());
-        journal.setBuyQty(journalDTO.getBuyQty());
-        journal.setSellPrice(journalDTO.getSellPrice());
-        journal.setSellQty(journalDTO.getSellQty());
-        journal.setProfit(journalDTO.getProfit());
-        journal.setStatus("Y");
-        journal.setUserId(journalDTO.getUserId());
-        journal.setStrategyId(journalDTO.getStrategyId());
-
-
-        return journal;
-
-    }
-
-    public static List<Trade> convertToTradeList(List<TradeDTO> tradeDTOList) {
-        return tradeDTOList.stream()
-                .map(JournalsService::convertToTrade)
-                .collect(Collectors.toList());
-    }
-
-    public static Trade convertToTrade(TradeDTO tradeDTO) {
-
-        Trade trade = new Trade();
-
-        trade.setTradeId(tradeDTO.getTradeId());
-        trade.setStatus(tradeDTO.getStatus());
-        trade.setTradeDate(tradeDTO.getTradeDate());
-        trade.setPrice(tradeDTO.getPrice());
-        trade.setQuantity(tradeDTO.getQuantity());
-        trade.setActivateStatus("Y");
-        return trade;
-    }
-
-
-
 }
-
-
