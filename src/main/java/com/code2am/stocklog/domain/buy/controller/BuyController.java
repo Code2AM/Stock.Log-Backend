@@ -60,4 +60,22 @@ public class BuyController {
         return result;
     }
 
+    @Operation(
+            summary = "매수 삭제",
+            description = "매수 기록을 삭제합니다.",
+            tags = {"DELETE"}
+    )
+    @DeleteMapping
+    public ResponseEntity deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
+
+        Integer buyId = buyDTO.getBuyId();
+
+        if(Objects.isNull(buyId)){
+            return ResponseEntity.badRequest().body("존재하지 않는 매수기록입니다.");
+        }
+
+        String result = buyService.deleteBuyByBuyId(buyId);
+
+        return ResponseEntity.ok(result);
+    }
 }

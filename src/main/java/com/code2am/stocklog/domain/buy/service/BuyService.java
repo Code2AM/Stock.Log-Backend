@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BuyService {
@@ -50,5 +51,21 @@ public class BuyService {
     public List<BuyDTO> readBuyByUserId(Integer userId) {
 
         return buyDAO.readBuyByUserId(userId);
+    }
+
+    /**
+     * 매수 삭제
+     * */
+    public String deleteBuyByBuyId(Integer buyId) {
+
+        Optional<Buy> deleteBuy = buyRepository.findById(buyId);
+        if(deleteBuy.isPresent()){
+            Buy buy = deleteBuy.get();
+            buy.setStatus("N");
+            buyRepository.save(buy);
+            return "삭제 성공";
+        }
+
+        return "삭제 실패";
     }
 }
