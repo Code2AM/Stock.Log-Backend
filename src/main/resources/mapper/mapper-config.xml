@@ -13,6 +13,7 @@
         <mapper resource="mapper/notes/notes.xml" />
         <mapper resource="mapper/strategies/strategies.xml"/>
         <mapper resource="mapper/buy/buy.xml"/>
+        <mapper resource="mapper/sell/sell.xml"/>
     </mappers>
 
 </configuration>
