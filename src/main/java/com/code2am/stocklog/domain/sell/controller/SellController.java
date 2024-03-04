@@ -35,7 +35,7 @@ public class SellController {
 
         String result = sellService.createSell(sell);
 
-        ResponseEntity.ok(result);
+        return ResponseEntity.ok(result);
     }
 
 
