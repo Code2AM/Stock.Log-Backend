@@ -1,10 +1,12 @@
 package com.code2am.stocklog.domain.journals.models.entity;
 
+import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -43,7 +45,12 @@ public class Journals {
     @Column(name = "FEE")
     private double fee;
 
+    @Column(name = "STATUS")
+    private String status;
+
     @JoinColumn(name = "USER_ID")
     private Integer userId;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals", orphanRemoval = true)
+    private List<Buy> buy;
 }
