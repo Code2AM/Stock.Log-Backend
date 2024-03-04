@@ -56,5 +56,19 @@ public class SellController {
         return result;
     }
 
+    @DeleteMapping
+    public ResponseEntity deleteSellBySellId(@RequestBody SellDTO sellDTO){
+
+        Integer sellId = sellDTO.getSellId();
+
+        if(Objects.isNull(sellId)){
+            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
+        }
+
+        String result = sellService.deleteSellBySellId(sellId);
+
+        return ResponseEntity.ok(result);
+    }
+
 
 }

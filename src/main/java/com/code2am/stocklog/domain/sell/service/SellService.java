@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SellService {
@@ -43,8 +44,27 @@ public class SellService {
         return "등록 성공";
     }
 
+    /**
+     * 매도 조회
+     * */
     public List<SellDTO> readSellByJournalId(Integer journalId) {
 
         return sellDAO.readSellByJournalId(journalId);
+    }
+
+    /**
+     * 매도 삭제
+     * */
+    public String deleteSellBySellId(Integer sellId) {
+
+        Optional<Sell> deleteSell = sellRepository.findById(sellId);
+        if(deleteSell.isPresent()){
+            Sell sell = deleteSell.get();
+            sell.setStatus("N");
+            sellRepository.save(sell);
+            return "삭제 성공";
+        }
+
+        return "삭제 실패";
     }
 }
