@@ -1,10 +1,13 @@
 package com.code2am.stocklog.domain.sell.service;
 
 import com.code2am.stocklog.domain.sell.dao.SellDAO;
+import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.sell.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SellService {
@@ -38,5 +41,10 @@ public class SellService {
         sellRepository.save(sell);
 
         return "등록 성공";
+    }
+
+    public List<SellDTO> readSellByJournalId(Integer journalId) {
+
+        return sellDAO.readSellByJournalId(journalId);
     }
 }

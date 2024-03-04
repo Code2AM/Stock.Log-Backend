@@ -1,16 +1,15 @@
 package com.code2am.stocklog.domain.sell.controller;
 
+import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.sell.service.SellService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -36,6 +35,25 @@ public class SellController {
         String result = sellService.createSell(sell);
 
         return ResponseEntity.ok(result);
+    }
+
+    @Operation(
+            summary = "매도 조회",
+            description = "매매일지 정보를 통해 매도 기록을 조회합니다.",
+            tags = {"GET"}
+    )
+    @GetMapping
+    public List<SellDTO> readSellByJournalId(@RequestBody Sell sell){
+
+        Integer journalId = sell.getJournals().getJournalId();
+
+        List<SellDTO> result = sellService.readSellByJournalId(journalId);
+
+        if(result.isEmpty()){
+            return null;
+        }
+
+        return result;
     }
 
 
