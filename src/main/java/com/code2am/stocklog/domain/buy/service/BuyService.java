@@ -46,14 +46,6 @@ public class BuyService {
     }
 
     /**
-     * 매수 조회
-     * */
-    public List<BuyDTO> readBuyByUserId(Integer userId) {
-
-        return buyDAO.readBuyByUserId(userId);
-    }
-
-    /**
      * 매수 삭제
      * */
     public String deleteBuyByBuyId(Integer buyId) {
@@ -67,5 +59,13 @@ public class BuyService {
         }
 
         return "삭제 실패";
+    }
+
+    /**
+     * 매수 조회
+     * */
+    public List<BuyDTO> readBuyByJournalId(Integer journalId) {
+
+        return buyDAO.readBuyByJournalId(journalId);
     }
 }

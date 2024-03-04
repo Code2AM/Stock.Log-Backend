@@ -47,11 +47,11 @@ public class BuyController {
             tags = {"GET"}
     )
     @GetMapping
-    public List<BuyDTO> readBuyByUserId(){
+    public List<BuyDTO> readBuyByJournalId(@RequestBody Buy buy){
 
-        Integer userId = securityUtil.getUserId();
+        Integer journalId = buy.getJournals().getJournalId();
 
-        List<BuyDTO> result = buyService.readBuyByUserId(userId);
+        List<BuyDTO> result = buyService.readBuyByJournalId(journalId);
 
         if(result.isEmpty()){
             return null;
