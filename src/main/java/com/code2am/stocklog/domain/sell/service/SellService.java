@@ -123,4 +123,12 @@ public class SellService {
 
         return "삭제 성공";
     }
+
+    /**
+     * 총 매도 물량 조회
+     * */
+    public Integer readSellQuantityByJournalId(Integer journalId){
+
+        return sellDAO.readSellQuantityByJournalId(journalId);
+    }
 }

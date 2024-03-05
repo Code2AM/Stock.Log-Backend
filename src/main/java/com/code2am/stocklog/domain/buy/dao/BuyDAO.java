@@ -11,4 +11,6 @@ public interface BuyDAO {
     List<BuyDTO> readBuyByJournalId(Integer journalId);
 
     BuyDTO readLastedBuyDateByBuyId(Integer buyId);
+
+    Integer readBuyQuantityByJournalId(Integer journalId);
 }

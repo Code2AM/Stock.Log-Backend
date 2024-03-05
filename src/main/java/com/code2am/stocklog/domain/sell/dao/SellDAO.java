@@ -10,4 +10,6 @@ public interface SellDAO {
     List<SellDTO> readSellByJournalId(Integer journalId);
 
     SellDTO readLastedDateBySellId(Integer sellId);
+
+    Integer readSellQuantityByJournalId(Integer journalId);
 }

@@ -6,6 +6,7 @@ import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.repository.BuyRepository;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
+import com.code2am.stocklog.domain.journals.service.JournalsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -117,5 +118,13 @@ public class BuyService {
     public List<BuyDTO> readBuyByJournalId(Integer journalId) {
 
         return buyDAO.readBuyByJournalId(journalId);
+    }
+
+    /**
+     * 총 매수물량 조회
+     * */
+    public Integer readBuyQuantityByJournalId(Integer journalId){
+
+        return buyDAO.readBuyQuantityByJournalId(journalId);
     }
 }

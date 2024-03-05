@@ -36,4 +36,15 @@
             SELL_DATE DESC
         LIMIT 1
     </select>
+
+    <select id="readSellQuantityByJournalId" resultMap="Sell">
+        SELECT
+            SUM(SELL_QUANTITY)
+        FROM
+            TBL_SELL
+        WHERE
+            JOURNAL_ID = #{journalId}
+        AND
+            STATUS = 'Y'
+    </select>
 </mapper>
