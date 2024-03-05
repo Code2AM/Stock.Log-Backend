@@ -1,8 +1,7 @@
 package com.code2am.stocklog.domain.sell.service;
 
-import com.code2am.stocklog.domain.buy.infra.JournalsRepo;
-import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
+import com.code2am.stocklog.domain.sell.Infra.JournalsRepoForSell;
 import com.code2am.stocklog.domain.sell.dao.SellDAO;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
@@ -24,7 +23,7 @@ public class SellService {
     private SellDAO sellDAO;
 
     @Autowired
-    private JournalsRepo journalsRepo;
+    private JournalsRepoForSell journalsRepo;
 
     /**
      * 매도 등록
@@ -59,13 +58,13 @@ public class SellService {
 
         Integer sellAvg = sellSum / sellList.size();
 
-        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        Optional<Journals> updateJournals = journalsRepo.findById(journalId);
         if(updateJournals.isEmpty()){
             return "평균값 등록 실패";
         }
 
         Journals updateJournalsAvgSell = updateJournals.get();
-        updateJournalsAvgSell.setAvgBuyPrice(sellAvg);
+        updateJournalsAvgSell.setAvgSellPrice(sellAvg);
         updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
         journalsRepo.save(updateJournalsAvgSell);
 
@@ -86,13 +85,37 @@ public class SellService {
     public String deleteSellBySellId(Integer sellId) {
 
         Optional<Sell> deleteSell = sellRepository.findById(sellId);
-        if(deleteSell.isPresent()){
-            Sell sell = deleteSell.get();
-            sell.setStatus("N");
-            sellRepository.save(sell);
-            return "삭제 성공";
+        if(deleteSell.isEmpty()){
+            return "삭제 실패";
         }
 
-        return "삭제 실패";
+        Sell sell = deleteSell.get();
+        sell.setStatus("N");
+        sellRepository.save(sell);
+
+        Integer journalId = deleteSell.get().getJournals().getJournalId();
+
+        // 평균값 등록 로직
+        List<SellDTO> sellList = sellDAO.readSellByJournalId(journalId);
+
+        Integer sellSum = 0;
+
+        for (SellDTO sellDTO : sellList) {
+            sellSum += sellDTO.getSellPrice();
+        }
+
+        Integer sellAvg = sellSum / sellList.size();
+
+        Optional<Journals> updateJournals = journalsRepo.findById(journalId);
+        if(updateJournals.isEmpty()){
+            return "평균값 등록 실패";
+        }
+
+        Journals updateJournalsAvgSell = updateJournals.get();
+        updateJournalsAvgSell.setAvgSellPrice(sellAvg);
+        updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
+        journalsRepo.save(updateJournalsAvgSell);
+
+        return "삭제 성공";
     }
 }
