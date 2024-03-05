@@ -33,7 +33,7 @@
         AND
             STATUS = 'Y'
         ORDER BY
-            SELL_DATE DESC
+            BUY_DATE DESC
         LIMIT 1
     </select>
 
