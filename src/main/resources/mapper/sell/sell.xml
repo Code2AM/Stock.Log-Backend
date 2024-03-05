@@ -22,4 +22,18 @@
         AND
             STATUS = 'Y'
     </select>
+
+    <select id="readLastedDateBySellId" resultMap="Sell">
+        SELECT
+            SELL_DATE
+        FROM
+            TBL_SELL
+        WHERE
+            SELL_ID = #{sellId}
+        AND
+            STATUS = 'Y'
+        ORDER BY
+            SELL_DATE DESC
+        LIMIT 1
+    </select>
 </mapper>

@@ -102,9 +102,10 @@ public class BuyService {
             return "평균값 등록 실패";
         }
 
+        BuyDTO oldBuyDate = buyDAO.readLastedBuyDateByBuyId(buyId);
         Journals updateJournalsAvgBuy = updateJournals.get();
+        updateJournalsAvgBuy.setLastedTradeDate(oldBuyDate.getBuyDate());
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
-        updateJournalsAvgBuy.setLastedTradeDate(LocalDateTime.now());
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "삭제 성공";

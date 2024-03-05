@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface SellDAO {
     List<SellDTO> readSellByJournalId(Integer journalId);
+
+    SellDTO readLastedDateBySellId(Integer sellId);
 }

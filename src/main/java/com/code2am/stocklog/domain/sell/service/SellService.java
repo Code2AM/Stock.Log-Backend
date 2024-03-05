@@ -111,9 +111,10 @@ public class SellService {
             return "평균값 등록 실패";
         }
 
+        SellDTO oldSellDate = sellDAO.readLastedDateBySellId(sellId);
         Journals updateJournalsAvgSell = updateJournals.get();
+        updateJournalsAvgSell.setLastedTradeDate(oldSellDate.getSellDate());
         updateJournalsAvgSell.setAvgSellPrice(sellAvg);
-        updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
         journalsRepo.save(updateJournalsAvgSell);
 
         return "삭제 성공";

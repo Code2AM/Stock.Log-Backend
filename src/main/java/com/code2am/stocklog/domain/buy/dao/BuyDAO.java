@@ -9,4 +9,6 @@ import java.util.List;
 public interface BuyDAO {
 
     List<BuyDTO> readBuyByJournalId(Integer journalId);
+
+    BuyDTO readLastedBuyDateByBuyId(Integer buyId);
 }
