@@ -1,5 +1,8 @@
 package com.code2am.stocklog.domain.sell.service;
 
+import com.code2am.stocklog.domain.buy.infra.JournalsRepo;
+import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
+import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.sell.dao.SellDAO;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
@@ -7,6 +10,7 @@ import com.code2am.stocklog.domain.sell.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +22,9 @@ public class SellService {
 
     @Autowired
     private SellDAO sellDAO;
+
+    @Autowired
+    private JournalsRepo journalsRepo;
 
     /**
      * 매도 등록
@@ -40,6 +47,27 @@ public class SellService {
 
         sell.setStatus("Y");
         sellRepository.save(sell);
+
+        // 평균값 등록 로직
+        List<SellDTO> sellList = sellDAO.readSellByJournalId(journalId);
+
+        Integer sellSum = 0;
+
+        for (SellDTO sellDTO : sellList) {
+            sellSum += sellDTO.getSellPrice();
+        }
+
+        Integer sellAvg = sellSum / sellList.size();
+
+        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        if(updateJournals.isEmpty()){
+            return "평균값 등록 실패";
+        }
+
+        Journals updateJournalsAvgSell = updateJournals.get();
+        updateJournalsAvgSell.setAvgBuyPrice(sellAvg);
+        updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
+        journalsRepo.save(updateJournalsAvgSell);
 
         return "등록 성공";
     }
