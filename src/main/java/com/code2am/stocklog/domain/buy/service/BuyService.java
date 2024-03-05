@@ -1,6 +1,6 @@
 package com.code2am.stocklog.domain.buy.service;
 
-import com.code2am.stocklog.domain.buy.infra.JournalsRepo;
+import com.code2am.stocklog.domain.buy.infra.JournalsRepoForBuy;
 import com.code2am.stocklog.domain.buy.dao.BuyDAO;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
@@ -9,6 +9,7 @@ import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ public class BuyService {
     private BuyDAO buyDAO;
 
     @Autowired
-    private  JournalsRepo journalsRepo;
+    private JournalsRepoForBuy journalsRepoForBuy;
 
     /**
      * 매수 등록
@@ -57,14 +58,15 @@ public class BuyService {
 
         Integer buyAvg = buySum / buyList.size();
 
-        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        Optional<Journals> updateJournals =  journalsRepoForBuy.findById(journalId);
         if(updateJournals.isEmpty()){
             return "평균값 등록 실패";
         }
 
         Journals updateJournalsAvgBuy = updateJournals.get();
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
-        journalsRepo.save(updateJournalsAvgBuy);
+        updateJournalsAvgBuy.setLastedTradeDate(LocalDateTime.now());
+        journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "등록 성공";
     }
@@ -95,14 +97,15 @@ public class BuyService {
 
         Integer buyAvg = buySum / buyList.size();
 
-        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        Optional<Journals> updateJournals =  journalsRepoForBuy.findById(journalId);
         if(updateJournals.isEmpty()){
             return "평균값 등록 실패";
         }
 
         Journals updateJournalsAvgBuy = updateJournals.get();
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
-        journalsRepo.save(updateJournalsAvgBuy);
+        updateJournalsAvgBuy.setLastedTradeDate(LocalDateTime.now());
+        journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "삭제 성공";
     }
