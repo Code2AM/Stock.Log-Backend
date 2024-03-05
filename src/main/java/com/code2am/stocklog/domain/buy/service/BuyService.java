@@ -5,6 +5,7 @@ import com.code2am.stocklog.domain.buy.dao.BuyDAO;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.repository.BuyRepository;
+import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class BuyService {
 
     @Autowired
     private BuyDAO buyDAO;
+
+    @Autowired
+    private  JournalsRepo journalsRepo;
 
     /**
      * 매수 등록
@@ -42,6 +46,26 @@ public class BuyService {
         buy.setStatus("Y");
         buyRepository.save(buy);
 
+        // 평균값 등록 로직
+        List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
+
+        Integer buySum = 0;
+
+        for (BuyDTO buyDTO : buyList) {
+            buySum += buyDTO.getBuyPrice();
+        }
+
+        Integer buyAvg = buySum / buyList.size();
+
+        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        if(updateJournals.isEmpty()){
+            return "평균값 등록 실패";
+        }
+
+        Journals updateJournalsAvgBuy = updateJournals.get();
+        updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
+        journalsRepo.save(updateJournalsAvgBuy);
+
         return "등록 성공";
     }
 
@@ -51,14 +75,36 @@ public class BuyService {
     public String deleteBuyByBuyId(Integer buyId) {
 
         Optional<Buy> deleteBuy = buyRepository.findById(buyId);
-        if(deleteBuy.isPresent()){
-            Buy buy = deleteBuy.get();
-            buy.setStatus("N");
-            buyRepository.save(buy);
-            return "삭제 성공";
+        if(deleteBuy.isEmpty()){
+            return "삭제 실패";
+        }
+        Buy buy = deleteBuy.get();
+        buy.setStatus("N");
+        buyRepository.save(buy);
+
+        // 평균값 등록 로직
+
+        Integer journalId = deleteBuy.get().getJournals().getJournalId();
+        List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
+
+        Integer buySum = 0;
+
+        for (BuyDTO buyDTO : buyList) {
+            buySum += buyDTO.getBuyPrice();
         }
 
-        return "삭제 실패";
+        Integer buyAvg = buySum / buyList.size();
+
+        Optional<Journals> updateJournals =  journalsRepo.findById(journalId);
+        if(updateJournals.isEmpty()){
+            return "평균값 등록 실패";
+        }
+
+        Journals updateJournalsAvgBuy = updateJournals.get();
+        updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
+        journalsRepo.save(updateJournalsAvgBuy);
+
+        return "삭제 성공";
     }
 
     /**
