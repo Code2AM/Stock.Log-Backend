@@ -32,6 +32,10 @@ public class SellService {
 
         Integer journalId = sell.getJournals().getJournalId();
 
+        if(journalsRepo.findById(journalId).isPresent() && journalsRepo.findById(journalId).get().getTotalQuantity() < sell.getSellQuantity()){
+            return "매도물량이 보유물량보다 클 수 없습니다.";
+        }
+
         if(journalId <= 0){
             return "존재하지 않는 매매일지입니다.";
         }
