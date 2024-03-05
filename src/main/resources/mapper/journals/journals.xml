@@ -5,7 +5,8 @@
 <mapper namespace="com.code2am.stocklog.domain.journals.dao.JournalsDAO">
 
     <resultMap id="Journals" type="com.code2am.stocklog.domain.journals.models.vo.JournalsVO">
-        <id property="stockName" column="STOCK_NAME"/>
+        <id property="journalId" column="JOURNAL_ID"/>
+        <result property="stockName" column="STOCK_NAME"/>
         <result property="journalDate" column="JOURNAL_DATE"/>
         <result property="totalQuantity" column="TOTAL_QUANTITY"/>
         <result property="avgBuyPrice" column="AVG_BUY_PRICE"/>

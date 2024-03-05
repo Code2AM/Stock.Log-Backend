@@ -67,6 +67,7 @@ public class BuyService {
         Journals updateJournalsAvgBuy = updateJournals.get();
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
         updateJournalsAvgBuy.setLastedTradeDate(LocalDateTime.now());
+        updateJournalsAvgBuy.setTotalQuantity(updateJournalsAvgBuy.getTotalQuantity() + buy.getBuyQuantity()); // 보유총량 더하기
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "등록 성공";
@@ -82,7 +83,12 @@ public class BuyService {
             return "삭제 실패";
         }
         Buy buy = deleteBuy.get();
+
+        BuyDTO oldBuyDate = buyDAO.readLastedBuyDateByBuyId(buyId); // 미리 값을 빼둔다.
+
         buy.setStatus("N");
+
+        Integer minusValue = buy.getBuyQuantity(); // 총량 계산시 쓸 값
         buyRepository.save(buy);
 
         // 평균값 등록 로직
@@ -103,10 +109,10 @@ public class BuyService {
             return "평균값 등록 실패";
         }
 
-        BuyDTO oldBuyDate = buyDAO.readLastedBuyDateByBuyId(buyId);
         Journals updateJournalsAvgBuy = updateJournals.get();
         updateJournalsAvgBuy.setLastedTradeDate(oldBuyDate.getBuyDate());
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
+        updateJournalsAvgBuy.setTotalQuantity(updateJournalsAvgBuy.getTotalQuantity() - minusValue); // 보유 총량 빼기
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "삭제 성공";

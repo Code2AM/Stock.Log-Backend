@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 @Data
 public class JournalsVO {
 
+    private Integer journalId;
+
     private LocalDateTime journalDate;
 
     private String stockName;

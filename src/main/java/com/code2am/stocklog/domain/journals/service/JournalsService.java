@@ -88,23 +88,23 @@ public class JournalsService {
         return "등록 성공";
     }
 
-    /**
-     * 총 보유매매량 갱신
-     * */
-    public String updateTotalQuantityByJournalId(Integer journalId){
-
-        Integer buy = buyServ.readBuyQuantityByJournalId(journalId);
-        Integer sell = sellServ.readSellQuantityByJournalId(journalId);
-
-        Optional<Journals> updateTotalQuantityByJournalId = journalsRepository.findById(journalId);
-        if(updateTotalQuantityByJournalId.isPresent()){
-            Journals update = updateTotalQuantityByJournalId.get();
-            update.setTotalQuantity(buy-sell);
-            journalsRepository.save(update);
-            return "보유매매량 갱신";
-        }
-
-        return "갱신 실패";
-
-    }
+//    /**
+//     * 총 보유매매량 갱신
+//     * */
+//    public String updateTotalQuantityByJournalId(Integer journalId){
+//
+//        Integer buy = buyServ.readBuyQuantityByJournalId(journalId);
+//        Integer sell = sellServ.readSellQuantityByJournalId(journalId);
+//
+//        Optional<Journals> updateTotalQuantityByJournalId = journalsRepository.findById(journalId);
+//        if(updateTotalQuantityByJournalId.isPresent()){
+//            Journals update = updateTotalQuantityByJournalId.get();
+//            update.setTotalQuantity(buy-sell);
+//            journalsRepository.save(update);
+//            return "보유매매량 갱신";
+//        }
+//
+//        return "갱신 실패";
+//
+//    }
 }

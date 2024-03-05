@@ -70,6 +70,7 @@ public class SellService {
         Journals updateJournalsAvgSell = updateJournals.get();
         updateJournalsAvgSell.setAvgSellPrice(sellAvg);
         updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
+        updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() - sell.getSellQuantity()); // 보유총량 빼기
         journalsRepo.save(updateJournalsAvgSell);
 
         return "등록 성공";
@@ -95,6 +96,9 @@ public class SellService {
 
         Sell sell = deleteSell.get();
         sell.setStatus("N");
+
+        SellDTO oldSellDate = sellDAO.readLastedDateBySellId(sellId); // 값을 미리 빼둔다.
+        Integer plusValue = sell.getSellQuantity(); // 값을 미리 빼둔다.
         sellRepository.save(sell);
 
         Integer journalId = deleteSell.get().getJournals().getJournalId();
@@ -115,10 +119,11 @@ public class SellService {
             return "평균값 등록 실패";
         }
 
-        SellDTO oldSellDate = sellDAO.readLastedDateBySellId(sellId);
+
         Journals updateJournalsAvgSell = updateJournals.get();
         updateJournalsAvgSell.setLastedTradeDate(oldSellDate.getSellDate());
         updateJournalsAvgSell.setAvgSellPrice(sellAvg);
+        updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() + plusValue); // 보유총량 더하기
         journalsRepo.save(updateJournalsAvgSell);
 
         return "삭제 성공";
