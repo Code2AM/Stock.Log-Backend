@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code2am.stocklog.domain.journals.dao.JournalsDAO">
+
+    <resultMap id="Journals" type="com.code2am.stocklog.domain.journals.models.vo.JournalsVO">
+        <id property="journalId" column="JOURNAL_ID"/>
+        <result property="stockName" column="STOCK_NAME"/>
+        <result property="journalDate" column="JOURNAL_DATE"/>
+        <result property="totalQuantity" column="TOTAL_QUANTITY"/>
+        <result property="avgBuyPrice" column="AVG_BUY_PRICE"/>
+        <result property="avgSellPrice" column="AVG_SELL_PRICE"/>
+        <result property="profit" column="PROFIT"/>
+        <result property="lastedTradeDate" column="LASTEST_TRADE_DATE"/>
+        <result property="fee" column="FEE"/>
+    </resultMap>
+
+    <select id="readJournalsByUserId" resultMap="Journals">
+        SELECT
+            *
+        FROM
+            TBL_JOURNALS
+        WHERE
+            USER_ID = #{userId}
+        AND
+            STATUS = 'open'
+    </select>
+</mapper>
