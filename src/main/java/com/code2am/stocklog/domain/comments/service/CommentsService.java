@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentsService {
@@ -42,5 +43,26 @@ public class CommentsService {
     public List<CommentsVO> readCommentsByJournalId(Integer journalId) {
 
         return commentsDAO.readCommentsByJournalId(journalId);
+    }
+
+    /**
+     * 코멘트 삭제
+     * */
+    public String deleteCommentByCommentId(Integer commentId) {
+
+        Optional<Comments> deleteComment = commentsRepository.findById(commentId);
+
+        if(deleteComment.isEmpty()){
+            return "존재하지 않는 데이터입니다.";
+        }else if(deleteComment.get().getStatus().equals("N")){
+            return "이미 삭제된 데이터입니다.";
+        }
+
+        Comments delete = deleteComment.get();
+        delete.setStatus("N");
+        delete.setCommentDate(LocalDateTime.now());
+        commentsRepository.save(delete);
+
+        return "코멘트 삭제 성공";
     }
 }

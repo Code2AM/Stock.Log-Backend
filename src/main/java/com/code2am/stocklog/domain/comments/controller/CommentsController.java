@@ -59,4 +59,21 @@ public class CommentsController {
         return commentsService.readCommentsByJournalId(journalId);
     }
 
+    @Operation(
+            summary = "코멘트 삭제",
+            description = "매매일지의 코멘트를 삭제합니다.",
+            tags = {"DELETE"}
+    )
+    @DeleteMapping
+    public ResponseEntity deleteCommentByCommentId(@RequestBody CommentsDTO commentsDTO){
+
+        if(Objects.isNull(commentsDTO)){
+            return ResponseEntity.badRequest().body("삭제할 코멘트가 없습니다.");
+        }
+
+        Integer commentId = commentsDTO.getCommentId();
+        String result = commentsService.deleteCommentByCommentId(commentId);
+
+        return ResponseEntity.ok(result);
+    }
 }
