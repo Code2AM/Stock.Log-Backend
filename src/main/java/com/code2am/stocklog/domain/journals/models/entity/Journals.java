@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.journals.models.entity;
 
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
+import com.code2am.stocklog.domain.comments.models.entity.Comments;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import jakarta.persistence.*;
@@ -57,4 +58,7 @@ public class Journals {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals", orphanRemoval = true)
     private List<Sell> sell;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals", orphanRemoval = true)
+    private List<Comments> comments;
 }
