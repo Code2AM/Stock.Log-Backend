@@ -15,6 +15,7 @@
         <mapper resource="mapper/buy/buy.xml"/>
         <mapper resource="mapper/sell/sell.xml"/>
         <mapper resource="mapper/journals/journals.xml"/>
+        <mapper resource="mapper/comments/comments.xml"/>
     </mappers>
 
 </configuration>
