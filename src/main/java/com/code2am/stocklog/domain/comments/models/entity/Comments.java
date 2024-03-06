@@ -25,7 +25,7 @@ public class Comments {
     @Column(name = "STATUS")
     private String status;
 
-    @JoinColumn(name = "JOURNALS_ID")
+    @JoinColumn(name = "JOURNAL_ID")
     @ManyToOne
     private Journals journals;
 }

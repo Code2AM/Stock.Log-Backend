@@ -1,16 +1,16 @@
 package com.code2am.stocklog.domain.comments.controller;
 
+import com.code2am.stocklog.domain.comments.models.dto.CommentsDTO;
 import com.code2am.stocklog.domain.comments.models.entity.Comments;
+import com.code2am.stocklog.domain.comments.models.vo.CommentsVO;
 import com.code2am.stocklog.domain.comments.service.CommentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -40,6 +40,23 @@ public class CommentsController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @Operation(
+            summary = "코멘트 조회",
+            description = "매매일지의 코멘트를 조회합니다.",
+            tags = {"GET"}
+    )
+    @GetMapping
+    public List<CommentsVO> readCommentsByJournalId(@RequestBody CommentsDTO commentsDTO){
+
+        if(Objects.isNull(commentsDTO)){
+            return null;
+        }
+
+        Integer journalId = commentsDTO.getJournalId();
+
+        return commentsService.readCommentsByJournalId(journalId);
     }
 
 }
