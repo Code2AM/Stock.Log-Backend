@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -73,6 +74,23 @@ public class SellService {
         updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() - sell.getSellQuantity()); // 보유총량 빼기
         journalsRepo.save(updateJournalsAvgSell);
 
+        // 손익 계산 로직
+        Optional<Journals> profitCal = journalsRepo.findById(journalId);
+        if(profitCal.isEmpty()){
+            return "손익계산 실패";
+        }
+
+        Integer avgBuyPrice = profitCal.get().getAvgBuyPrice();
+        Integer avgSellPrice = profitCal.get().getAvgSellPrice();
+        Integer totalQuantity = profitCal.get().getTotalQuantity();
+        double fee = profitCal.get().getFee();
+
+        profitCal.get().setProfit((int) ((avgSellPrice - avgBuyPrice) * totalQuantity * (1 - fee)));
+        System.out.println(profitCal.get().getProfit());
+        Journals updateProfit = profitCal.get();
+
+        journalsRepo.save(updateProfit);
+
         return "등록 성공";
     }
 
@@ -92,12 +110,15 @@ public class SellService {
         Optional<Sell> deleteSell = sellRepository.findById(sellId);
         if(deleteSell.isEmpty()){
             return "삭제 실패";
+        } else if (deleteSell.get().getStatus().equals("N")) {
+            return "이미 삭제된 매도기록입니다.";
         }
 
         Sell sell = deleteSell.get();
         sell.setStatus("N");
 
         SellDTO oldSellDate = sellDAO.readLastedDateBySellId(sellId); // 값을 미리 빼둔다.
+
         Integer plusValue = sell.getSellQuantity(); // 값을 미리 빼둔다.
         sellRepository.save(sell);
 
@@ -105,35 +126,57 @@ public class SellService {
 
         // 평균값 등록 로직
         List<SellDTO> sellList = sellDAO.readSellByJournalId(journalId);
-
         Integer sellSum = 0;
 
-        for (SellDTO sellDTO : sellList) {
-            sellSum += sellDTO.getSellPrice();
+        if(sellList.isEmpty()){
+            sellSum = 0;
+        }else {
+            for (SellDTO sellDTO : sellList) {
+                sellSum += sellDTO.getSellPrice();
+            }
         }
 
-        Integer sellAvg = sellSum / sellList.size();
+        int sellAvg = 0;
+
+        if(sellSum != 0){
+            sellAvg = sellSum / sellList.size();
+        }
 
         Optional<Journals> updateJournals = journalsRepo.findById(journalId);
         if(updateJournals.isEmpty()){
             return "평균값 등록 실패";
         }
 
-
         Journals updateJournalsAvgSell = updateJournals.get();
-        updateJournalsAvgSell.setLastedTradeDate(oldSellDate.getSellDate());
+        if(!(oldSellDate == null)){
+            updateJournalsAvgSell.setLastedTradeDate(oldSellDate.getSellDate());
+        }
         updateJournalsAvgSell.setAvgSellPrice(sellAvg);
         updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() + plusValue); // 보유총량 더하기
         journalsRepo.save(updateJournalsAvgSell);
 
+        // 손익 계산 로직
+        Optional<Journals> profitCal = journalsRepo.findById(journalId);
+        if(profitCal.isEmpty()){
+            return "손익계산 실패";
+        }
+
+        Integer avgBuyPrice = profitCal.get().getAvgBuyPrice();
+        Integer avgSellPrice = profitCal.get().getAvgSellPrice();
+        Integer totalQuantity = profitCal.get().getTotalQuantity();
+        double fee = profitCal.get().getFee();
+
+        if(avgSellPrice != 0){
+            profitCal.get().setProfit((int) ((avgSellPrice - avgBuyPrice) * totalQuantity * (1 - fee)));
+        }else {
+            profitCal.get().setProfit(0);
+        }
+
+        Journals updateProfit = profitCal.get();
+
+        journalsRepo.save(updateProfit);
+
         return "삭제 성공";
     }
 
-    /**
-     * 총 매도 물량 조회
-     * */
-    public Integer readSellQuantityByJournalId(Integer journalId){
-
-        return sellDAO.readSellQuantityByJournalId(journalId);
-    }
 }
