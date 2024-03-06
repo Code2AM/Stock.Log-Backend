@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class StocksDTO {
 
-    private String stocksCode;
-    private String stocksName;
+    private String isinCd;
+    private String itmsNm;
 }
