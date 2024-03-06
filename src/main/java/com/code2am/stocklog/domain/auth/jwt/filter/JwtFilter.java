@@ -60,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        System.out.println("여기 왔음");
+        System.out.println("토큰 통과");
 
         // OPTIONS 메서드와 ALLOWED_PATHS에 속하는 경우 필터를 거치지 않고 통과
         return "OPTIONS".equals(method) || ALLOWED_PATHS.stream().anyMatch(path::equals);

@@ -65,7 +65,9 @@ public class WebSecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(
-                        "/**"
+                        "/auth/*",
+                        "/oauth/*",
+                        "/mail/*"
                 ).permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 
