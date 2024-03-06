@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code2am.stocklog.domain.sell.dao.SellDAO">
+
+    <resultMap id="Sell" type="com.code2am.stocklog.domain.sell.models.dto.SellDTO">
+        <id property="sellId" column="SELL_ID"/>
+        <result property="sellDate" column="SELL_DATE"/>
+        <result property="sellQuantity" column="SELL_QUANTITY"/>
+        <result property="sellPrice" column="SELL_PRICE"/>
+        <result property="status" column="STATUS"/>
+    </resultMap>
+
+    <select id="readSellByJournalId" resultMap="Sell">
+        SELECT
+            *
+        FROM
+            TBL_SELL
+        WHERE
+            JOURNAL_ID = #{JOURNAL_ID}
+        AND
+            STATUS = 'Y'
+    </select>
+</mapper>
