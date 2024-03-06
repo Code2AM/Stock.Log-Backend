@@ -36,6 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
         // 1. Request Header 에서 토큰을 꺼냄
         String jwt = resolveToken(request);
 
+        System.out.println("validation");
+        String accessToken = request.getHeader("Authorization");  // "Authorization" 헤더에서 AccessToken 추출
+        System.out.println(accessToken);
+        System.out.println(jwt);
+
+
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
         if (StringUtils.hasText(jwt) && tokenUtils.validateToken(jwt)) {
@@ -61,6 +67,19 @@ public class JwtFilter extends OncePerRequestFilter {
         String method = request.getMethod();
 
         System.out.println("여기 왔음");
+
+        String accessToken = request.getHeader("Authorization");  // "Authorization" 헤더에서 AccessToken 추출
+
+        System.out.println(accessToken);
+
+
+        if (accessToken != null && accessToken.startsWith("BEARER ")) {
+            accessToken = accessToken.substring(7); // "Bearer " 다음의 토큰 부분 추출
+            System.out.println("AccessToken: " + accessToken);
+            // 여기에서 accessToken을 이용한 추가적인 작업 수행 가능
+            System.out.println("있음");
+        }
+
 
         // OPTIONS 메서드와 ALLOWED_PATHS에 속하는 경우 필터를 거치지 않고 통과
         return "OPTIONS".equals(method) || ALLOWED_PATHS.stream().anyMatch(path::equals);
