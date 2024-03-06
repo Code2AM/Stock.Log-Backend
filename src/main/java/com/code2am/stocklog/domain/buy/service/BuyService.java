@@ -50,11 +50,14 @@ public class BuyService {
 
         // 평균값 등록 로직
         List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
-
         Integer buySum = 0;
 
-        for (BuyDTO buyDTO : buyList) {
-            buySum += buyDTO.getBuyPrice();
+        if(buyList.isEmpty()){
+            return "매수 기록이 없습니다.";
+        }else {
+            for (BuyDTO buyDTO : buyList) {
+                buySum += buyDTO.getBuyPrice();
+            }
         }
 
         Integer buyAvg = buySum / buyList.size();
@@ -95,6 +98,10 @@ public class BuyService {
 
         Integer journalId = deleteBuy.get().getJournals().getJournalId();
         List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
+
+        if(buyList.isEmpty()){
+            return "매수기록이 없습니다.";
+        }
 
         Integer buySum = 0;
 

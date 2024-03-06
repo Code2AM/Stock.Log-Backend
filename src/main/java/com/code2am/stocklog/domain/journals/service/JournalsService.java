@@ -3,8 +3,6 @@ package com.code2am.stocklog.domain.journals.service;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
 import com.code2am.stocklog.domain.journals.infra.BuyRepo;
-import com.code2am.stocklog.domain.journals.infra.BuyServ;
-import com.code2am.stocklog.domain.journals.infra.SellServ;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.journals.repository.JournalsRepository;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class JournalsService {
@@ -25,12 +22,6 @@ public class JournalsService {
     private BuyRepo buyRepo;
 
     @Autowired
-    private BuyServ buyServ;
-
-    @Autowired
-    private SellServ sellServ;
-
-    @Autowired
     private JournalsDAO journalsDAO;
 
     public List<JournalsDTO> readJournalsByUserId(Integer userId) {
@@ -39,26 +30,26 @@ public class JournalsService {
 
     /**
      * 매매일지 등록
-     * */
+     */
     public String createJournalsByUserId(JournalsDTO journals, Integer userId) {
 
-        if(journals.getFee() <= 0){
+        if (journals.getFee() <= 0) {
             return "수수료가 0 이하 값이 될 수는 없습니다.";
         }
 
-        if(journals.getStockName().equals("")){
+        if (journals.getStockName().equals("")) {
             return "종목을 선택하지 않았습니다.";
         }
 
-        if(journals.getBuyPrice() <= 0){
+        if (journals.getBuyPrice() <= 0) {
             return "정상적인 매수가가 아닙니다.";
         }
 
-        if(journals.getBuyQuantity() <= 0){
+        if (journals.getBuyQuantity() <= 0) {
             return "매매주가 없습니다.";
         }
 
-        if(journals.getStrategyId() < 0){
+        if (journals.getStrategyId() < 0) {
             return "불가능한 매매전략 값입니다.";
         }
 
@@ -87,24 +78,4 @@ public class JournalsService {
 
         return "등록 성공";
     }
-
-//    /**
-//     * 총 보유매매량 갱신
-//     * */
-//    public String updateTotalQuantityByJournalId(Integer journalId){
-//
-//        Integer buy = buyServ.readBuyQuantityByJournalId(journalId);
-//        Integer sell = sellServ.readSellQuantityByJournalId(journalId);
-//
-//        Optional<Journals> updateTotalQuantityByJournalId = journalsRepository.findById(journalId);
-//        if(updateTotalQuantityByJournalId.isPresent()){
-//            Journals update = updateTotalQuantityByJournalId.get();
-//            update.setTotalQuantity(buy-sell);
-//            journalsRepository.save(update);
-//            return "보유매매량 갱신";
-//        }
-//
-//        return "갱신 실패";
-//
-//    }
 }
