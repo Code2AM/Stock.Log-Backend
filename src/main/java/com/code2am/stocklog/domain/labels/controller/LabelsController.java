@@ -2,7 +2,6 @@ package com.code2am.stocklog.domain.labels.controller;
 
 import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
-import com.code2am.stocklog.domain.labels.models.vo.LabelsVO;
 import com.code2am.stocklog.domain.labels.service.LabelsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -53,17 +52,17 @@ public class LabelsController {
         return ResponseEntity.ok(result);
     }
 
-//    @Operation(
-//            summary = "라벨 수정",
-//            description = "라벨을 수정합니다",
-//            tags = {"PUT"}
-//    )
-//    @PutMapping
-//    public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
-//
-//        String result = labelsService.updateLabelByLabelsId(labels);
-//        return ResponseEntity.ok(result);
-//    }
+    @Operation(
+            summary = "라벨 수정",
+            description = "라벨을 수정합니다",
+            tags = {"PUT"}
+    )
+    @PutMapping
+    public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        String result = labelsService.updateLabelByLabelsId(labels);
+
+        return ResponseEntity.ok(result);
+    }
 
     @Operation(
             summary = "라벨 삭제",
@@ -73,7 +72,7 @@ public class LabelsController {
     @PutMapping("/delete")
     public ResponseEntity deleteLabelsByLabelsId(@RequestParam("labelsId")Integer labelsId){
         String result = labelsService.deleteLabelsByLabelsId(labelsId);
-
+        System.out.println(result);
         return ResponseEntity.ok(result);
     }
 

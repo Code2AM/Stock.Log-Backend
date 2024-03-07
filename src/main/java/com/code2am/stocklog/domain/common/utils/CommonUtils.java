@@ -1,5 +1,7 @@
 package com.code2am.stocklog.domain.common.utils;
 
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
+import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import com.code2am.stocklog.domain.users.models.dto.UserDTO;
@@ -117,5 +119,16 @@ public class CommonUtils {
             notes.add(convertToNote(notesDTO));
         });
         return notes;
+    }
+
+    // DTO to Entity
+    public Labels convertLabelsDtoToEntity(LabelsDTO labelsDTO) {
+        Labels labels = new Labels();
+        // DTO의 필드 값을 Entity에 설정
+        labels.setLabelsId(labelsDTO.getLabelsId());
+        labels.setLabelsTitle(labelsDTO.getLabelsTitle());
+        labels.setLabelsStatus(labelsDTO.getLabelsStatus());
+        // 필요한 경우 더 많은 필드 설정
+        return labels;
     }
 }
