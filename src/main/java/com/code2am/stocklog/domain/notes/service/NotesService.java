@@ -1,18 +1,16 @@
 package com.code2am.stocklog.domain.notes.service;
 
-import com.code2am.stocklog.domain.common.utils.CommonUtils;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.notes.dao.NotesDAO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
-import com.code2am.stocklog.domain.notes.models.vo.NotesVo;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import com.code2am.stocklog.domain.notes.repository.NotesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 @Service
 public class NotesService {
@@ -24,7 +22,7 @@ public class NotesService {
     private NotesDAO notesDAO;
 
     @Autowired
-    CommonUtils commonUtils;
+    AuthUtil authUtil;
 
     /* 사용자의 Notes를 전부 불러온다 */
     /**
@@ -32,7 +30,13 @@ public class NotesService {
      * */
     public List<NotesDTO> readNotesByUserId() {
 
-        return commonUtils.convertToNotesDTOs(notesRepository.findAllByUserId(commonUtils.getUserId()));
+        List<NotesDTO> notesDTOS = new ArrayList<>();
+
+        notesRepository.findAllByUserId(authUtil.getUserId()).forEach(note -> {
+            notesDTOS.add(note.convertToDTO());
+        });
+
+        return notesDTOS;
     }
 
     /**
@@ -41,9 +45,9 @@ public class NotesService {
     public Notes createNoteByUserId(NotesDTO notesDTO) {
 
         // DTO를 앤티티에 담아 JPA를 통해 등록
-        Notes newNote = commonUtils.convertToNote(notesDTO);
+        Notes newNote = notesDTO.convertToEntity();
 
-        newNote.setUserId(commonUtils.getUserId());
+        newNote.setUserId(authUtil.getUserId());
         newNote.setNoteDate(LocalDateTime.now());
         newNote.setNoteStatus("Y");
 
@@ -53,9 +57,6 @@ public class NotesService {
     }
 
 
-
-
-
     /**
      * 매매일지를 삭제하는 메소드
      * */
@@ -63,7 +64,7 @@ public class NotesService {
 
         // 실제로 삭제하는 것이 아니라 단지 상태값을 N으로 만드는 것
         // DTO를 앤티티에 담아 넘긴다.
-        Notes deleteNote = commonUtils.convertToNote(notesDTO);
+        Notes deleteNote = notesDTO.convertToEntity();
         deleteNote.setNoteStatus("N");
 
         notesRepository.save(deleteNote);
@@ -72,7 +73,7 @@ public class NotesService {
     /* 노트의 내용을 변경하는 메소드 */
     public void updateNoteByNoteId(NotesDTO notesDTO) {
 
-        notesRepository.save(commonUtils.convertToNote(notesDTO));
+        notesRepository.save(notesDTO.convertToEntity());
 
     }
 }

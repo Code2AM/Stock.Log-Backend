@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.users.models.entity;
 
 import com.code2am.stocklog.domain.auth.common.enums.UserRole;
+import com.code2am.stocklog.domain.users.models.dto.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -51,5 +52,19 @@ public class Users {
         this.social = social;
         this.createDate = createDate;
         this.userRole = UserRole.ROLE_USER;
+    }
+
+    /* DTO Converter */
+    public UserDTO convertToDTO(){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(this.userId);
+        userDTO.setEmail(this.email);
+        userDTO.setPassword(this.password);
+        userDTO.setStatus(this.status);
+        userDTO.setCapital(this.capital);
+        userDTO.setCreateDate(this.createDate);
+        userDTO.setUserRole(this.userRole);
+
+        return userDTO;
     }
 }

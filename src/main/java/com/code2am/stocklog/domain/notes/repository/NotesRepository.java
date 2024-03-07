@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface NotesRepository extends JpaRepository<Notes, Integer> {
 
-    @Query("SELECT n FROM Notes n WHERE n.userId = ?1")
+    @Query("SELECT n FROM Notes n WHERE n.userId = ?1 AND n.noteStatus = 'Y'")
     List<Notes> findAllByUserId(Integer userId);
 }

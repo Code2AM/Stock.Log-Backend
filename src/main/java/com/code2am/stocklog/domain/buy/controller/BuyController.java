@@ -1,6 +1,6 @@
 package com.code2am.stocklog.domain.buy.controller;
 
-import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.service.BuyService;
@@ -22,7 +22,7 @@ public class BuyController {
     private BuyService buyService;
 
     @Autowired
-    private SecurityUtil securityUtil;
+    private AuthUtil authUtil;
 
     @Operation(
             summary = "매수 등록",
