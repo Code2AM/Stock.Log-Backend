@@ -14,6 +14,8 @@ public class LabelsDTO {
     // 라벨 상태
     private String labelsStatus;
 
+    private Integer userId;
+
 //    // 노트 FK
 //    private Integer noteId;
 
