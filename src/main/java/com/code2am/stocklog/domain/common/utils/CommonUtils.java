@@ -121,14 +121,14 @@ public class CommonUtils {
         return notes;
     }
 
-    // DTO to Entity
+    // LabelsDTO to Labels
     public Labels convertLabelsDtoToEntity(LabelsDTO labelsDTO) {
         Labels labels = new Labels();
         // DTO의 필드 값을 Entity에 설정
         labels.setLabelsId(labelsDTO.getLabelsId());
         labels.setLabelsTitle(labelsDTO.getLabelsTitle());
         labels.setLabelsStatus(labelsDTO.getLabelsStatus());
-        // 필요한 경우 더 많은 필드 설정
+        labels.setUserId(labelsDTO.getUserId());
         return labels;
     }
 }

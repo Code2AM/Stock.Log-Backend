@@ -59,8 +59,8 @@ public class LabelsController {
     )
     @PutMapping
     public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
-        String result = labelsService.updateLabelByLabelsId(labels);
-
+        String result = labelsService.updateLabelByLabelsId(labels.getLabelsId());
+        System.out.println(result);
         return ResponseEntity.ok(result);
     }
 
@@ -70,8 +70,8 @@ public class LabelsController {
             tags = {"PUT"}
     )
     @PutMapping("/delete")
-    public ResponseEntity deleteLabelsByLabelsId(@RequestParam("labelsId")Integer labelsId){
-        String result = labelsService.deleteLabelsByLabelsId(labelsId);
+    public ResponseEntity deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        String result = labelsService.deleteLabelsByLabelsId(labels.getLabelsId());
         System.out.println(result);
         return ResponseEntity.ok(result);
     }

@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.labels.service;
 
+import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
 import com.code2am.stocklog.domain.common.utils.CommonUtils;
 import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
@@ -23,6 +24,9 @@ public class LabelsService {
     @Autowired
     CommonUtils commonUtils;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
     public List<LabelsDTO> readLabelsByUserId(Integer userId){
         return labelsDAO.readLabelsByUserId(userId);
     }
@@ -45,15 +49,23 @@ public class LabelsService {
     }
 
     // 라벨을 수정하는 메소드
-    @Transactional
-    public String updateLabelByLabelsId(LabelsDTO labelsDTO) {
+    public String updateLabelByLabelsId(Integer labelsId) {
+        LabelsDTO updateLabels = labelsDAO.readLabelsByLabelsId(labelsId);
+        if(updateLabels == null){
+            return "해당 라벨이 존재하지 않습니다.";
+        }
 
-        labelsRepository.save(commonUtils.convertLabelsDtoToEntity(labelsDTO));
-        return "성공";
+        Integer userId = securityUtil.getUserId();
+
+        System.out.println(labelsId);
+        Labels labels = commonUtils.convertLabelsDtoToEntity(updateLabels);
+        labels.setUserId(userId);
+
+        labelsRepository.save(labels);
+        return "수정";
     }
 
     // 라벨을 삭제(상태값 변경)하는 메소드
-    @Transactional
     public String deleteLabelsByLabelsId(Integer labelsId){
         // 삭제할 라벨 가져오기
         LabelsDTO deleteLabels = labelsDAO.readLabelsByLabelsId(labelsId);
@@ -63,6 +75,7 @@ public class LabelsService {
             return "해당 라벨이 존재하지 않습니다.";
         }
 
+        Integer userId = securityUtil.getUserId();
         // 엔티티 객체 생성
         Labels labels = new Labels();
 
@@ -70,6 +83,7 @@ public class LabelsService {
         labels.setLabelsId(deleteLabels.getLabelsId());
         labels.setLabelsTitle(deleteLabels.getLabelsTitle());
         labels.setLabelsStatus("N");
+        labels.setUserId(userId);
 
 
         System.out.println("entity: " + labels.getLabelsId());
