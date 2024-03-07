@@ -14,6 +14,6 @@ public class NotesDTO {
     private LocalDateTime noteDate;
     // 매매노트 상태
     private String noteStatus;
-    // 매매일지 FK
-    private Integer journalId;
+    // 유저아이디 FK
+    private Integer userId;
 }
