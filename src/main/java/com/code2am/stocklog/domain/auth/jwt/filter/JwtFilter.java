@@ -66,7 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         String method = request.getMethod();
 
-        System.out.println("여기 왔음");
+        System.out.println("토큰 통과");
 
         String accessToken = request.getHeader("Authorization");  // "Authorization" 헤더에서 AccessToken 추출
 

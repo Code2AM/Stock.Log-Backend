@@ -16,6 +16,7 @@
         <mapper resource="mapper/sell/sell.xml"/>
         <mapper resource="mapper/journals/journals.xml"/>
         <mapper resource="mapper/comments/comments.xml"/>
+        <mapper resource="mapper/labels/labels.xml"/>
     </mappers>
 
 </configuration>
