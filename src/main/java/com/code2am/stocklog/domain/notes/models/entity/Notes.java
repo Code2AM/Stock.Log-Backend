@@ -25,6 +25,6 @@ public class Notes {
     @Column(name = "NOTE_STATUS")
     private String noteStatus;
 
-    @Column(name = "JOURNAL_ID")
-    private Integer journalId;
+    @Column(name = "USER_ID")
+    private Integer userId;
 }

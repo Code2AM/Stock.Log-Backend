@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.notes.service;
 
+import com.code2am.stocklog.domain.common.utils.CommonUtils;
 import com.code2am.stocklog.domain.notes.dao.NotesDAO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import com.code2am.stocklog.domain.notes.models.vo.NotesVo;
@@ -22,45 +23,37 @@ public class NotesService {
     @Autowired
     private NotesDAO notesDAO;
 
+    @Autowired
+    CommonUtils commonUtils;
+
+    /* 사용자의 Notes를 전부 불러온다 */
+    /**
+     * 매매일지의 id 값을 받아 그에 해당하는 매매노트를 전부 조회하는 메소드
+     * */
+    public List<NotesDTO> readNotesByUserId() {
+
+        return commonUtils.convertToNotesDTOs(notesRepository.findAllByUserId(commonUtils.getUserId()));
+    }
+
     /**
      * 매매일지의 id 값을 받아 매매노트를 생성하는 메소드
      * */
-    public Notes createNoteByJournalId(NotesDTO notesDTO) {
-
-        // journalId를 통해 매매일지가 존재하는지 확인하는 검사 필요
+    public Notes createNoteByUserId(NotesDTO notesDTO) {
 
         // DTO를 앤티티에 담아 JPA를 통해 등록
-        Notes newNote = new Notes();
-        newNote.setNoteContents(notesDTO.getNoteContents());
+        Notes newNote = commonUtils.convertToNote(notesDTO);
+
+        newNote.setUserId(commonUtils.getUserId());
         newNote.setNoteDate(LocalDateTime.now());
         newNote.setNoteStatus("Y");
-        newNote.setJournalId(notesDTO.getJournalId());
+
         notesRepository.save(newNote);
 
         return newNote;
     }
 
 
-    /**
-     * 매매일지의 id 값을 받아 그에 해당하는 매매노트를 전부 조회하는 메소드
-     * */
-    public List<NotesVo> readNotesByJournalId(Integer journalId) {
 
-        // 넘어온 매매일지의 id가 정확한 값인지 확인
-        if(journalId <= 0){
-            System.out.println("존재할 수 없는 매매일지");
-            return null;
-        }
-
-        // 매매노트를 리스트 형식으로 받아옴, 조회의 경우 mybatis를 이용한다.
-        List<NotesVo> result = notesDAO.readNotesByJournalId(journalId);
-
-        if(Objects.isNull(result)){
-            return null;
-        }
-
-        return result;
-    }
 
 
     /**
@@ -70,12 +63,16 @@ public class NotesService {
 
         // 실제로 삭제하는 것이 아니라 단지 상태값을 N으로 만드는 것
         // DTO를 앤티티에 담아 넘긴다.
-        Notes deleteNote = new Notes();
-        deleteNote.setNoteId(notesDTO.getNoteId());
-        deleteNote.setNoteContents(notesDTO.getNoteContents());
-        deleteNote.setNoteDate(notesDTO.getNoteDate());
+        Notes deleteNote = commonUtils.convertToNote(notesDTO);
         deleteNote.setNoteStatus("N");
-        deleteNote.setJournalId(notesDTO.getJournalId());
+
         notesRepository.save(deleteNote);
+    }
+
+    /* 노트의 내용을 변경하는 메소드 */
+    public void updateNoteByNoteId(NotesDTO notesDTO) {
+
+        notesRepository.save(commonUtils.convertToNote(notesDTO));
+
     }
 }

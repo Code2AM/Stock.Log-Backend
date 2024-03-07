@@ -24,6 +24,29 @@ public class NotesController {
     @Autowired
     public NotesService notesService;
 
+
+    /* 사용자의 모든 Notes를 불러오는 메소드 */
+    /**
+     * 매매일지에 해당하는 매매노트를 조회하는 메소드
+     * @return 매매일지에 해당되는 모든 매매노트
+     * */
+    @Operation(
+            summary = "매매노트 조회",
+            description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
+            tags = {"GET"}
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
+            @ApiResponse(responseCode = "404", description = "해당하는 매매일지가 존재하지 않음."),
+            @ApiResponse(responseCode = "500", description = "서버가 원할히 동작하지 않거나 DB의 값이 존재하지 않음.")
+    })
+    @GetMapping
+    public List<NotesDTO> readNotesByUserId(){
+        return notesService.readNotesByUserId();
+    }
+
+
+    /* 신규 노트를 만드는 메소드*/
     /**
      * 매매노트를 입력받는 메소드
      * @param notesDTO
@@ -39,7 +62,7 @@ public class NotesController {
             @ApiResponse(responseCode = "500", description = "요청받은 서버가 정상적으로 동작하지 않음.")
     })
     @Parameter(name = "notesDTO", description = "매매일지에 신규로 등록할 매매노트")
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity createNoteByJournalId(@RequestBody NotesDTO notesDTO){
         // 매매일지에서 이용자의 요청을 받아 해당 일지에 노트를 작성한다. 매매일지의 키 값을 필수로 요구한다.
 
@@ -49,7 +72,7 @@ public class NotesController {
         }
 
         // 실제 입력받은 데이터를 입력 로직으로
-        Notes note = notesService.createNoteByJournalId(notesDTO);
+        Notes note = notesService.createNoteByUserId(notesDTO);
 
         // 요청이 원활히 도착했는지 확인
         if(Objects.isNull(note)){
@@ -60,33 +83,9 @@ public class NotesController {
         return ResponseEntity.ok("등록에 성공하였습니다.");
     }
 
-    /**
-     * 매매일지에 해당하는 매매노트를 조회하는 메소드
-     * @param notesDTO
-     * @return 매매일지에 해당되는 모든 매매노트
-     * */
-    @Operation(
-            summary = "매매노트 조회",
-            description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
-            tags = {"GET"}
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
-            @ApiResponse(responseCode = "404", description = "해당하는 매매일지가 존재하지 않음."),
-            @ApiResponse(responseCode = "500", description = "서버가 원할히 동작하지 않거나 DB의 값이 존재하지 않음.")
-    })
-    @GetMapping
-    public List<NotesVo> readNotesByJournalId(@RequestBody NotesDTO notesDTO){
-        // 조회에 필요한 매매일지 데이터가 있는지 확인
-        if(Objects.isNull(notesDTO)){
-            return null;
-        }
-        // 매매일지의 id 값만 추출
-        Integer journalId = notesDTO.getJournalId();
 
-        return notesService.readNotesByJournalId(journalId);
-    }
 
+    /* Note를 삭제하는 메소드 */
     /**
      * 해당 매매노트를 삭제하는 메소드
      * @param notesDTO
@@ -98,9 +97,24 @@ public class NotesController {
             tags = {"DELETE"}
     )
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
-    @DeleteMapping
+    @PostMapping("/delete")
     public void deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.deleteNoteByNoteId(notesDTO);
     }
+
+
+    /* Note를 수정하는 메소드 */
+    @Operation(
+            summary = "매매노트 삭제",
+            description = "이미 존재하고 있는 매매노트를 삭제합니다.",
+            tags = {"DELETE"}
+    )
+    @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
+    @PostMapping("/update")
+    public void updateNoteByNoteId(@RequestBody NotesDTO notesDTO){
+        // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
+        notesService.updateNoteByNoteId(notesDTO);
+    }
+
 }
