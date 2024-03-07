@@ -1,9 +1,9 @@
 package com.code2am.stocklog.domain.auth.email.controller;
 
+import com.code2am.stocklog.domain.auth.email.model.EmailDTO;
 import com.code2am.stocklog.domain.auth.email.model.dto.EmailCheckDTO;
 import com.code2am.stocklog.domain.auth.email.model.dto.EmailRequestDTO;
 import com.code2am.stocklog.domain.auth.email.service.EmailService;
-import com.code2am.stocklog.domain.auth.email.model.EmailDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,7 +36,9 @@ public class EmailController {
     })
     @Parameter(name = "verification code", description = "인증번호")
     @PostMapping("/sendCode")
-    public ResponseEntity<?> mailSend(@RequestParam("userEmail") String userEmail) {
+    public ResponseEntity<?> mailSend(@RequestBody EmailDTO emailDTO) {
+
+        String userEmail = emailDTO.getEmail();
 
         EmailRequestDTO emailRequestDTO = new EmailRequestDTO();
         emailRequestDTO.setEmail(userEmail);
@@ -56,7 +58,10 @@ public class EmailController {
             @ApiResponse(responseCode = "500", description = "요청받은 서버가 정상적으로 동작하지 않음.")
     })
     @PostMapping("/mailVerify")
-    public ResponseEntity<Integer> authCheck(@RequestParam("userEmail")String userEmail, @RequestParam("authNum") Integer authNum){
+    public ResponseEntity<Integer> authCheck(@RequestBody EmailDTO emailDTO){
+
+        String userEmail = emailDTO.getEmail();
+        Integer authNum = Integer.parseInt(emailDTO.getAuthCode());
 
         // 받아온 userEmail 과 authNum 을 emailCheckDTO에 저장
         EmailCheckDTO emailCheckDTO = new EmailCheckDTO();
