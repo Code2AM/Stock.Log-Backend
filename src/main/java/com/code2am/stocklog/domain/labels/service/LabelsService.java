@@ -41,28 +41,49 @@ public class LabelsService {
         return "성공";
     }
 
+//    @Transactional
+//    public String updateLabelByLabelsId(LabelsDTO labelsDTO) {
+//
+//        // PK를 사용하여 해당 레코드를 검색
+//        LabelsDTO updateLabel = labelsDAO.readLabelsByLabelsId(labelsDTO.getLabelsId());
+//
+//        if(updateLabel == null){
+//            return "해당 라벨이 존재하지 않습니다.";
+//        }
+//
+//        // 빈 Entity 객체 생성
+//        Labels newLabel = new Labels();
+//
+//        newLabel.
+//
+//
+//        // 수정된 엔티티를 저장하여 업데이트 수행
+//        labelsRepository.save(newLabel);
+//
+//        return "성공";
+//    }
+
     @Transactional
-    public String updateLabelByLabelsId(LabelsDTO labelsDTO) {
+    public String deleteLabelsByLabelsId(Integer labelsId){
+        // 삭제할 라벨 가져오기
+        LabelsDTO deleteLabels = labelsDAO.readLabelsByLabelsId(labelsId);
 
-        // PK를 사용하여 해당 레코드를 검색
-        LabelsDTO updateLabel = labelsDAO.readLabelsByLabelsId(labelsDTO.getLabelsId());
-
-        if(updateLabel == null){
+        // 유효성 검사
+        if(deleteLabels == null){
             return "해당 라벨이 존재하지 않습니다.";
         }
 
-        // 업데이트
-        updateLabel.setLabelsTitle(labelsDTO.getLabelsTitle());
+        // 엔티티 객체 생성
+        Labels labels = new Labels();
 
-        // 빈 Entity 객체 생성
-        Labels newLabel = new Labels();
+        // 엔티티의 상태 변경
+        labels.setLabelsId(deleteLabels.getLabelsId());
+        labels.setLabelsTitle(deleteLabels.getLabelsTitle());
+        labels.setLabelsStatus("N");
 
-        // 수정
-        newLabel.setLabelsTitle(updateLabel.getLabelsTitle());
+        // 저장하여 업데이트 수행
+        labelsRepository.save(labels);
 
-        // 수정된 엔티티를 저장하여 업데이트 수행
-        labelsRepository.save(newLabel);
-
-        return "성공";
+        return "라벨이 삭제되었습니다.";
     }
 }

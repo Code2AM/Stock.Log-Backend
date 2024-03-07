@@ -53,18 +53,28 @@ public class LabelsController {
         return ResponseEntity.ok(result);
     }
 
+//    @Operation(
+//            summary = "라벨 수정",
+//            description = "라벨을 수정합니다",
+//            tags = {"PUT"}
+//    )
+//    @PutMapping
+//    public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
+//
+//        String result = labelsService.updateLabelByLabelsId(labels);
+//        return ResponseEntity.ok(result);
+//    }
+
     @Operation(
-            summary = "라벨 수정",
-            description = "라벨을 수정합니다",
+            summary = "라벨 삭제",
+            description = "라벨을 삭제합니다",
             tags = {"PUT"}
     )
-    @PutMapping
-    public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
+    @PutMapping("/delete")
+    public ResponseEntity deleteLabelsByLabelsId(@RequestParam("labelsId")Integer labelsId){
+        String result = labelsService.deleteLabelsByLabelsId(labelsId);
 
-        String result = labelsService.updateLabelByLabelsId(labels);
         return ResponseEntity.ok(result);
     }
-
-
 
 }
