@@ -30,7 +30,6 @@ public class LabelsService {
             return "제목을 입력해주세요";
         }
 
-
         Labels newLabel = new Labels();
 
         newLabel.setLabelsTitle(labelsDTO.getLabelsTitle());
@@ -47,15 +46,23 @@ public class LabelsService {
 
         // PK를 사용하여 해당 레코드를 검색
         LabelsDTO updateLabel = labelsDAO.readLabelsByLabelsId(labelsDTO.getLabelsId());
-        // 업데이트할 필드 설정
+
+        if(updateLabel == null){
+            return "해당 라벨이 존재하지 않습니다.";
+        }
+
+        // 업데이트
         updateLabel.setLabelsTitle(labelsDTO.getLabelsTitle());
 
+        // 빈 Entity 객체 생성
         Labels newLabel = new Labels();
 
+        // 수정
         newLabel.setLabelsTitle(updateLabel.getLabelsTitle());
+
         // 수정된 엔티티를 저장하여 업데이트 수행
         labelsRepository.save(newLabel);
-        return "성공";
 
+        return "성공";
     }
 }

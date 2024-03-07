@@ -12,7 +12,7 @@
 
     <select id="readLabelsByUserId" resultMap="Labels">
         SELECT
-        *
+            *
         FROM
             TBL_LABELS
         WHERE
@@ -31,4 +31,5 @@
         AND
             LABELS_STATUS = 'Y'
     </select>
+
 </mapper>

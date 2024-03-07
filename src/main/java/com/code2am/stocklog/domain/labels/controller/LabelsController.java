@@ -24,6 +24,21 @@ public class LabelsController {
     private SecurityUtil securityUtil;
 
     @Operation(
+            summary = "라벨 조회",
+            description = "사용자의 라벨을 조회합니다",
+            tags = {"GET"}
+    )
+    @GetMapping
+    public ResponseEntity readLabelsByUserId(){
+        Integer userId = securityUtil.getUserId();
+        System.out.println(userId);
+
+        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId(userId);
+        System.out.println(labelsDTOS);
+        return ResponseEntity.ok(labelsDTOS);
+    }
+
+    @Operation(
             summary = "라벨 등록",
             description = "라벨을 등록합니다",
             tags = {"POST"}
@@ -37,30 +52,19 @@ public class LabelsController {
         String result = labelsService.createLabelsByUserId(labels, userId);
         return ResponseEntity.ok(result);
     }
-    @Operation(
-            summary = "라벨 조회",
-            description = "라벨을 조회합니다",
-            tags = {"GET"}
-    )
-    @GetMapping
-    public ResponseEntity readLabelsByUserId(){
-        Integer userId = securityUtil.getUserId();
-        System.out.println(userId);
-
-        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId(userId);
-        return ResponseEntity.ok(labelsDTOS);
-    }
 
     @Operation(
             summary = "라벨 수정",
             description = "라벨을 수정합니다",
             tags = {"PUT"}
     )
+    @PutMapping
     public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
 
         String result = labelsService.updateLabelByLabelsId(labels);
         return ResponseEntity.ok(result);
     }
+
 
 
 }
