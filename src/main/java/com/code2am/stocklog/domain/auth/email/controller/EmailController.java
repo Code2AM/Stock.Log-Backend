@@ -58,7 +58,10 @@ public class EmailController {
             @ApiResponse(responseCode = "500", description = "요청받은 서버가 정상적으로 동작하지 않음.")
     })
     @PostMapping("/mailVerify")
-    public ResponseEntity<Integer> authCheck(@RequestParam("userEmail")String userEmail, @RequestParam("authNum") Integer authNum){
+    public ResponseEntity<Integer> authCheck(@RequestBody EmailDTO emailDTO){
+
+        String userEmail = emailDTO.getEmail();
+        Integer authNum = Integer.parseInt(emailDTO.getAuthCode());
 
         // 받아온 userEmail 과 authNum 을 emailCheckDTO에 저장
         EmailCheckDTO emailCheckDTO = new EmailCheckDTO();
