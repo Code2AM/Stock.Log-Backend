@@ -2,8 +2,11 @@ package com.code2am.stocklog.domain.buy.controller;
 
 import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
+import com.code2am.stocklog.domain.buy.models.dto.InputDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.service.BuyService;
+import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
+import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,19 +47,20 @@ public class BuyController {
     @Operation(
             summary = "매수 조회",
             description = "유저 정보를 통해 매수기록을 조회합니다.",
-            tags = {"GET"}
+            tags = {"POST"}
     )
-    @GetMapping
-    public List<BuyDTO> readBuyByJournalId(@RequestBody Buy buy){
+    @PostMapping("/list")
+    public List<BuyDTO> readBuyByJournalId(@RequestBody InputDTO inputDTO){
+        System.out.println(inputDTO);
 
-        Integer journalId = buy.getJournals().getJournalId();
+        Integer journalId = inputDTO.getJournalId();
 
         List<BuyDTO> result = buyService.readBuyByJournalId(journalId);
 
         if(result.isEmpty()){
             return null;
         }
-
+        System.out.println(result);
         return result;
     }
 
