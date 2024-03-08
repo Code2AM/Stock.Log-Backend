@@ -35,7 +35,7 @@ public class AuthService {
         }
 
         // 유저를 등록 시킨다
-        usersRepository.save(userDTO.toUsers(passwordEncoder));
+        usersRepository.save(userDTO.convertToEntity().encodePassword(passwordEncoder));
 
     }
 
