@@ -5,12 +5,15 @@ import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
 import com.code2am.stocklog.domain.journals.infra.BuyRepo;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
+import com.code2am.stocklog.domain.journals.models.vo.JournalsVO;
 import com.code2am.stocklog.domain.journals.repository.JournalsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class JournalsService {
@@ -77,5 +80,34 @@ public class JournalsService {
         buyRepo.save(newBuy);
 
         return "등록 성공";
+    }
+
+    public String deleteJournalsByJournalsId(Integer journalId) {
+
+        System.out.println("서비스까지는 넘어왔니?" + journalId);
+
+        JournalsVO data = journalsDAO.readJournalsByJournalId(journalId);
+
+        if(Objects.isNull(data)){
+            System.out.println("조회된 결과값이 없음");
+            return "조회된 결과가 없습니다.";
+        }
+
+        Journals delete = new Journals();
+        delete.setJournalId(data.getJournalId());
+        delete.setProfit(data.getProfit());
+        delete.setJournalDate(data.getJournalDate());
+        delete.setTotalQuantity(data.getTotalQuantity());
+        delete.setFee(data.getFee());
+        delete.setLastedTradeDate(data.getLastedTradeDate());
+        delete.setUserId(data.getUserId());
+        delete.setAvgSellPrice(data.getAvgSellPrice());
+        delete.setAvgBuyPrice(data.getAvgBuyPrice());
+        delete.setStrategyId(data.getStrategyId());
+        delete.setStatus("N");
+
+        journalsRepository.save(delete);
+
+        return "삭제 성공";
     }
 }

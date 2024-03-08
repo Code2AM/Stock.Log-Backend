@@ -41,8 +41,8 @@ public class NotesController {
             @ApiResponse(responseCode = "500", description = "서버가 원할히 동작하지 않거나 DB의 값이 존재하지 않음.")
     })
     @PostMapping ("/allNotes")
-    public List<NotesDTO> readNotesByUserId(){
-        return notesService.readNotesByUserId();
+    public ResponseEntity<List<NotesDTO>> readNotesByUserId(){
+        return ResponseEntity.ok(notesService.readNotesByUserId());
     }
 
 
@@ -63,7 +63,7 @@ public class NotesController {
     })
     @Parameter(name = "notesDTO", description = "매매일지에 신규로 등록할 매매노트")
     @PostMapping("/create")
-    public ResponseEntity createNoteByJournalId(@RequestBody NotesDTO notesDTO){
+    public ResponseEntity<String> createNoteByJournalId(@RequestBody NotesDTO notesDTO){
         // 매매일지에서 이용자의 요청을 받아 해당 일지에 노트를 작성한다. 매매일지의 키 값을 필수로 요구한다.
 
         // 요청값이 없는지 확인
@@ -98,9 +98,10 @@ public class NotesController {
     )
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
     @PostMapping("/delete")
-    public void deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
+    public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.deleteNoteByNoteId(notesDTO);
+        return ResponseEntity.ok("삭제성공");
     }
 
 
@@ -108,13 +109,14 @@ public class NotesController {
     @Operation(
             summary = "매매노트 삭제",
             description = "이미 존재하고 있는 매매노트를 삭제합니다.",
-            tags = {"DELETE"}
+            tags = {"update"}
     )
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
     @PostMapping("/update")
-    public void updateNoteByNoteId(@RequestBody NotesDTO notesDTO){
+    public ResponseEntity<String> updateNoteByNoteId(@RequestBody NotesDTO notesDTO){
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.updateNoteByNoteId(notesDTO);
+        return ResponseEntity.ok("수정 성공");
     }
 
 }

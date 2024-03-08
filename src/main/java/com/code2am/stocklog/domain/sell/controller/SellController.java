@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.sell.controller;
 
+import com.code2am.stocklog.domain.sell.models.dto.InputDTO;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.sell.service.SellService;
@@ -40,12 +41,12 @@ public class SellController {
     @Operation(
             summary = "매도 조회",
             description = "매매일지 정보를 통해 매도 기록을 조회합니다.",
-            tags = {"GET"}
+            tags = {"POST"}
     )
-    @GetMapping
-    public List<SellDTO> readSellByJournalId(@RequestBody Sell sell){
+    @PostMapping("/list")
+    public List<SellDTO> readSellByJournalId(@RequestBody InputDTO inputDTO){
 
-        Integer journalId = sell.getJournals().getJournalId();
+        Integer journalId = inputDTO.getJournalId();
 
         List<SellDTO> result = sellService.readSellByJournalId(journalId);
 
@@ -56,6 +57,11 @@ public class SellController {
         return result;
     }
 
+    @Operation(
+            summary = "매매삭제",
+            description = "매매기록을 삭제합니다.",
+            tags = {"DELETE"}
+    )
     @DeleteMapping
     public ResponseEntity deleteSellBySellId(@RequestBody SellDTO sellDTO){
 
