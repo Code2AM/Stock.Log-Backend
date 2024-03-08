@@ -6,6 +6,7 @@ import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.labels.repository.LabelsRepository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +63,7 @@ public class LabelsService {
     }
 
     // 라벨을 삭제(상태값 변경)하는 메소드
+    @Transactional
     public String deleteLabelsByLabelsId(Integer labelsId){
         // 삭제할 라벨 가져오기
         LabelsDTO deleteLabels = labelsDAO.readLabelsByLabelsId(labelsId);
@@ -72,6 +74,7 @@ public class LabelsService {
         }
 
         Integer userId = authUtil.getUserId();
+
         // 엔티티 객체 생성
         Labels labels = new Labels();
 
@@ -80,7 +83,6 @@ public class LabelsService {
         labels.setLabelsTitle(deleteLabels.getLabelsTitle());
         labels.setLabelsStatus("N");
         labels.setUserId(userId);
-
 
         System.out.println("entity: " + labels.getLabelsId());
 

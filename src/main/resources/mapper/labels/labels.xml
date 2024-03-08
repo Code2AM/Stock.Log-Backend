@@ -19,6 +19,7 @@
             USER_ID = #{userId}
         AND
             LABELS_STATUS = 'Y'
+        ORDER BY LABELS_ID DESC
     </select>
 
     <select id="readLabelsByLabelsId" resultMap="Labels">

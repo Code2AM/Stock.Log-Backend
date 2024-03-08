@@ -42,7 +42,7 @@ public class LabelsController {
             description = "라벨을 등록합니다",
             tags = {"POST"}
     )
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity createLabelsByUserId(@RequestBody LabelsDTO labels){
 
         Integer userId = authUtil.getUserId();
@@ -55,9 +55,9 @@ public class LabelsController {
     @Operation(
             summary = "라벨 수정",
             description = "라벨을 수정합니다",
-            tags = {"PUT"}
+            tags = {"POST"}
     )
-    @PutMapping
+    @PostMapping("/update")
     public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
         String result = labelsService.updateLabelByLabelsId(labels.getLabelsId());
         System.out.println(result);
@@ -67,12 +67,13 @@ public class LabelsController {
     @Operation(
             summary = "라벨 삭제",
             description = "라벨을 삭제합니다",
-            tags = {"PUT"}
+            tags = {"POST"}
     )
-    @PutMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
         String result = labelsService.deleteLabelsByLabelsId(labels.getLabelsId());
         System.out.println(result);
+        System.out.println(labels.getLabelsId());
         return ResponseEntity.ok(result);
     }
 
