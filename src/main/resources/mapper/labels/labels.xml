@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.code2am.stocklog.domain.labels.dao.LabelsDAO">
 
-    <resultMap id="Labels" type="com.code2am.stocklog.domain.labels.models.vo.LabelsVO">
+    <resultMap id="Labels" type="com.code2am.stocklog.domain.labels.models.dto.LabelsDTO">
         <id property="labelsId" column="LABELS_ID"/>
         <result property="labelsTitle" column="LABELS_TITLE"/>
         <result property="labelsStatus" column="LABELS_STATUS"/>
