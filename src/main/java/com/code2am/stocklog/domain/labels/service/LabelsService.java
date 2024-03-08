@@ -54,7 +54,7 @@ public class LabelsService {
         Integer userId = authUtil.getUserId();
 
         System.out.println(labelsId);
-        Labels labels = commonUtils.convertLabelsDtoToEntity(updateLabels);
+        Labels labels = updateLabels.convertToEntity();
         labels.setUserId(userId);
 
         labelsRepository.save(labels);
