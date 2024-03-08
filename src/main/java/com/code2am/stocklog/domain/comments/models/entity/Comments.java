@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.comments.models.entity;
 
+import com.code2am.stocklog.domain.comments.models.dto.CommentsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,4 +29,15 @@ public class Comments {
     @JoinColumn(name = "JOURNAL_ID")
     @ManyToOne
     private Journals journals;
+
+    /* DTO Converter */
+    public CommentsDTO convertToDTO() {
+        CommentsDTO comment = new CommentsDTO();
+        comment.setCommentId(this.commentId);
+        comment.setComment(this.comment);
+        comment.setCommentDate(this.commentDate);
+        comment.setStatus(this.status);
+
+        return comment;
+    }
 }

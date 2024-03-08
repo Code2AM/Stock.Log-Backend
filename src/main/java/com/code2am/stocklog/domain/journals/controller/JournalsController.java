@@ -1,6 +1,6 @@
 package com.code2am.stocklog.domain.journals.controller;
 
-import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.service.JournalsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ public class JournalsController {
     private JournalsService journalsService;
 
     @Autowired
-    private SecurityUtil securityUtil;
+    private AuthUtil authUtil;
 
     @Operation(
             summary = "매매일지 등록",
@@ -35,7 +35,7 @@ public class JournalsController {
             ResponseEntity.badRequest().body("잘못된 입력값입니다.");
         }
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
         System.out.println(userId);
 
         String result = journalsService.createJournalsByUserId(journals, userId);
@@ -51,7 +51,7 @@ public class JournalsController {
     @GetMapping
     public ResponseEntity readJournalsByUserId(){
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
         System.out.println(userId);
 
         List<JournalsDTO> result = journalsService.readJournalsByUserId(userId);

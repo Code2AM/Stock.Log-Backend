@@ -95,5 +95,19 @@ public class UserDTO {
         return userDTO;
 
     }
+
+    /* Entity Converter */
+    public Users convertToEntity(){
+        Users user = new Users();
+        user.setUserId(this.userId);
+        user.setEmail(this.email);
+        user.setPassword(this.password);
+        user.setStatus(this.status);
+        user.setCapital(this.capital);
+        user.setCreateDate(this.createDate);
+        user.setUserRole(this.userRole);
+
+        return user;
+    }
 }
 

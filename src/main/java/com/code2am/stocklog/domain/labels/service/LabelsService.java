@@ -1,12 +1,11 @@
 package com.code2am.stocklog.domain.labels.service;
 
-import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
-import com.code2am.stocklog.domain.common.utils.CommonUtils;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.labels.repository.LabelsRepository;
-import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +21,7 @@ public class LabelsService {
     private LabelsDAO labelsDAO;
 
     @Autowired
-    CommonUtils commonUtils;
-
-    @Autowired
-    private SecurityUtil securityUtil;
+    private AuthUtil authUtil;
 
     public List<LabelsDTO> readLabelsByUserId(Integer userId){
         return labelsDAO.readLabelsByUserId(userId);
@@ -55,7 +51,7 @@ public class LabelsService {
             return "해당 라벨이 존재하지 않습니다.";
         }
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
 
         System.out.println(labelsId);
         Labels labels = commonUtils.convertLabelsDtoToEntity(updateLabels);
@@ -75,7 +71,7 @@ public class LabelsService {
             return "해당 라벨이 존재하지 않습니다.";
         }
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
         // 엔티티 객체 생성
         Labels labels = new Labels();
 

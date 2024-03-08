@@ -1,6 +1,6 @@
 package com.code2am.stocklog.domain.labels.controller;
 
-import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.service.LabelsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ public class LabelsController {
     LabelsService labelsService;
 
     @Autowired
-    private SecurityUtil securityUtil;
+    private AuthUtil authUtil;
 
     @Operation(
             summary = "라벨 조회",
@@ -29,7 +29,7 @@ public class LabelsController {
     )
     @GetMapping
     public ResponseEntity readLabelsByUserId(){
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
         System.out.println(userId);
 
         List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId(userId);
@@ -45,7 +45,7 @@ public class LabelsController {
     @PostMapping
     public ResponseEntity createLabelsByUserId(@RequestBody LabelsDTO labels){
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
         System.out.println(userId);
 
         String result = labelsService.createLabelsByUserId(labels, userId);

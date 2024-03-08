@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.labels.models.entity;
 
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -26,4 +27,15 @@ public class Labels {
 //    @OneToOne
 //    @JoinColumn(name = "NOTE_ID")
 //    private Notes notes;
+
+
+    /* DTO Converter */
+    public LabelsDTO convertToDTO() {
+        LabelsDTO label = new LabelsDTO();
+        label.setLabelsId(this.labelsId);
+        label.setLabelsTitle(this.labelsTitle);
+        label.setUserId(this.userId);
+
+        return label;
+    }
 }

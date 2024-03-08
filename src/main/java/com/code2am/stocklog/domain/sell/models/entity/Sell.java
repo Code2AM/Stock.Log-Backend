@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.sell.models.entity;
 
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
+import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,5 +32,17 @@ public class Sell {
     @ManyToOne
     @JoinColumn(name = "JOURNAL_ID")
     private Journals journals;
+
+    /* DTO Converter */
+    public SellDTO convertToDTO() {
+        SellDTO sellDTO = new SellDTO();
+        sellDTO.setSellId(this.sellId);
+        sellDTO.setSellDate(this.sellDate);
+        sellDTO.setSellPrice(this.sellPrice);
+        sellDTO.setSellQuantity(this.sellQuantity);
+        sellDTO.setStatus(this.status);
+
+        return sellDTO;
+    }
 
 }

@@ -1,17 +1,14 @@
 package com.code2am.stocklog.domain.strategies.service;
 
-import com.code2am.stocklog.domain.auth.common.util.SecurityUtil;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.strategies.dao.StrategiesDAO;
 import com.code2am.stocklog.domain.strategies.models.dto.StrategiesDTO;
 import com.code2am.stocklog.domain.strategies.models.entity.Strategies;
 import com.code2am.stocklog.domain.strategies.models.entity.UsersAndStrategies;
-import com.code2am.stocklog.domain.strategies.models.entity.UsersAndStrategiesId;
 import com.code2am.stocklog.domain.strategies.repository.StrategiesRepository;
 import com.code2am.stocklog.domain.strategies.repository.UsersAndStrategiesRepository;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +27,7 @@ public class StrategiesService {
     private UsersAndStrategiesRepository usersAndStrategiesRepository;
 
     @Autowired
-    private SecurityUtil securityUtil;
+    private AuthUtil authUtil;
 
     /**
      * 매매전략을 생성하는 메소드
@@ -41,7 +38,7 @@ public class StrategiesService {
         UsersAndStrategies usersAndStrategies = new UsersAndStrategies(); // 복합키, 중간 테이블을 이용해 직접적인 관계를 만들지 않도록 한다.
         Users users = new Users();
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
 
         // 동일한 이름의 매매전략이 있을 경우 행하지 않는다.
         StrategiesDTO find = readStrategyByStrategyName(strategy.getStrategyName());
@@ -124,7 +121,7 @@ public class StrategiesService {
      * */
     public List<StrategiesDTO> readStrategiesByUserId() {
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
 
         return strategiesDAO.readStrategiesByUserId(userId);
     }
@@ -134,7 +131,7 @@ public class StrategiesService {
      * */
     public void deleteStrategyByStrategyIdAndUserId(StrategiesDTO strategy) {
 
-        Integer userId = securityUtil.getUserId();
+        Integer userId = authUtil.getUserId();
 
         Integer strategyId = strategy.getStrategyId();
 
