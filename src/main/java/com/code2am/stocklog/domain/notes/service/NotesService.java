@@ -73,6 +73,7 @@ public class NotesService {
     /* 노트의 내용을 변경하는 메소드 */
     public void updateNoteByNoteId(NotesDTO notesDTO) {
 
+        notesDTO.setNoteDate(LocalDateTime.now());
         notesRepository.save(notesDTO.convertToEntity());
 
     }

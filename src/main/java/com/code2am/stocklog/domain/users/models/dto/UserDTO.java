@@ -2,6 +2,7 @@ package com.code2am.stocklog.domain.users.models.dto;
 
 import com.code2am.stocklog.domain.auth.common.enums.UserRole;
 import com.code2am.stocklog.domain.users.models.entity.Users;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
@@ -38,35 +39,33 @@ public class UserDTO {
     public UserDTO(Integer userId, String email, String password, String status, Integer capital, String social, LocalDateTime createDate, UserRole userRole) {
     }
 
-
-    public static UserDTO of(Users user){
-
-        return new UserDTO(
-                user.getUserId(),
-                user.getEmail(),
-                user.getPassword(),
-                user.getStatus(),
-                user.getCapital(),
-                user.getSocial(),
-                user.getCreateDate(),
-                user.getUserRole());
-
+    /* Builder */
+    @Builder
+    public UserDTO(String email, String password, String status, Integer capital, String social, LocalDateTime createDate, UserRole userRole) {
+        this.email = email;
+        this.password = password;
+        this.status = status;
+        this.capital = capital;
+        this.social = social;
+        this.createDate = createDate;
+        this.userRole = UserRole.ROLE_USER;
     }
 
-
-    public Users toUsers(PasswordEncoder passwordEncoder){
-        Users user = Users.builder()
-                        .email(email)
-                        .password(passwordEncoder.encode(password))
-                        .status(status)
-                        .capital(capital)
-                        .social(social)
-                        .createDate(createDate)
-                        .userRole(userRole)
-                        .build();
-        return user;
+    /* Encode Password */
+    public UserDTO encodePassword(PasswordEncoder passwordEncoder){
+        UserDTO userDTO = UserDTO.builder()
+                .email(this.email)
+                .password(passwordEncoder.encode(this.password))
+                .status(this.status)
+                .capital(this.capital)
+                .social(this.social)
+                .createDate(this.createDate)
+                .userRole(this.userRole)
+                .build();
+        return userDTO;
     }
 
+    /* UserDTO를 인증토큰으로 반환하는 메소드 */
     public UsernamePasswordAuthenticationToken toAuthentication(){
         List<GrantedAuthority> authority = Collections.singletonList(new SimpleGrantedAuthority(UserRole.ROLE_USER.toString()));
 
@@ -75,26 +74,22 @@ public class UserDTO {
                 this.password,
                 authority);
 
-
-        System.out.println(usernamePasswordAuthenticationToken);
-
-
         return usernamePasswordAuthenticationToken;
     }
 
 
     /* KAKAO USERS */
-    public static UserDTO newKakaoUser(String email){
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(email);
-        userDTO.setPassword("123");
-        userDTO.setUserRole(UserRole.ROLE_USER);
-        userDTO.setSocial("KAKAO");
-
-        return userDTO;
-
-    }
+//    public static UserDTO newKakaoUser(String email){
+//
+//        UserDTO userDTO = new UserDTO();
+//        userDTO.setEmail(email);
+//        userDTO.setPassword("123");
+//        userDTO.setUserRole(UserRole.ROLE_USER);
+//        userDTO.setSocial("KAKAO");
+//
+//        return userDTO;
+//
+//    }
 
     /* Entity Converter */
     public Users convertToEntity(){
@@ -103,11 +98,15 @@ public class UserDTO {
         user.setEmail(this.email);
         user.setPassword(this.password);
         user.setStatus(this.status);
+        user.setSocial(this.social);
         user.setCapital(this.capital);
         user.setCreateDate(this.createDate);
         user.setUserRole(this.userRole);
 
         return user;
     }
+
+
+
 }
 
