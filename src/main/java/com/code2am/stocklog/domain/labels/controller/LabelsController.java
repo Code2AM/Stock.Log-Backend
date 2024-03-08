@@ -59,11 +59,21 @@ public class LabelsController {
     )
     @PutMapping
     public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
-
-        String result = labelsService.updateLabelByLabelsId(labels);
+        String result = labelsService.updateLabelByLabelsId(labels.getLabelsId());
+        System.out.println(result);
         return ResponseEntity.ok(result);
     }
 
-
+    @Operation(
+            summary = "라벨 삭제",
+            description = "라벨을 삭제합니다",
+            tags = {"PUT"}
+    )
+    @PutMapping("/delete")
+    public ResponseEntity deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        String result = labelsService.deleteLabelsByLabelsId(labels.getLabelsId());
+        System.out.println(result);
+        return ResponseEntity.ok(result);
+    }
 
 }

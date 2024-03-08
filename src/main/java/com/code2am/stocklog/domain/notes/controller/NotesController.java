@@ -33,14 +33,14 @@ public class NotesController {
     @Operation(
             summary = "매매노트 조회",
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
-            tags = {"GET"}
+            tags = {"Post"}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
             @ApiResponse(responseCode = "404", description = "해당하는 매매일지가 존재하지 않음."),
             @ApiResponse(responseCode = "500", description = "서버가 원할히 동작하지 않거나 DB의 값이 존재하지 않음.")
     })
-    @GetMapping
+    @PostMapping ("/allNotes")
     public List<NotesDTO> readNotesByUserId(){
         return notesService.readNotesByUserId();
     }

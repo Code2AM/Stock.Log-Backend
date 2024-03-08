@@ -24,6 +24,10 @@
         WHERE
             USER_ID = #{userId}
         AND
-            STATUS = 'open'
+            (STATUS = 'open'
+            OR
+            STATUS = 'close')
+        ORDER BY
+            JOURNAL_DATE DESC
     </select>
 </mapper>
