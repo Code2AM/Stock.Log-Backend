@@ -2,6 +2,7 @@ package com.code2am.stocklog.domain.strategies.controller;
 
 import com.code2am.stocklog.domain.strategies.models.dto.StrategiesDTO;
 import com.code2am.stocklog.domain.strategies.models.dto.UsersIdDTO;
+import com.code2am.stocklog.domain.strategies.models.entity.UsersAndStrategies;
 import com.code2am.stocklog.domain.strategies.service.StrategiesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,14 +31,14 @@ public class StrategiesController {
     @Operation(
             summary = "매매전략 등록",
             description = "매매전략을 등록합니다.",
-            tags = {"POST"}
+            tags = {"POST", "Strategies Controller"}
     )
     @Parameter(name = "strategy", description = "사용자가 입력한 매매전략")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매전략 등록 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
     })
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity createStrategy(@RequestBody StrategiesDTO strategy){
 
         if(Objects.isNull(strategy)){
@@ -53,40 +54,14 @@ public class StrategiesController {
         return ResponseEntity.ok("정상적으로 등록되었습니다.");
     }
 
-    /**
-     * 매매전략을 조회하는 메소드
-     * @return 모든 매매전략
-     * */
-    @Operation(
-            summary = "매매전략을 조회",
-            description = "모든 매매전략을 조회합니다.",
-            tags = {"GET", "관리자"}
-    )
-    @GetMapping
-    public List<StrategiesDTO> readStrategies(){
-        // 관리자용 조회(관리자는 조회와 삭제만 가능하도록)
-        return strategiesService.readStrategies();
-    }
-
-    @Operation(
-            summary = "관리자용, 매매전략을 삭제",
-            description = "관리자가 매매전략을 삭제합니다.",
-            tags = {"DELETE", "관리자"}
-    )
-    @Parameter(name = "strategy", description = "관리자가 삭제할 매매전략")
-    @DeleteMapping
-    public void deleteStrategyByStrategyId(@RequestBody StrategiesDTO strategy){
-        // 관리자용 삭제
-        strategiesService.deleteStrategyByStrategyId(strategy);
-    }
 
     @Operation(
             summary = "사용자용, 매매전략 조회",
             description = "사용자가 자신의 매매전략을 조회합니다.",
-            tags = {"GET"}
+            tags = {"POST"}
     )
-    @GetMapping("/user")
-    public List<StrategiesDTO> readStrategiesByUserId(){
+    @PostMapping("/findAll")
+    public List<UsersAndStrategies> readStrategiesByUserId(){
 
         return strategiesService.readStrategiesByUserId();
     }
@@ -96,9 +71,57 @@ public class StrategiesController {
             description = "사용자가 자신의 매매전략을 삭제합니다. 실제 동작에 있어서는 관계만을 끊는 것으로 DB의 데이터를 손상시키지 않습니다.",
             tags = {"DELETE"}
     )
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public void deleteStrategyByStrategyIdAndUserId(@RequestBody StrategiesDTO strategy){ // 매개변수는 추후 수정
 
         strategiesService.deleteStrategyByStrategyIdAndUserId(strategy);
+    }
+
+
+    @Operation(
+            summary = "사용자용, 매매전략 수정",
+            description = "사용자가 자신의 매매전략을 수정합니다",
+            tags = {"DELETE"}
+    )
+    @PostMapping("/update")
+    public void updateStrategy(@RequestBody StrategiesDTO strategy){ // 매개변수는 추후 수정
+
+        strategiesService.updateStrategy(strategy);
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 매매전략을 조회하는 메소드
+     * @return 모든 매매전략
+     * */
+    @Operation(
+            summary = "매매전략을 조회",
+            description = "모든 매매전략을 조회합니다.",
+            tags = {"GET", "Strategies Controller"}
+    )
+    @PostMapping("/getAllAdmin")
+    public List<StrategiesDTO> readStrategies(){
+        // 관리자용 조회(관리자는 조회와 삭제만 가능하도록)
+        return strategiesService.readStrategies();
+    }
+
+    @Operation(
+            summary = "관리자용, 매매전략을 삭제",
+            description = "관리자가 매매전략을 삭제합니다.",
+            tags = {"POST", "관리자"}
+    )
+    @Parameter(name = "strategy", description = "관리자가 삭제할 매매전략")
+    @PostMapping("/deleteAdmin")
+    public void deleteStrategyByStrategyId(@RequestBody StrategiesDTO strategy){
+        // 관리자용 삭제
+        strategiesService.deleteStrategyByStrategyId(strategy);
     }
 }
