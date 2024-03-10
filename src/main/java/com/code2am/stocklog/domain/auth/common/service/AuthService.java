@@ -1,32 +1,36 @@
 package com.code2am.stocklog.domain.auth.common.service;
 
-import com.code2am.stocklog.domain.auth.jwt.repository.RefreshTokenRepository;
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.auth.jwt.model.dto.TokenDTO;
 import com.code2am.stocklog.domain.auth.jwt.model.entity.RefreshToken;
+import com.code2am.stocklog.domain.auth.jwt.repository.RefreshTokenRepository;
 import com.code2am.stocklog.domain.auth.jwt.util.TokenUtils;
 import com.code2am.stocklog.domain.users.models.dto.UserDTO;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import com.code2am.stocklog.domain.users.repository.UsersRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UsersRepository usersRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthUtil authUtil;
     private final TokenUtils tokenUtils;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    @Transactional
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     public void signup(UserDTO userDTO) {
 
         // 받은 정보를 통해서 유저가 있는지 확인
@@ -39,8 +43,9 @@ public class AuthService {
 
     }
 
-    @Transactional
+
     public TokenDTO login(UserDTO userDTO) {
+
 
         System.out.println(1);
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
@@ -69,7 +74,7 @@ public class AuthService {
         return tokenDto;
     }
 
-    @Transactional
+
     public TokenDTO reissue(TokenDTO tokenDTO) {
         // 1. Refresh Token 검증
         if (!tokenUtils.validateToken(tokenDTO.getRefreshToken())) {
@@ -98,4 +103,49 @@ public class AuthService {
         // 토큰 발급
         return tokenDto;
     }
+
+    public String logout(TokenDTO tokenDTO) {
+        System.out.println("logoutService");
+        System.out.println(tokenDTO);
+
+        // 저장소에서 tokenValue 를 기반으로 Refresh Token 가져옴
+        RefreshToken refreshToken = refreshTokenRepository.findByValue(tokenDTO.returnRefreshTokenValue());
+        System.out.println("Result :");
+        System.out.println(refreshToken);
+
+
+        System.out.println("refreshToken 있음 삭제 진행");
+        // 5. Refresh Token 삭제
+        refreshTokenRepository.delete(refreshToken);
+
+        return "성공적으로 로그아웃 되었습니다.";
+    }
+
+    /* 사용자의 비밀번호를 바꾸는 메소드 */
+    public String changePassword(UserDTO userDTO) {
+
+
+        String email = userDTO.getEmail();
+        Users user = usersRepository.findByEmail(email).get();
+
+        System.out.println("이메일로 찾은 유저");
+        System.out.println(user);
+
+        // 비밀번호를 encode해서 입력
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
+        usersRepository.save(user);
+
+        System.out.println("저장후 user: ");
+        System.out.println(user);
+
+        return "비밀번호 변경 성공!";
+
+    }
+
+
+//    public String deleteRefreshToken(TokenDTO tokenDTO){
+//        refreshTokenRepository.delete(refreshTokenRepository.findByValue(tokenDTO.returnRefreshTokenValue()));
+//        return "성공적으로 삭제되었습니다.";
+//    }
 }

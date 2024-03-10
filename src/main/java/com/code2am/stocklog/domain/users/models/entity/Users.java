@@ -67,6 +67,9 @@ public class Users {
                 .createDate(this.createDate)
                 .userRole(this.userRole)
                 .build();
+
+        System.out.println("빌더를 사용함 : ");
+        System.out.println(user.password);
         return user;
     }
 

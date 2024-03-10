@@ -36,6 +36,7 @@ public class AuthDetailsService implements UserDetailsService {
 
         UserDetails userDetails = createUserDetails(user);
 
+        System.out.println("userDetails");
         System.out.println(userDetails);
 
         if (username.equals(userDetails.getUsername())){
@@ -58,6 +59,7 @@ public class AuthDetailsService implements UserDetailsService {
                 Collections.singleton(grantedAuthority)
         );
 
+        System.out.println("createUserDetails");
         System.out.println(user);
 
         return user;
