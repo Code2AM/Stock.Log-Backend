@@ -14,6 +14,9 @@
         <result property="profit" column="PROFIT"/>
         <result property="lastedTradeDate" column="LASTEST_TRADE_DATE"/>
         <result property="fee" column="FEE"/>
+        <result property="status" column="STATUS"/>
+        <result property="userId" column="USER_ID"/>
+        <result property="strategyId" column="STRATEGY_ID"/>
     </resultMap>
 
     <select id="readJournalsByUserId" resultMap="Journals">
@@ -29,5 +32,18 @@
             STATUS = 'close')
         ORDER BY
             JOURNAL_DATE DESC
+    </select>
+
+    <select id="readJournalsByJournalId" resultMap="Journals">
+        SELECT
+            *
+        FROM
+            TBL_JOURNALS
+        WHERE
+            JOURNAL_ID = #{journalId}
+        AND
+            (STATUS = 'open'
+            OR
+            STATUS = 'close')
     </select>
 </mapper>

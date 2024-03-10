@@ -25,4 +25,10 @@ public class JournalsVO {
 
     private double fee;
 
+    private Integer userId;
+
+    private Integer strategyId;
+
+    private String status;
+
 }
