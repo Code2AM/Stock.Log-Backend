@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.notes.models.entity;
 
+import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,6 +32,9 @@ public class Notes {
 
     @Column(name = "USER_ID")
     private Integer userId;
+
+    @ManyToOne(optional = true)
+    private Labels labels;
 
 
     /* DTO Converter */
