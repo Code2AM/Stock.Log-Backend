@@ -36,11 +36,12 @@ public class JournalsService {
      */
     public String createJournalsByUserId(JournalsDTO journals, Integer userId) {
 
+
         if (journals.getFee() <= 0) {
             return "수수료가 0 이하 값이 될 수는 없습니다.";
         }
 
-        if (journals.getStockName().equals("")) {
+        if (journals.getStockName().isEmpty()) {
             return "종목을 선택하지 않았습니다.";
         }
 
