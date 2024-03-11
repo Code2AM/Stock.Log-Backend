@@ -32,6 +32,7 @@ public class JournalsController {
     @PostMapping
     public ResponseEntity createJournalsByUserId(@RequestBody JournalsDTO journals){
 
+        System.out.println(journals);
         if(Objects.isNull(journals)){
             ResponseEntity.badRequest().body("잘못된 입력값입니다.");
         }

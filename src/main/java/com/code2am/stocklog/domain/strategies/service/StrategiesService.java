@@ -8,13 +8,17 @@ import com.code2am.stocklog.domain.strategies.models.entity.UsersAndStrategies;
 import com.code2am.stocklog.domain.strategies.repository.StrategiesRepository;
 import com.code2am.stocklog.domain.strategies.repository.UsersAndStrategiesRepository;
 import com.code2am.stocklog.domain.users.models.entity.Users;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StrategiesService {
 
     @Autowired
@@ -34,42 +38,35 @@ public class StrategiesService {
      * */
     public String createStrategy(StrategiesDTO strategy) {
 
-        Strategies newStrategy = new Strategies();
+
         UsersAndStrategies usersAndStrategies = new UsersAndStrategies(); // 복합키, 중간 테이블을 이용해 직접적인 관계를 만들지 않도록 한다.
-        Users users = new Users();
 
         Integer userId = authUtil.getUserId();
 
-        // 동일한 이름의 매매전략이 있을 경우 행하지 않는다.
-        StrategiesDTO find = readStrategyByStrategyName(strategy.getStrategyName());
-        if(!Objects.isNull(find)){
+       // 동일한 매매전략이 있는지 확인
+        StrategiesDTO findResult = readStrategyByStrategyName(strategy.getStrategyName());
 
-            // 해당 유저의 유저 정보를 엔티티에 담아야 한다.
-            users.setUserId(userId);
 
-            newStrategy.setStrategyId(find.getStrategyId());
+        // 해당 strategy 가 있는 경우
+        if(!Objects.isNull(findResult)){
+            usersAndStrategies.setUserId(userId);
+            usersAndStrategies.setStrategyId(findResult.getStrategyId());
+            usersAndStrategies.setStrategyName(findResult.getStrategyName());
 
-            usersAndStrategies.setUsers(users);
-            usersAndStrategies.setStrategies(newStrategy);
             usersAndStrategiesRepository.save(usersAndStrategies);
 
-            newStrategy.setStrategyName(find.getStrategyName());
-            newStrategy.setStrategyStatus("Y");
-            strategiesRepository.save(newStrategy);
-            return "등록되었습니다.";
         }
+        // 해당 strategy가 없는 경우
+        else {
+            strategy.setStrategyStatus("Y");
+            Strategies newStrategy = strategiesRepository.save(strategy.convertToEntity());
 
-        // 유저 정보
-        users.setUserId(userId);
+            usersAndStrategies.setUserId(userId);
+            usersAndStrategies.setStrategyId(newStrategy.getStrategyId());
+            usersAndStrategies.setStrategyName(newStrategy.getStrategyName());
 
-        newStrategy.setStrategyName(strategy.getStrategyName());
-        newStrategy.setStrategyStatus("Y");
-
-        usersAndStrategies.setUsers(users);
-        usersAndStrategies.setStrategies(newStrategy);
-
-        strategiesRepository.save(newStrategy);
-        usersAndStrategiesRepository.save(usersAndStrategies);
+            usersAndStrategiesRepository.save(usersAndStrategies);
+        }
 
         return "정상적으로 등록되었습니다.";
     }
@@ -123,7 +120,11 @@ public class StrategiesService {
 
         Integer userId = authUtil.getUserId();
 
-        return strategiesDAO.readStrategiesByUserId(userId);
+        List<UsersAndStrategies> strategies = usersAndStrategiesRepository.findAllByUserId(userId);
+
+        return strategies.stream()
+                .map(UsersAndStrategies::convertToDTO)
+                .toList();
     }
 
     /**
@@ -135,7 +136,44 @@ public class StrategiesService {
 
         Integer strategyId = strategy.getStrategyId();
 
-        // 실제로는 데이터의 직접적인 삭제가 아니라 그 관계를 잘라내는 것이다.
-        strategiesDAO.deleteStrategyByStrategyIdAndUserId(strategyId, userId);
+        System.out.println("userID : "+userId+" strategyId : "+strategyId);
+
+        usersAndStrategiesRepository.deleteByUserIdAndStrategyId(userId,strategyId);
+
+    }
+
+    /* 사용자의 매매전략을 수정하는 메소드*/
+    public void updateStrategy(StrategiesDTO strategy) {
+
+        UsersAndStrategies usersAndStrategies = new UsersAndStrategies();
+
+        Integer userId = authUtil.getUserId();
+
+        // 일단 수정된 이름이 실존하는지 확인
+        StrategiesDTO findResult = readStrategyByStrategyName(strategy.getStrategyName());
+
+        // 현 매매전략의 Linking pk를 알아냄
+        UsersAndStrategies foundUserAndStrategy = usersAndStrategiesRepository.findByUserIdAndStrategyId(userId,strategy.getStrategyId());
+
+        // 있는 경우
+        if(!Objects.isNull(findResult)){
+            foundUserAndStrategy.setStrategyId(findResult.getStrategyId());
+            foundUserAndStrategy.setStrategyName(findResult.getStrategyName());
+
+            usersAndStrategiesRepository.save(foundUserAndStrategy);
+
+        }
+        //  없는 경우
+        else {
+            strategy.setStrategyStatus("Y");
+            strategy.setStrategyId(null);
+            Strategies newStrategy = strategiesRepository.save(strategy.convertToEntity());
+
+
+            foundUserAndStrategy.setStrategyId(newStrategy.getStrategyId());
+            foundUserAndStrategy.setStrategyName(newStrategy.getStrategyName());
+
+            usersAndStrategiesRepository.save(usersAndStrategies);
+        }
     }
 }

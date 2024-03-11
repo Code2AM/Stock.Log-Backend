@@ -60,6 +60,9 @@ public class EmailController {
     @PostMapping("/mailVerify")
     public ResponseEntity<Integer> authCheck(@RequestBody EmailDTO emailDTO){
 
+        System.out.println("도착한 값: ");
+        System.out.println(emailDTO);
+
         String userEmail = emailDTO.getEmail();
         Integer authNum = Integer.parseInt(emailDTO.getAuthCode());
 
