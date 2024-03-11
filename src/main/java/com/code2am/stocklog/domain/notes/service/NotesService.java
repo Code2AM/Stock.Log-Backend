@@ -48,13 +48,15 @@ public class NotesService {
     /**
      * 매매일지의 id 값을 받아 매매노트를 생성하는 메소드
      * */
-    public Notes createNoteByUserId(NotesDTO notesDTO, Integer labelsId) {
+    public Notes createNoteByUserId(NotesDTO notesDTO) {
 
-        LabelsDTO labelDTO = labelsDAO.readLabelsByLabelsId(labelsId);
+        // 사용자가 선택한 라벨
+        LabelsDTO labelDTO = labelsDAO.readLabelsByLabelsId(notesDTO.getLabelsDTO().getLabelsId());
         if (labelDTO == null) {
-            throw new RuntimeException("labelsId에 해당하는 라벨이 존재하지 않습니다.");
+
         }
 
+        // 사용자가 선택한 라벨 값을 Entity로 변환
         Labels label = labelDTO.convertToEntity();
 
         // DTO를 앤티티에 담아 JPA를 통해 등록

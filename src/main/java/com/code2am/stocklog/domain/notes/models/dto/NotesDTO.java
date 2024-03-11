@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.notes.models.dto;
 
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import lombok.Data;
 
@@ -19,6 +20,8 @@ public class NotesDTO {
     private String noteStatus;
     // 유저아이디 FK
     private Integer userId;
+    // 라벨
+    private LabelsDTO labelsDTO;
 
     /* Entity Converter */
     public Notes convertToEntity() {

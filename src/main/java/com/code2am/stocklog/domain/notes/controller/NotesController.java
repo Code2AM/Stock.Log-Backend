@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.notes.controller;
 
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import com.code2am.stocklog.domain.notes.models.vo.NotesVo;
@@ -64,17 +65,18 @@ public class NotesController {
     @Parameter(name = "notesDTO", description = "매매일지에 신규로 등록할 매매노트")
     @PostMapping("/create")
     public ResponseEntity<String> createNoteByJournalId(
-            @RequestBody NotesDTO notesDTO,
-            @RequestParam(value = "labelsId", required = false) Integer labelsId){
+            @RequestBody NotesDTO notesDTO){
         // 매매일지에서 이용자의 요청을 받아 해당 일지에 노트를 작성한다. 매매일지의 키 값을 필수로 요구한다.
 
+
+        System.out.println(notesDTO);
         // 요청값이 없는지 확인
         if(Objects.isNull(notesDTO)){
             return ResponseEntity.status(400).body("입력값이 없습니다.");
         }
 
         // 실제 입력받은 데이터를 입력 로직으로
-        Notes note = notesService.createNoteByUserId(notesDTO, labelsId);
+        Notes note = notesService.createNoteByUserId(notesDTO);
 
         // 요청이 원활히 도착했는지 확인
         if(Objects.isNull(note)){

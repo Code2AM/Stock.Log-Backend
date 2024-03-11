@@ -24,6 +24,7 @@ public class LabelsDTO {
         Labels label = new Labels();
         label.setLabelsId(this.labelsId);
         label.setLabelsTitle(this.labelsTitle);
+        label.setLabelsStatus(this.labelsStatus);
         label.setUserId(this.userId);
 
         return label;
