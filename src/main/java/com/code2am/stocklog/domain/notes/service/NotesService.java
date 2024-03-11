@@ -91,6 +91,5 @@ public class NotesService {
 
         notesDTO.setNoteDate(LocalDateTime.now());
         notesRepository.save(notesDTO.convertToEntity());
-
     }
 }

@@ -48,6 +48,7 @@ public class LabelsService {
     }
 
     // 라벨을 수정하는 메소드
+    @Transactional
     public String updateLabelByLabelsId(LabelsDTO labelsDTO) {
         labelsDTO.setUserId(authUtil.getUserId());
         labelsRepository.save(labelsDTO.convertToEntity());
@@ -59,6 +60,7 @@ public class LabelsService {
     @Transactional
     public String deleteLabelsByLabelsId(LabelsDTO labelsDTO){
         Labels labels = labelsDTO.convertToEntity();
+        labels.setUserId(authUtil.getUserId());
         labels.setLabelsStatus("N");
         labelsRepository.save(labels);
         return "삭제 성공";
