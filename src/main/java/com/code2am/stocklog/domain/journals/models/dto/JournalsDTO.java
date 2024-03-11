@@ -11,9 +11,9 @@ public class JournalsDTO {
 
     private Integer journalId;
 
-    private String StockName;
+    private String stockName;
 
-    private LocalDateTime JournalDate;
+    private LocalDateTime journalDate;
 
     private Integer StrategyId;
 
