@@ -61,7 +61,7 @@ public class StrategiesController {
             tags = {"POST"}
     )
     @PostMapping("/findAll")
-    public List<UsersAndStrategies> readStrategiesByUserId(){
+    public List<StrategiesDTO> readStrategiesByUserId(){
 
         return strategiesService.readStrategiesByUserId();
     }

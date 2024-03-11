@@ -1,16 +1,16 @@
 package com.code2am.stocklog.domain.strategies.models.entity;
 
 
+import com.code2am.stocklog.domain.strategies.models.dto.StrategiesDTO;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
 
 @Entity
-@IdClass(UsersAndStrategiesId.class) // 복합키 사용을 위한 식별자 클래스
+// @IdClass(UsersAndStrategiesId.class) // 복합키 사용을 위한 식별자 클래스
 @Table(name = "TBL_USERS_AND_STRATEGIES")
 @Data
-@Builder
 public class UsersAndStrategies {
 
 //    @Id
@@ -38,8 +38,11 @@ public class UsersAndStrategies {
     @Column(name = "STRATEGY_NAME")
     private String strategyName;
 
-
-    public UsersAndStrategies() {
-
+    public StrategiesDTO convertToDTO (){
+        StrategiesDTO strategiesDTO = new StrategiesDTO();
+        strategiesDTO.setStrategyId(this.strategyId);
+        strategiesDTO.setStrategyName(this.strategyName);
+        return strategiesDTO;
     }
+
 }

@@ -8,13 +8,17 @@ import com.code2am.stocklog.domain.strategies.models.entity.UsersAndStrategies;
 import com.code2am.stocklog.domain.strategies.repository.StrategiesRepository;
 import com.code2am.stocklog.domain.strategies.repository.UsersAndStrategiesRepository;
 import com.code2am.stocklog.domain.users.models.entity.Users;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StrategiesService {
 
     @Autowired
@@ -112,11 +116,15 @@ public class StrategiesService {
     /**
      * 매매전략을 사용자의 id 값을 이용해 리스트로 반환하도록 조회하는 메소드
      * */
-    public List<UsersAndStrategies> readStrategiesByUserId() {
+    public List<StrategiesDTO> readStrategiesByUserId() {
 
         Integer userId = authUtil.getUserId();
 
-        return usersAndStrategiesRepository.findAllByUserId(userId);
+        List<UsersAndStrategies> strategies = usersAndStrategiesRepository.findAllByUserId(userId);
+
+        return strategies.stream()
+                .map(UsersAndStrategies::convertToDTO)
+                .toList();
     }
 
     /**
@@ -127,6 +135,8 @@ public class StrategiesService {
         Integer userId = authUtil.getUserId();
 
         Integer strategyId = strategy.getStrategyId();
+
+        System.out.println("userID : "+userId+" strategyId : "+strategyId);
 
         usersAndStrategiesRepository.deleteByUserIdAndStrategyId(userId,strategyId);
 
@@ -156,6 +166,7 @@ public class StrategiesService {
         //  없는 경우
         else {
             strategy.setStrategyStatus("Y");
+            strategy.setStrategyId(null);
             Strategies newStrategy = strategiesRepository.save(strategy.convertToEntity());
 
 
