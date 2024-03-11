@@ -10,6 +10,9 @@ import com.code2am.stocklog.domain.users.models.dto.UserDTO;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import com.code2am.stocklog.domain.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +22,9 @@ public class OAuthService {
     private final KakaoAPI kakaoAPI;
     private final UsersRepository usersRepository;
     private final AuthService authService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public TokenDTO kakaoLogin(OAuthToken token) {
@@ -47,7 +53,12 @@ public class OAuthService {
             authService.signup(newKakaoUser);
 
             // 등록한 유저로 로그인
-            return authService.login(newKakaoUser);
+            TokenDTO tokenDTO = authService.login(newKakaoUser);
+
+            System.out.println("id 없을 때 반환되는 token");
+            System.out.println(tokenDTO);
+
+            return tokenDTO;
 
         } else {
             System.out.println("조회 결과 있음");
@@ -55,9 +66,15 @@ public class OAuthService {
             System.out.println(kakaoUser);
 
             // 인증 객체 통과를 위해 임시 비밀번호 설정
-            kakaoUser.setPassword("123");
+            UserDTO userDTO = UserDTO.builder().email(kakaoUser.getEmail()).password("123").build();
 
-            TokenDTO tokenDTO = authService.login(kakaoUser.convertToDTO());
+            System.out.println("Ready for War");
+            System.out.println(userDTO);
+
+            TokenDTO tokenDTO = authService.login(userDTO);
+
+            System.out.println("id 있을 때 반환되는 token");
+            System.out.println(tokenDTO);
             return tokenDTO;
 
         }
