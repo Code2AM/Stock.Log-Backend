@@ -57,8 +57,8 @@ dependencies {
     // Spring Context Support
     implementation 'org.springframework:spring-context-support:5.3.9'
 
-
-
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.10.0'
     // 요청을 보내기 위한 WebFlux
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }

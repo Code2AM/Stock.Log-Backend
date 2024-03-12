@@ -31,16 +31,16 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
 
 
-    public void signup(UserDTO userDTO) {
+    public String signup(UserDTO userDTO) {
 
         // 받은 정보를 통해서 유저가 있는지 확인
         if (usersRepository.existsByEmail(userDTO.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+            throw new RuntimeException("이미 가입되어 있는 이메일입니다");
         }
 
         // 유저를 등록 시킨다
         usersRepository.save(userDTO.convertToEntity().encodePassword(passwordEncoder));
-
+        return "등록성공";
     }
 
 
