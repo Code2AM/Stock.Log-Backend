@@ -90,6 +90,24 @@ public class StrategiesController {
     }
 
 
+    @Operation(
+            summary = "매매전략 이름 조회",
+            description = "특정한 매매전략을 조회합니다.",
+            tags = {"POST"}
+    )
+    @PostMapping("/read")
+    public StrategiesDTO readStrategyByStrategyId(@RequestBody StrategiesDTO strategiesDTO){
+
+        System.out.println("내가 보낸 값" + strategiesDTO);
+
+        if(Objects.isNull(strategiesDTO)){
+            System.out.println("입력값이 없습니다.");
+            return null;
+        }
+        Integer strategyId = strategiesDTO.getStrategyId();
+
+        return strategiesService.readStrategyByStrategyId(strategyId);
+    }
 
 
 
