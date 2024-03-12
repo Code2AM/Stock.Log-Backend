@@ -32,6 +32,7 @@ public class NotesDTO {
         note.setNoteName(this.noteName);
         note.setNoteStatus(this.noteStatus);
         note.setUserId(this.userId);
+        note.setLabels(this.getLabelsDTO().convertToEntity());
 
         return note;
     }
