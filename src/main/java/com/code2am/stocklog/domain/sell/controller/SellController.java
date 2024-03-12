@@ -60,9 +60,9 @@ public class SellController {
     @Operation(
             summary = "매매삭제",
             description = "매매기록을 삭제합니다.",
-            tags = {"DELETE"}
+            tags = {"POST"}
     )
-    @DeleteMapping
+    @PostMapping("/delete")
     public ResponseEntity deleteSellBySellId(@RequestBody SellDTO sellDTO){
 
         Integer sellId = sellDTO.getSellId();
