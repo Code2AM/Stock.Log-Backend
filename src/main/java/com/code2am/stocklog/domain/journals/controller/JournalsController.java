@@ -83,4 +83,25 @@ public class JournalsController {
 
         return ResponseEntity.ok(result);
     }
+
+    @Operation(
+            summary = "매매일지 거래 상태 변경",
+            description = "매매일지의 거래 상태를 종료합니다.",
+            tags = {"POST"}
+    )
+    @PostMapping("/change")
+    public ResponseEntity updateJournalsStatusByJournalId(@RequestBody JournalsDTO journalsDTO){
+
+        if(Objects.isNull(journalsDTO)){
+            System.out.println("요청 전달이 안됨");
+            return ResponseEntity.badRequest().body("매매일지가 입력되지 않았습니다.");
+        }
+
+        Integer journalId = journalsDTO.getJournalId();
+
+        String result = journalsService.updateJournalsStatusByJournalId(journalId);
+
+        return ResponseEntity.ok(result);
+
+    }
 }
