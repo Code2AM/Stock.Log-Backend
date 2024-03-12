@@ -50,22 +50,12 @@ public class NotesService {
      * */
     public Notes createNoteByUserId(NotesDTO notesDTO) {
 
-        // 사용자가 선택한 라벨
-        LabelsDTO labelDTO = labelsDAO.readLabelsByLabelsId(notesDTO.getLabelsDTO().getLabelsId());
-        if (labelDTO == null) {
-
-        }
-
-        // 사용자가 선택한 라벨 값을 Entity로 변환
-        Labels label = labelDTO.convertToEntity();
-
         // DTO를 앤티티에 담아 JPA를 통해 등록
         Notes newNote = notesDTO.convertToEntity();
 
         newNote.setUserId(authUtil.getUserId());
         newNote.setNoteDate(LocalDateTime.now());
         newNote.setNoteStatus("Y");
-        newNote.setLabels(label);
 
         notesRepository.save(newNote);
 
@@ -89,8 +79,6 @@ public class NotesService {
     /* 노트의 내용을 변경하는 메소드 */
     public void updateNoteByNoteId(NotesDTO notesDTO) {
 
-        LabelsDTO labelDTO = labelsDAO.readLabelsByLabelsId(notesDTO.getLabelsDTO().getLabelsId());
-        notesDTO.setLabelsDTO(labelDTO);
         notesDTO.setNoteDate(LocalDateTime.now());
         notesRepository.save(notesDTO.convertToEntity());
     }

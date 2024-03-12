@@ -46,7 +46,7 @@ public class Notes {
         noteDTO.setNoteName(this.noteName);
         noteDTO.setNoteStatus(this.noteStatus);
         noteDTO.setUserId(this.userId);
-
+        noteDTO.setLabelsDTO(this.labels.convertToDTO());
         return noteDTO;
     }
 }
