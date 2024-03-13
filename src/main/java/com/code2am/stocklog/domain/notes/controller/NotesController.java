@@ -66,8 +66,6 @@ public class NotesController {
     @PostMapping("/create")
     public ResponseEntity<String> createNoteByJournalId(
             @RequestBody NotesDTO notesDTO){
-        // 매매일지에서 이용자의 요청을 받아 해당 일지에 노트를 작성한다. 매매일지의 키 값을 필수로 요구한다.
-
 
         System.out.println(notesDTO);
         // 요청값이 없는지 확인

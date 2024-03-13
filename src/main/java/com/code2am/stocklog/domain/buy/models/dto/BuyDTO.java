@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.buy.models.dto;
 
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,10 @@ public class BuyDTO {
 
     private String status;
 
+    public BuyDTO() {
+
+    }
+
     /* Entity Converter */
     public Buy convertToEntity() {
         Buy buy = new Buy();
@@ -29,4 +34,16 @@ public class BuyDTO {
 
         return buy;
     }
+
+    /* Builder */
+    @Builder
+    public BuyDTO(Integer buyId, LocalDateTime buyDate, Integer buyQuantity, Integer buyPrice, String status) {
+        this.buyId = buyId;
+        this.buyDate = buyDate;
+        this.buyQuantity = buyQuantity;
+        this.buyPrice = buyPrice;
+        this.status = status;
+    }
+
+
 }

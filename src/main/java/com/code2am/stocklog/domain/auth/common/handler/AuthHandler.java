@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.auth.common.handler;
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.NoRefreshTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,7 +14,7 @@ public class AuthHandler {
 
     // 아이디 혹은 비밀번호 잘못 입력한 경우
     @ExceptionHandler(BadCredentialsException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 404 상태 코드 설정
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 401 상태 코드 설정
     @ResponseBody
     public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
 
@@ -23,5 +24,22 @@ public class AuthHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(message);
     }
+
+    // 이미 로그아웃된 경우
+    @ExceptionHandler(NoRefreshTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ResponseEntity<String> handleNoRefreshTokenException(NoRefreshTokenException e) {
+
+        System.out.println("AuthHandler");
+
+        String message = e.getMessage();
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(message);
+    }
+
+
 
 }

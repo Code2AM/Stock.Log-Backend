@@ -1,7 +1,9 @@
 package com.code2am.stocklog.domain.auth.common.controller;
 
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.NoRefreshTokenException;
 import com.code2am.stocklog.domain.auth.common.service.AuthService;
+import com.code2am.stocklog.domain.auth.jwt.handler.exceptions.JwtException;
 import com.code2am.stocklog.domain.auth.jwt.model.dto.TokenDTO;
 import com.code2am.stocklog.domain.users.models.dto.UserDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +44,12 @@ class AuthControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper; // ObjectMapper 주입
+
+//    @BeforeEach
+//    void objectMapperSetting() {
+//        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//    }
+
 
     @Test
     public void signup_성공() throws Exception {
@@ -171,6 +179,11 @@ class AuthControllerTest {
         // loginUser를 json로 parsing 해서 content에 반환
         String requestBody = objectMapper.writeValueAsString(loginUser);
 
+        System.out.println("loginUser");
+        System.out.println(loginUser);
+        System.out.println("requestBody");
+        System.out.println(requestBody);
+
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -206,7 +219,6 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(errorMessage));
     }
-
 
 
     // 아이디는 있지만 비밀번호가 일치하지 않는 경우
@@ -303,41 +315,246 @@ class AuthControllerTest {
 
 
     /* /auth/reissue */
-//    @Test
-//    void reissue() {
-//    }
 
 
     // 성공
+    @Test
+    void reissue_성공() throws Exception {
 
-    // 입력받은 accessToken이 만료된 경우
+        // 전달받은 토큰
+        TokenDTO deliveredRefreshToken = TokenDTO.builder()
+                .refreshToken("abc123")
+                .build();
 
-    // 올바른 형식의 accessToken이 아닌 경우
+        // 반환활 토큰
+        TokenDTO returnedRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .accessTokenExpiresIn(123L)
+                .build();
+
+        given(authService.reissue(deliveredRefreshToken)).willReturn(returnedRefreshToken);
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(deliveredRefreshToken);
+
+        System.out.println("deliveredRefreshToken");
+        System.out.println(deliveredRefreshToken);
+        System.out.println("requestBody");
+        System.out.println(requestBody);
+
+
+        mockMvc.perform(post("/auth/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").exists())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").exists())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
+                .andExpect(jsonPath("$.accessTokenExpiresIn").exists())
+                .andExpect(jsonPath("$.accessTokenExpiresIn").isNotEmpty());
+    }
+
+    // 입력받은 refreshToken이 유효하지 않는 경우
+    @Test
+    void reissue_유효하지_않은_토큰() throws Exception {
+
+        // 전달받은 토큰
+        TokenDTO deliveredRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .accessTokenExpiresIn(123L)
+                .build();
+
+        String errorMessage = "Refresh Token 이 유효하지 않습니다.";
+
+        given(authService.reissue(deliveredRefreshToken)).willThrow(new JwtException(errorMessage));
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(deliveredRefreshToken);
+
+
+        mockMvc.perform(post("/auth/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(errorMessage));
+    }
+
+    // Refresh Token 일치하지 않는 경우
+    @Test
+    void reissue_유저정보_일치하지_않음() throws Exception {
+
+        // 전달받은 토큰
+        TokenDTO deliveredRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .accessTokenExpiresIn(123L)
+                .build();
+
+        String errorMessage = "토큰의 유저 정보가 일치하지 않습니다.";
+
+        given(authService.reissue(deliveredRefreshToken)).willThrow(new JwtException(errorMessage));
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(deliveredRefreshToken);
+
+
+        mockMvc.perform(post("/auth/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(errorMessage));
+    }
 
     // refreshToken이 DB에 존재하지 않는 경우 (이미 logout 된  사용자인 경우)
+    @Test
+    void reissue_로그아웃한_사용자() throws Exception {
 
-    // 서버에서 문제가 생겨서 조회를 할 수 없는 경우
+        // 전달받은 토큰
+        TokenDTO deliveredRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .accessTokenExpiresIn(123L)
+                .build();
+
+        String errorMessage = "로그아웃 된 사용자입니다.";
+
+        given(authService.reissue(deliveredRefreshToken)).willThrow(new JwtException(errorMessage));
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(deliveredRefreshToken);
+
+
+        mockMvc.perform(post("/auth/reissue")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(errorMessage));
+    }
 
 
 
     /* auth/logout */
-//    @Test
-//    void logout() {
-//    }
+
 
     // 성공
+    @Test
+    void logout_성공() throws Exception {
+
+        // 전달받은 토큰
+        TokenDTO logoutRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .build();
+
+
+        String message = "성공적으로 로그아웃 되었습니다.";
+
+
+        given(authService.logout(logoutRefreshToken)).willReturn(message);
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(logoutRefreshToken);
+
+
+        mockMvc.perform(post("/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string(message));
+    }
 
     // DB에 refreshToken이 없는 경우 (이미 로그아웃 된 경우)
+    @Test
+    void logout_이미_로그아웃() throws Exception {
+
+        // 전달받은 토큰
+        TokenDTO logoutRefreshToken = TokenDTO.builder()
+                .accessToken("abc123")
+                .refreshToken("abc123")
+                .build();
+
+
+        String message = "이미 로그아웃된 사용자입니다.";
+
+
+        given(authService.logout(logoutRefreshToken)).willThrow(new NoRefreshTokenException(message));
+
+        // Front 에서 전달할 token
+        String requestBody = objectMapper.writeValueAsString(logoutRefreshToken);
+
+
+        mockMvc.perform(post("/auth/logout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(message));
+    }
 
 
     /* auth/changePassword */
-//    @Test
-//    void changePassword() {
-//    }
+
 
     // 성공
+    @Test
+    void changePassword_성공() throws Exception {
+
+        // 준비
+        UserDTO loginUser = UserDTO.builder().
+                email("test@test.com")
+                .password("123456")
+                .build();
+
+        String message = "비밀번호 변경 성공!";
+
+        given(authService.changePassword(loginUser)).willReturn(message);
+
+        String requestBody = objectMapper.writeValueAsString(loginUser);
+
+        mockMvc.perform(post("/auth/changePassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string(message));
+    }
 
     // 입력 받은 비밀번호가 비밀번호 형식에 맞지 않는 경우
+    @Test
+    void changePassword_비밀번호_6자리_이하_테스트() throws Exception {
 
-    // 모종의 이유로 비밀번호 변경에 실패한 경우
+        UserDTO changePassUser = UserDTO.builder().
+                email("test@test.com")
+                .password("12345")
+                .build();
+
+        String requestBody = objectMapper.writeValueAsString(changePassUser);
+
+        mockMvc.perform(post("/auth/changePassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("비밀번호는 최소 6자리 이상이여야 합니다."));
+    }
+
+    @Test
+    void changePassword_비밀번호_공백_테스트() throws Exception {
+
+        // 준비
+        UserDTO changePassUser = UserDTO.builder().
+                email("test@test.com")
+                .password(null)
+                .build();
+
+        String requestBody = objectMapper.writeValueAsString(changePassUser);
+
+        mockMvc.perform(post("/auth/changePassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("비밀번호를 입력해주세요."));
+    }
+
+
 }

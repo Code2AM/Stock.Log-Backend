@@ -7,21 +7,17 @@ import com.code2am.stocklog.domain.users.models.dto.UserDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
+
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -95,7 +91,7 @@ public class AuthController {
             tags = {"POST", "AuthController"}
     )
     @PostMapping("/changePassword")
-    public ResponseEntity<String> changePassword(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<String> changePassword(@Valid @RequestBody UserDTO userDTO) {
 
         return ResponseEntity.ok(authService.changePassword(userDTO));
     }
