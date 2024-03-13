@@ -95,6 +95,7 @@ public class JournalsService {
         }
 
         Journals delete = new Journals();
+        delete.setStockName(data.getStockName());
         delete.setJournalId(data.getJournalId());
         delete.setProfit(data.getProfit());
         delete.setJournalDate(data.getJournalDate());
@@ -110,5 +111,35 @@ public class JournalsService {
         journalsRepository.save(delete);
 
         return "삭제 성공";
+    }
+
+    /**
+     * 매매일지 거래 상태 변경 메소드
+     * */
+    public String updateJournalsStatusByJournalId(Integer journalId) {
+
+        JournalsVO data = journalsDAO.readJournalsByJournalId(journalId);
+
+        if(Objects.isNull(data)){
+            return "없는 매매일지입니다.";
+        }
+
+        Journals update = new Journals();
+        update.setStockName(data.getStockName());
+        update.setJournalId(data.getJournalId());
+        update.setProfit(data.getProfit());
+        update.setJournalDate(data.getJournalDate());
+        update.setTotalQuantity(data.getTotalQuantity());
+        update.setFee(data.getFee());
+        update.setLastedTradeDate(data.getLastedTradeDate());
+        update.setUserId(data.getUserId());
+        update.setAvgSellPrice(data.getAvgSellPrice());
+        update.setAvgBuyPrice(data.getAvgBuyPrice());
+        update.setStrategyId(data.getStrategyId());
+        update.setStatus("close");
+
+        journalsRepository.save(update);
+
+        return "상태 변경 성공";
     }
 }

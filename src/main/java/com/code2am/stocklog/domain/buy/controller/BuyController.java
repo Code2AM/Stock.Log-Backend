@@ -67,9 +67,9 @@ public class BuyController {
     @Operation(
             summary = "매수 삭제",
             description = "매수 기록을 삭제합니다.",
-            tags = {"DELETE"}
+            tags = {"POST"}
     )
-    @DeleteMapping
+    @PostMapping("/delete")
     public ResponseEntity deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
 
         Integer buyId = buyDTO.getBuyId();

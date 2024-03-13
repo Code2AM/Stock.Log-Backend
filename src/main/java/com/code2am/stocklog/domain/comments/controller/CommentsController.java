@@ -45,16 +45,20 @@ public class CommentsController {
     @Operation(
             summary = "코멘트 조회",
             description = "매매일지의 코멘트를 조회합니다.",
-            tags = {"GET"}
+            tags = {"POST"}
     )
-    @GetMapping
-    public List<CommentsVO> readCommentsByJournalId(@RequestBody CommentsDTO commentsDTO){
+    @PostMapping("/read")
+    public List<CommentsVO> readCommentsByJournalId(@RequestBody CommentsDTO comments){
 
-        if(Objects.isNull(commentsDTO)){
+        System.out.println(comments);
+
+        if(Objects.isNull(comments)){
             return null;
         }
 
-        Integer journalId = commentsDTO.getJournalId();
+        Integer journalId = comments.getJournalId();
+
+        System.out.println("코멘트 조회 " + journalId);
 
         return commentsService.readCommentsByJournalId(journalId);
     }
@@ -62,9 +66,9 @@ public class CommentsController {
     @Operation(
             summary = "코멘트 삭제",
             description = "매매일지의 코멘트를 삭제합니다.",
-            tags = {"DELETE"}
+            tags = {"POST"}
     )
-    @DeleteMapping
+    @PostMapping("/delete")
     public ResponseEntity deleteCommentByCommentId(@RequestBody CommentsDTO commentsDTO){
 
         if(Objects.isNull(commentsDTO)){
