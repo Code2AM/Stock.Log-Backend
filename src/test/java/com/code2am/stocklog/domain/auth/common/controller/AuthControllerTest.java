@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -184,9 +185,52 @@ class AuthControllerTest {
     }
 
     // 아이디가 없는 경우
+    @Test
+    public void login_아이디_없음() throws Exception {
+        // 준비
+        UserDTO loginUser = UserDTO.builder().
+                email("test@test.com")
+                .password("password")
+                .build();
+
+        String errorMessage = "흔히 하는 실수예요. 비밀번호나 아이디가 한 글자라도 휴가를 갔나봐요. 확인하고 다시 시도해봐요.";
+
+        given(authService.signup(loginUser)).willThrow(new BadCredentialsException(errorMessage));
+
+        String requestBody = objectMapper.writeValueAsString(loginUser);
+
+        // 실행 & 검증
+        mockMvc.perform(post("/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(errorMessage));
+    }
+
 
 
     // 아이디는 있지만 비밀번호가 일치하지 않는 경우
+    @Test
+    public void login_비밀번호_불일치() throws Exception {
+        // 준비
+        UserDTO loginUser = UserDTO.builder().
+                email("test@test.com")
+                .password("password")
+                .build();
+
+        String errorMessage = "흔히 하는 실수예요. 비밀번호나 아이디가 한 글자라도 휴가를 갔나봐요. 확인하고 다시 시도해봐요.";
+
+        given(authService.signup(loginUser)).willThrow(new BadCredentialsException(errorMessage));
+
+        String requestBody = objectMapper.writeValueAsString(loginUser);
+
+        // 실행 & 검증
+        mockMvc.perform(post("/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(errorMessage));
+    }
 
 
     // 입력한 아이디가 올바른 이메일 형식이 아닌 경우
