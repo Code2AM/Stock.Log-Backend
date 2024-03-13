@@ -1,0 +1,27 @@
+package com.code2am.stocklog.domain.auth.common.handler;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ControllerAdvice
+public class AuthHandler {
+
+    // 아이디 혹은 비밀번호 잘못 입력한 경우
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED) // 404 상태 코드 설정
+    @ResponseBody
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+
+        String message = "흔히 하는 실수예요. 비밀번호나 아이디가 한 글자라도 휴가를 갔나봐요. 확인하고 다시 시도해봐요.";
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(message);
+    }
+
+}

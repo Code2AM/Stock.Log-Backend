@@ -28,7 +28,9 @@ public class AuthDetailsService implements UserDetailsService {
         System.out.println(username);
 
 
-        Users user = usersRepository.findByEmail(username).get();
+        Users user = usersRepository.findByEmail(username)
+                // email이 없는 경우
+                .orElseThrow(() -> new UsernameNotFoundException("흔히 하는 실수예요. 비밀번호나 아이디가 한 글자라도 휴가를 갔나봐요. 확인하고 다시 시도해봐요."));
 
         if (username.equals(user.getEmail())){
             System.out.println("DB까지 통과");

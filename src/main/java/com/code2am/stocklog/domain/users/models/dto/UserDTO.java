@@ -2,6 +2,9 @@ package com.code2am.stocklog.domain.users.models.dto;
 
 import com.code2am.stocklog.domain.auth.common.enums.UserRole;
 import com.code2am.stocklog.domain.users.models.entity.Users;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +24,12 @@ import java.util.List;
 public class UserDTO {
     private Integer userId;
 
+    @Email(message = "유효한 이메일 주소가 아닙니다.")
     private String email;
 
+    @NotBlank(message = "비밀번호를 입력해주세요.")
+    // 비밀번호는 최소 6자리 이상
+    @Size(min = 6, message = "비밀번호는 최소 6자리 이상이여야 합니다.")
     private String password;
 
     private String status;
