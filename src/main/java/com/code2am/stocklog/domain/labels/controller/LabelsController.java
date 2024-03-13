@@ -42,13 +42,10 @@ public class LabelsController {
             description = "라벨을 등록합니다",
             tags = {"POST"}
     )
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity createLabelsByUserId(@RequestBody LabelsDTO labels){
 
-        Integer userId = authUtil.getUserId();
-        System.out.println(userId);
-
-        String result = labelsService.createLabelsByUserId(labels, userId);
+        String result = labelsService.createLabelsByUserId(labels);
         return ResponseEntity.ok(result);
     }
 
@@ -57,9 +54,11 @@ public class LabelsController {
             description = "라벨을 수정합니다",
             tags = {"PUT"}
     )
-    @PutMapping
-    public ResponseEntity updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
-        String result = labelsService.updateLabelByLabelsId(labels.getLabelsId());
+    @PostMapping("/update")
+    public ResponseEntity<String> updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        System.out.println("수정 도착");
+        System.out.println(labels);
+        String result = labelsService.updateLabelByLabelsId(labels);
         System.out.println(result);
         return ResponseEntity.ok(result);
     }
@@ -67,12 +66,12 @@ public class LabelsController {
     @Operation(
             summary = "라벨 삭제",
             description = "라벨을 삭제합니다",
-            tags = {"PUT"}
+            tags = {"DELETE"}
     )
-    @PutMapping("/delete")
-    public ResponseEntity deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
-        String result = labelsService.deleteLabelsByLabelsId(labels.getLabelsId());
-        System.out.println(result);
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        String result = labelsService.deleteLabelsByLabelsId(labels);
+
         return ResponseEntity.ok(result);
     }
 

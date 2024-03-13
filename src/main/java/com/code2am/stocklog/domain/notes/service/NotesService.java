@@ -1,6 +1,9 @@
 package com.code2am.stocklog.domain.notes.service;
 
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
+import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
+import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.notes.dao.NotesDAO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
@@ -23,6 +26,9 @@ public class NotesService {
 
     @Autowired
     AuthUtil authUtil;
+
+    @Autowired
+    private LabelsDAO labelsDAO;
 
     /* 사용자의 Notes를 전부 불러온다 */
     /**
@@ -75,6 +81,5 @@ public class NotesService {
 
         notesDTO.setNoteDate(LocalDateTime.now());
         notesRepository.save(notesDTO.convertToEntity());
-
     }
 }

@@ -5,6 +5,8 @@ import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "TBL_LABELS")
@@ -24,10 +26,8 @@ public class Labels {
     @JoinColumn(name = "USER_ID")
     private Integer userId;
 
-//    @OneToOne
-//    @JoinColumn(name = "NOTE_ID")
-//    private Notes notes;
-
+    @OneToMany(mappedBy = "labels")
+    private List<Notes> notes;
 
     /* DTO Converter */
     public LabelsDTO convertToDTO() {

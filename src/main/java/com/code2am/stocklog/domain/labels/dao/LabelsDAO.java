@@ -10,4 +10,5 @@ import java.util.List;
 public interface LabelsDAO {
     List<LabelsDTO> readLabelsByUserId(Integer userId);
     LabelsDTO readLabelsByLabelsId(Integer labelsId);
+
 }

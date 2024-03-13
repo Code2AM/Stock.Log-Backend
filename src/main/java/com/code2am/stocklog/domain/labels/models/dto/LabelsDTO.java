@@ -2,11 +2,12 @@ package com.code2am.stocklog.domain.labels.models.dto;
 
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.strategies.models.entity.Strategies;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
+import lombok.NoArgsConstructor;
 @Data
 public class LabelsDTO {
-
     // PK
     private Integer labelsId;
 
@@ -18,15 +19,12 @@ public class LabelsDTO {
 
     private Integer userId;
 
-//    // 노트 FK
-//    private Integer noteId;
-
-
     /* Entity Converter */
     public Labels convertToEntity() {
         Labels label = new Labels();
         label.setLabelsId(this.labelsId);
         label.setLabelsTitle(this.labelsTitle);
+        label.setLabelsStatus(this.labelsStatus);
         label.setUserId(this.userId);
 
         return label;

@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.notes.controller;
 
+import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import com.code2am.stocklog.domain.notes.models.vo.NotesVo;
@@ -53,19 +54,22 @@ public class NotesController {
      * @return 신규 매매노트를 입력합니다.
      * */
     @Operation(
-            summary = "매매노트 등록",
-            description = "신규 매매노트를 등록합니다.",
+            summary = "노트 등록",
+            description = "신규 노트를 등록합니다.",
             tags = {"POST"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 등록함."),
+            @ApiResponse(responseCode = "200", description = "노트를 성공적으로 등록함."),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 값이 정상적으로 입력되지 앟음."),
             @ApiResponse(responseCode = "500", description = "요청받은 서버가 정상적으로 동작하지 않음.")
     })
     @Parameter(name = "notesDTO", description = "매매일지에 신규로 등록할 매매노트")
     @PostMapping("/create")
-    public ResponseEntity<String> createNoteByJournalId(@RequestBody NotesDTO notesDTO){
+    public ResponseEntity<String> createNoteByJournalId(
+            @RequestBody NotesDTO notesDTO){
         // 매매일지에서 이용자의 요청을 받아 해당 일지에 노트를 작성한다. 매매일지의 키 값을 필수로 요구한다.
 
+
+        System.out.println(notesDTO);
         // 요청값이 없는지 확인
         if(Objects.isNull(notesDTO)){
             return ResponseEntity.status(400).body("입력값이 없습니다.");
@@ -92,11 +96,11 @@ public class NotesController {
      * @return 해당 매매노트를 삭제함
      * */
     @Operation(
-            summary = "매매노트 삭제",
+            summary = "노트 삭제",
             description = "이미 존재하고 있는 매매노트를 삭제합니다.",
             tags = {"DELETE"}
     )
-    @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
+    @ApiResponse(responseCode = "200", description = "노트를 삭제함.")
     @PostMapping("/delete")
     public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
@@ -107,14 +111,16 @@ public class NotesController {
 
     /* Note를 수정하는 메소드 */
     @Operation(
-            summary = "매매노트 삭제",
-            description = "이미 존재하고 있는 매매노트를 삭제합니다.",
-            tags = {"update"}
+            summary = "노트 수정",
+            description = "이미 존재하고 있는 매매노트를 수정합니다.",
+            tags = {"UPDATE"}
     )
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
     @PostMapping("/update")
     public ResponseEntity<String> updateNoteByNoteId(@RequestBody NotesDTO notesDTO){
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
+
+        System.out.println("컨트롤러 도착");
         notesService.updateNoteByNoteId(notesDTO);
         return ResponseEntity.ok("수정 성공");
     }
