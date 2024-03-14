@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.labels.models.dto;
 
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ public class LabelsDTO {
     private Integer labelsId;
 
     // 라벨 제목
+    @NotNull(message = "라벨 제목, 텅 빈 공간은 NO!")
     private String labelsTitle;
 
     // 라벨 상태
