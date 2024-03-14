@@ -3,6 +3,7 @@ package com.code2am.stocklog.domain.labels.service;
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
+import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.labels.repository.LabelsRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
 
@@ -127,21 +129,101 @@ class LabelsServiceTest {
     }
 
 
-
     /* createLabelsByUserId */
+
+    // 성공
     @Test
-    void createLabelsByUserId() {
+    void createLabelsByUserId_성공(){
+        // given
+
+            // 전달받은 dto
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Label1")
+                .build();
+
+        Labels expectedLabel = Labels.builder()
+                .userId(1)
+                .labelsTitle("Label1")
+                .labelsStatus("Y")
+                .build();
+
+        // stub
+        given(authUtil.getUserId()).willReturn(1);
+        given(labelsRepository.save(any(Labels.class))).willReturn(expectedLabel);
+
+        //when
+        String result = labelsService.createLabelsByUserId(labelsDTO);
+
+        // then
+        assertEquals("라벨추가 성공",result);
     }
+
+    // authUtil 관련 예외 상황들
+
+    // LabelsDTO 가 null 인 경우
+
+
+
+
 
 
     /* updateLabelByLabelsId */
+
+    // 성공
     @Test
-    void updateLabelByLabelsId() {
+    void updateLabelByLabelsId_성공(){
+        // given
+
+            // 전달받은 dto
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Label1")
+                .build();
+
+        // stub
+        given(authUtil.getUserId()).willReturn(1);
+
+        // when
+        String result = labelsService.updateLabelByLabelsId(labelsDTO);
+
+        // then
+        assertEquals("수정 성공",result);
     }
+
+    // authUtil 예외
+
+    // repo에서 jpa관련 예외
+
+    // convertEntity 예외
+
 
 
     /* deleteLabelsByLabelsId */
+
+
+    // 성공
     @Test
-    void deleteLabelsByLabelsId() {
+    void deleteLabelsByLabelsId_성공(){
+        // given
+
+        // 전달받은 dto
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Label1")
+                .build();
+
+        // stub
+        given(authUtil.getUserId()).willReturn(1);
+
+        // when
+        String result = labelsService.deleteLabelsByLabelsId(labelsDTO);
+
+        // then
+        assertEquals("삭제 성공",result);
     }
+
+    // authUtil 예외
+
+    // repo에서 jpa관련 예외
+
+    // convertEntity 예외
+
 }

@@ -26,7 +26,7 @@ public class LabelsController {
             tags = {"GET"}
     )
     @GetMapping
-    public ResponseEntity readLabelsByUserId(){
+    public ResponseEntity<List<LabelsDTO>> readLabelsByUserId(){
 
         List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId();
 
@@ -42,6 +42,8 @@ public class LabelsController {
     )
     @PostMapping("/create")
     public ResponseEntity createLabelsByUserId(@RequestBody LabelsDTO labels){
+
+        /*FIXME label 제목이 null인지 아닌지 체크*/
 
         String result = labelsService.createLabelsByUserId(labels);
         return ResponseEntity.ok(result);

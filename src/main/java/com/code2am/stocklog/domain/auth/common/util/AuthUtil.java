@@ -18,6 +18,7 @@ public class AuthUtil {
    private AuthUtil() { }
 
 
+    /* authentication을 활용해서 userId (pk) 를 반환 */
     public Integer getUserId(){
 
         // 사용자의 ID를 얻는 방법
@@ -26,8 +27,9 @@ public class AuthUtil {
         return userId;
     }
 
-    public String getUserEmail(){
 
+    /* authentication 에 있는 userEmail을 반환 */
+    public String getUserEmail(){
 
         Authentication authentication;
 
@@ -48,4 +50,7 @@ public class AuthUtil {
         // 사용자의 ID를 얻는 방법
         return authentication.getName();
     }
+
+    /* 입력 받은 유저아이디가 유효한 아이디인지 확인하는 메소드 */
+
 }

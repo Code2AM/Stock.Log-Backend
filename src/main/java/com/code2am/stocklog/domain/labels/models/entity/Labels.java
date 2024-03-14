@@ -3,12 +3,15 @@ package com.code2am.stocklog.domain.labels.models.entity;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Data
 @Entity
+@RequiredArgsConstructor
 @Table(name = "TBL_LABELS")
 public class Labels {
 
@@ -37,5 +40,14 @@ public class Labels {
         label.setUserId(this.userId);
 
         return label;
+    }
+
+    @Builder
+    public Labels(Integer labelsId, String labelsTitle, String labelsStatus, Integer userId, List<Notes> notes) {
+        this.labelsId = labelsId;
+        this.labelsTitle = labelsTitle;
+        this.labelsStatus = labelsStatus;
+        this.userId = userId;
+        this.notes = notes;
     }
 }
