@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.auth.common.handler;
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.AuthUtilException;
 import com.code2am.stocklog.domain.auth.common.handler.exceptions.NoRefreshTokenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,20 @@ public class AuthHandler {
                 .body(message);
     }
 
+    // AuthUtil 관련 에러 핸들링 - authentication 관련 에러들
+    @ExceptionHandler(AuthUtilException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ResponseEntity<String> handleAuthUtilException(AuthUtilException e) {
+
+        System.out.println("AuthHandler");
+
+        String message = e.getMessage();
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(message);
+    }
 
 
 }

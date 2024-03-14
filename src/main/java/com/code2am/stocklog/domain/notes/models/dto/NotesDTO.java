@@ -2,11 +2,14 @@ package com.code2am.stocklog.domain.notes.models.dto;
 
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class NotesDTO {
     // 매매노트 PK
     private Integer noteId;
@@ -22,6 +25,14 @@ public class NotesDTO {
     private Integer userId;
     // 라벨
     private LabelsDTO labelsDTO;
+
+
+    public NotesDTO(int noteId, String noteName, String noteContents, LocalDateTime noteDate) {
+        this.noteId = noteId;
+        this.noteName = noteName;
+        this.noteContents = noteContents;
+        this.noteDate = noteDate;
+    }
 
     /* Entity Converter */
     public Notes convertToEntity() {

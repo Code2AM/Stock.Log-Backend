@@ -19,8 +19,6 @@ public class LabelsController {
     @Autowired
     LabelsService labelsService;
 
-    @Autowired
-    private AuthUtil authUtil;
 
     @Operation(
             summary = "라벨 조회",
@@ -29,11 +27,11 @@ public class LabelsController {
     )
     @GetMapping
     public ResponseEntity readLabelsByUserId(){
-        Integer userId = authUtil.getUserId();
-        System.out.println(userId);
 
-        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId(userId);
+        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId();
+
         System.out.println(labelsDTOS);
+
         return ResponseEntity.ok(labelsDTOS);
     }
 

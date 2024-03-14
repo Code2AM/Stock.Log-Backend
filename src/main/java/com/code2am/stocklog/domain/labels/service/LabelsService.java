@@ -1,5 +1,6 @@
 package com.code2am.stocklog.domain.labels.service;
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.AuthUtilException;
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
@@ -25,7 +26,17 @@ public class LabelsService {
     @Autowired
     private AuthUtil authUtil;
 
-    public List<LabelsDTO> readLabelsByUserId(Integer userId){
+    public List<LabelsDTO> readLabelsByUserId(){
+
+        Integer userId = null;
+
+        // authentication 객체에 있는 userId를 받아온다
+
+        userId = authUtil.getUserId();
+
+
+
+
         return labelsDAO.readLabelsByUserId(userId);
     }
 

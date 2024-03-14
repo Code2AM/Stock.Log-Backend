@@ -22,13 +22,8 @@ public class NotesService {
     private NotesRepository notesRepository;
 
     @Autowired
-    private NotesDAO notesDAO;
-
-    @Autowired
     AuthUtil authUtil;
 
-    @Autowired
-    private LabelsDAO labelsDAO;
 
     /* 사용자의 Notes를 전부 불러온다 */
     /**
@@ -38,9 +33,10 @@ public class NotesService {
 
         List<NotesDTO> notesDTOS = new ArrayList<>();
 
-        notesRepository.findAllByUserId(authUtil.getUserId()).forEach(note -> {
-            notesDTOS.add(note.convertToDTO());
-        });
+        notesRepository.findAllByUserId(authUtil.getUserId())
+                .forEach( note -> {
+                    notesDTOS.add(note.convertToDTO());
+                });
 
         return notesDTOS;
     }
