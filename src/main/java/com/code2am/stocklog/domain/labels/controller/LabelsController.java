@@ -5,6 +5,7 @@ import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.service.LabelsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class LabelsController {
             tags = {"POST"}
     )
     @PostMapping("/create")
-    public ResponseEntity createLabelsByUserId(@RequestBody LabelsDTO labels){
+    public ResponseEntity createLabelsByUserId(@Valid @RequestBody LabelsDTO labels){
 
         String result = labelsService.createLabelsByUserId(labels);
         return ResponseEntity.ok(result);
@@ -55,7 +56,7 @@ public class LabelsController {
             tags = {"PUT"}
     )
     @PostMapping("/update")
-    public ResponseEntity<String> updateLabelsByLabelsId(@RequestBody LabelsDTO labels){
+    public ResponseEntity<String> updateLabelsByLabelsId(@Valid @RequestBody LabelsDTO labels){
         System.out.println("수정 도착");
         System.out.println(labels);
         String result = labelsService.updateLabelByLabelsId(labels);
