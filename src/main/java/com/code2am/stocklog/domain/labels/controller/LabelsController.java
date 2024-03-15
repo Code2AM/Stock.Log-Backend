@@ -59,7 +59,8 @@ public class LabelsController {
     )
     @PostMapping("/update")
     public ResponseEntity<String> updateLabelsByLabelsId(@Valid @RequestBody LabelsDTO labels){
-
+        System.out.println("수정 도착");
+        System.out.println(labels);
         String result = labelsService.updateLabelByLabelsId(labels);
         System.out.println(result);
         return ResponseEntity.ok(result);
