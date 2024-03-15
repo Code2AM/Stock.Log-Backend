@@ -1,9 +1,12 @@
 package com.code2am.stocklog.domain.labels.models.dto;
 
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
-import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 @Data
+@RequiredArgsConstructor
 public class LabelsDTO {
     // PK
     private Integer labelsId;
@@ -17,15 +20,32 @@ public class LabelsDTO {
 
     private Integer userId;
 
+    /* 생성자 */
+    public LabelsDTO(int labelsId, String labelsTitle) {
+        this.labelsId = labelsId;
+        this.labelsTitle = labelsTitle;
+    }
+
+
     /* Entity Converter */
     public Labels convertToEntity() {
-        Labels label = new Labels();
-        label.setLabelsId(this.labelsId);
-        label.setLabelsTitle(this.labelsTitle);
-        label.setLabelsStatus(this.labelsStatus);
-        label.setUserId(this.userId);
+        Labels label = Labels.builder()
+                .labelsId(this.labelsId)
+                .labelsTitle(this.labelsTitle)
+                .labelsStatus(this.labelsStatus)
+                .userId(this.userId)
+                .build();
 
         return label;
     }
+
+    @Builder
+    public LabelsDTO(Integer labelsId, String labelsTitle, String labelsStatus, Integer userId) {
+        this.labelsId = labelsId;
+        this.labelsTitle = labelsTitle;
+        this.labelsStatus = labelsStatus;
+        this.userId = userId;
+    }
+
 
 }

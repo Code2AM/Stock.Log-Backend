@@ -3,12 +3,15 @@ package com.code2am.stocklog.domain.buy.models.entity;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@RequiredArgsConstructor
 @Table(name = "TBL_BUY")
 public class Buy {
 
@@ -36,13 +39,26 @@ public class Buy {
 
     /* DTO Converter */
     public BuyDTO convertToDTO() {
-        BuyDTO buy = new BuyDTO();
-        buy.setBuyId(this.buyId);
-        buy.setBuyPrice(this.buyPrice);
-        buy.setBuyQuantity(this.buyQuantity);
-        buy.setBuyPrice(this.buyPrice);
-        buy.setStatus(this.status);
 
-        return buy;
+        return BuyDTO.builder()
+                .buyId(buyId)
+                .buyPrice(buyPrice)
+                .buyQuantity(buyQuantity)
+                .status(status)
+                .build();
     }
+
+    /* Builder */
+    @Builder
+    public Buy(Integer buyId, LocalDateTime buyDate, Integer buyQuantity, Integer buyPrice, String status, Journals journals) {
+        this.buyId = buyId;
+        this.buyDate = buyDate;
+        this.buyQuantity = buyQuantity;
+        this.buyPrice = buyPrice;
+        this.status = status;
+        this.journals = journals;
+    }
+
+
+
 }

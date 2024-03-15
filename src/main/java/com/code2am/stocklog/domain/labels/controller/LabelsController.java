@@ -20,36 +20,38 @@ public class LabelsController {
     @Autowired
     LabelsService labelsService;
 
-    @Autowired
-    private AuthUtil authUtil;
-
+    /* 라벨 조회 */
     @Operation(
             summary = "라벨 조회",
             description = "사용자의 라벨을 조회합니다",
-            tags = {"GET"}
+            tags = {"POST"}
     )
-    @GetMapping
-    public ResponseEntity readLabelsByUserId(){
-        Integer userId = authUtil.getUserId();
-        System.out.println(userId);
+    @PostMapping("/get")
+    public ResponseEntity<List<LabelsDTO>> readLabelsByUserId(){
 
-        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId(userId);
+        List<LabelsDTO> labelsDTOS = labelsService.readLabelsByUserId();
+
         System.out.println(labelsDTOS);
+
         return ResponseEntity.ok(labelsDTOS);
     }
 
+
+    /* 라벨 등록 */
     @Operation(
             summary = "라벨 등록",
             description = "라벨을 등록합니다",
             tags = {"POST"}
     )
     @PostMapping("/create")
-    public ResponseEntity createLabelsByUserId(@Valid @RequestBody LabelsDTO labels){
+    public ResponseEntity<String> createLabelsByUserId(@Valid  @RequestBody LabelsDTO labels){
 
         String result = labelsService.createLabelsByUserId(labels);
         return ResponseEntity.ok(result);
     }
 
+
+    /* 라벨 수정 */
     @Operation(
             summary = "라벨 수정",
             description = "라벨을 수정합니다",
@@ -64,10 +66,12 @@ public class LabelsController {
         return ResponseEntity.ok(result);
     }
 
+
+    /* 라벨 삭제 */
     @Operation(
             summary = "라벨 삭제",
             description = "라벨을 삭제합니다",
-            tags = {"DELETE"}
+            tags = {"POST"}
     )
     @PostMapping("/delete")
     public ResponseEntity<String> deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){

@@ -1,6 +1,8 @@
 package com.code2am.stocklog.domain.auth.common.service;
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.NoRefreshTokenException;
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
+import com.code2am.stocklog.domain.auth.jwt.handler.exceptions.JwtException;
 import com.code2am.stocklog.domain.auth.jwt.model.dto.TokenDTO;
 import com.code2am.stocklog.domain.auth.jwt.model.entity.RefreshToken;
 import com.code2am.stocklog.domain.auth.jwt.repository.RefreshTokenRepository;
@@ -37,6 +39,9 @@ public class AuthService {
         if (usersRepository.existsByEmail(userDTO.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 이메일입니다");
         }
+
+//        String password = passwordEncoder.encode(userDTO.getPassword());
+//        userDTO.setPassword(password);
 
         // 유저를 등록 시킨다
         usersRepository.save(userDTO.convertToEntity().encodePassword(passwordEncoder));
@@ -76,21 +81,21 @@ public class AuthService {
 
 
     public TokenDTO reissue(TokenDTO tokenDTO) {
+
         // 1. Refresh Token 검증
         if (!tokenUtils.validateToken(tokenDTO.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+            throw new JwtException("Refresh Token 이 유효하지 않습니다.");
         }
-
         // 2. Access Token 에서 Member ID 가져오기
         Authentication authentication = tokenUtils.getAuthentication(tokenDTO.getAccessToken());
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new JwtException("로그아웃 된 사용자입니다."));
 
         // 4. Refresh Token 일치하는지 검사
         if (!refreshToken.getValue().equals(tokenDTO.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            throw new JwtException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
         // 5. 새로운 토큰 생성
@@ -112,6 +117,11 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenRepository.findByValue(tokenDTO.returnRefreshTokenValue());
         System.out.println("Result :");
         System.out.println(refreshToken);
+
+        // refreshToken이 null인 경우 이미 로그아웃된 경우임으로 NoRefreshTokenException을 반환
+        if (refreshToken == null) {
+            throw new NoRefreshTokenException("이미 로그아웃된 사용자입니다.");
+        }
 
 
         System.out.println("refreshToken 있음 삭제 진행");
@@ -143,9 +153,4 @@ public class AuthService {
 
     }
 
-
-//    public String deleteRefreshToken(TokenDTO tokenDTO){
-//        refreshTokenRepository.delete(refreshTokenRepository.findByValue(tokenDTO.returnRefreshTokenValue()));
-//        return "성공적으로 삭제되었습니다.";
-//    }
 }
