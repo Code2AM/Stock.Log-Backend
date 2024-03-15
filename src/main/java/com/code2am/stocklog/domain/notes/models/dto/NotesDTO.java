@@ -2,7 +2,7 @@ package com.code2am.stocklog.domain.notes.models.dto;
 
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
-import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +14,7 @@ public class NotesDTO {
     // 매매노트 PK
     private Integer noteId;
     // 노트 이름
+    @NotBlank(message = "최소 한 글자 이상 입력해주세요")
     private String noteName;
     // 매매노트 내용
     private String noteContents;
