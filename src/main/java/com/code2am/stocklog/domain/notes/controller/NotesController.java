@@ -101,8 +101,10 @@ public class NotesController {
     @ApiResponse(responseCode = "200", description = "노트를 삭제함.")
     @PostMapping("/delete")
     public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
+
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.deleteNoteByNoteId(notesDTO);
+
         return ResponseEntity.ok("삭제성공");
     }
 

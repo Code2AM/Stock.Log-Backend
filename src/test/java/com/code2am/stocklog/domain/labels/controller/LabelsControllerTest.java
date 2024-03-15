@@ -39,9 +39,7 @@ class LabelsControllerTest {
 
 
     /* readLabelsByUserId */
-    @Test
-    void readLabelsByUserId() {
-    }
+
 
     // 성공
     @Test

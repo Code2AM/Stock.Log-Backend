@@ -24,6 +24,8 @@ public class StrategiesController {
     @Autowired
     private StrategiesService strategiesService;
 
+
+    /* 매매전략 등록 */
     /**
      * 매매전략을 등록하는 메소드
      * @param strategy
@@ -39,7 +41,7 @@ public class StrategiesController {
             @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
     })
     @PostMapping("/create")
-    public ResponseEntity createStrategy(@RequestBody StrategiesDTO strategy){
+    public ResponseEntity<String> createStrategy(@RequestBody StrategiesDTO strategy){
 
         if(Objects.isNull(strategy)){
             return ResponseEntity.badRequest().body("잘못된 요청입니다.");
@@ -55,6 +57,7 @@ public class StrategiesController {
     }
 
 
+    /* 매매전략 조회(all) */
     @Operation(
             summary = "사용자용, 매매전략 조회",
             description = "사용자가 자신의 매매전략을 조회합니다.",
@@ -66,10 +69,12 @@ public class StrategiesController {
         return strategiesService.readStrategiesByUserId();
     }
 
+
+    /* 매매전략 삭제 */
     @Operation(
             summary = "사용자용, 매매전략 삭제",
             description = "사용자가 자신의 매매전략을 삭제합니다. 실제 동작에 있어서는 관계만을 끊는 것으로 DB의 데이터를 손상시키지 않습니다.",
-            tags = {"DELETE"}
+            tags = {"Post"}
     )
     @PostMapping("/delete")
     public void deleteStrategyByStrategyIdAndUserId(@RequestBody StrategiesDTO strategy){ // 매개변수는 추후 수정
@@ -78,6 +83,7 @@ public class StrategiesController {
     }
 
 
+    /* 매매전략 수정 */
     @Operation(
             summary = "사용자용, 매매전략 수정",
             description = "사용자가 자신의 매매전략을 수정합니다",
@@ -90,6 +96,7 @@ public class StrategiesController {
     }
 
 
+    /* 매매전략 조회 (이름) */
     @Operation(
             summary = "매매전략 이름 조회",
             description = "특정한 매매전략을 조회합니다.",
@@ -130,6 +137,7 @@ public class StrategiesController {
         // 관리자용 조회(관리자는 조회와 삭제만 가능하도록)
         return strategiesService.readStrategies();
     }
+
 
     @Operation(
             summary = "관리자용, 매매전략을 삭제",
