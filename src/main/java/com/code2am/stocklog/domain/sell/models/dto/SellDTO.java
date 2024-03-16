@@ -2,6 +2,7 @@ package com.code2am.stocklog.domain.sell.models.dto;
 
 
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -35,7 +35,7 @@ public class NotesController {
     @Operation(
             summary = "매매노트 조회",
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
-            tags = {"Post"}
+            tags = {"create"}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
@@ -57,7 +57,8 @@ public class NotesController {
     @Operation(
             summary = "노트 등록",
             description = "신규 노트를 등록합니다.",
-            tags = {"POST"})
+            tags = {"POST"}
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "노트를 성공적으로 등록함."),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 값이 정상적으로 입력되지 앟음."),

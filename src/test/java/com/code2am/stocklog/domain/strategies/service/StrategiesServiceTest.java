@@ -42,7 +42,10 @@ class StrategiesServiceTest {
 
     // 성공 - 동일한 매매전략이 없는 경우
 
-    //
+    // authUtil 관련 문제 - 인증된 사용자가 없습니다
+
+    // 데이터베이스 저장 실패, jpa 관련 문제
+
 
     /* readStrategies */
     @Test
@@ -53,19 +56,35 @@ class StrategiesServiceTest {
 
     // 성공 - 빈 리스트 반환
 
-    //
+    // authUtil 관련 문제 - 인증된 사용자가 없습니다
+
+    // 데이터베이스 저장 실패, jpa 관련 문제
+
+
+    /* updateStrategy */
+    @Test
+    void updateStrategy() {
+    }
+
+    // 성공 - 수정한 이름이 실존해는 경우
+
+    // 성공 - 수정한 이름이 없는 경우
+
+    // authUtil 관련 문제 - 인증된 사용자가 없습니다
+
+    // 데이터베이스 저장 실패, jpa 관련 문제
+
 
     /* deleteStrategyByStrategyIdAndUserId */
     @Test
     void deleteStrategyByStrategyIdAndUserId() {
     }
 
-    //
+    // 성공
 
-    /* updateStrategy */
-    @Test
-    void updateStrategy() {
-    }
+    // authUtil 관련 문제 - 인증된 사용자가 없습니다
+
+    // 데이터베이스 저장 실패, jpa 관련 문제
 
 
 
