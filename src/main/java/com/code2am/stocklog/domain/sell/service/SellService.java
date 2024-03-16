@@ -73,21 +73,14 @@ public class SellService {
 
         /* Journal 저장 */
 
-        // 해당하는 매매일지에 등록할 평균값을 구한다
-        Integer averageSellPrice = getAverageSellPrice(journal);
-
-        journal.setAvgSellPrice(averageSellPrice);
-
-        // 해당하는 매매일지에 등록할 profit을 구한다
-        Integer profit = getProfit(journal);
-
-        journal.setProfit(profit);
+        // 해당하는 매매일지에 등록할 평균값 / 총량 update
+        Journals updateJournal = updateSell(journal);
 
         // 저장하기전 값이 제대로 들어갔는지 확인
-        System.out.println(journal);
+        System.out.println(updateJournal);
 
         // 최신화된 매매일지를 저장
-        journalsRepo.save(journal);
+        journalsRepo.save(updateJournal);
 
         return "등록 성공";
     }
@@ -129,48 +122,50 @@ public class SellService {
 
         sellRepository.save(deleteSell);
 
+
+
         /* Journal 저장 */
 
         // 해당하는 매매일지에 등록할 평균값을 구한다
-        Integer averageSellPrice = getAverageSellPrice(journal);
-
-        journal.setAvgSellPrice(averageSellPrice);
-
-        // 해당하는 매매일지에 등록할 profit을 구한다
-        Integer profit = getProfit(journal);
-
-        journal.setProfit(profit);
+        Journals updateJournal = updateSell(journal);
 
         // 저장하기전 값이 제대로 들어갔는지 확인
-        System.out.println(journal);
+        System.out.println(updateJournal);
 
         // 최신화된 매매일지를 저장
-        journalsRepo.save(journal);
+        journalsRepo.save(updateJournal);
 
         return "삭제 성공";
     }
 
 
 
-    /* 매도 평균값 최신화 */
-    public Integer getAverageSellPrice(Journals journal){
+    /* 매매일지 정보 최신화 */
+    public Journals updateSell(Journals journal){
         // journaId 기반 모든 Sell을 불러온다
         List<Sell> sellList = sellRepository.findAllByJournal(journal);
 
+
+        /* 매도 평균 값 update */
         // Stream API를 사용하여 평균 값 계산
         double averagePrice = sellList.stream()
                 .mapToInt(Sell::getSellPrice) // Sell 객체의 sellPrice 필드 추출
                 .average() // 평균 계산
                 .getAsDouble(); // Optional 객체의 값을 double 형으로 변환 // sellList 가 없는 경우 NoSuchElement 에러 반환
 
-        return (int) averagePrice;
-    }
+        journal.setAvgSellPrice((int) averagePrice);
 
 
-    /* profit을 구함 */
-    public Integer getProfit(Journals journal){
+        /* 매도 총량 update */
+        Integer totalSellQuantity = sellList.stream()
+                .mapToInt(Sell::getSellQuantity) // Sell 객체의 sellQuantity 필드 추출
+                .sum(); // 모든 sell의 합계를 구함
 
-        /* profit = 매도총액 - 매수총액 */
+        journal.setTotalSellQuantity(totalSellQuantity);
+
+
+        /* profit을 update */
+        // profit = 매도총액 - 매수총액
 
         // 매도총액
         Integer totalSellPrice = journal.getAvgSellPrice() * journal.getTotalSellQuantity();
@@ -183,7 +178,10 @@ public class SellService {
 
         double profit = (totalSellPrice - totalBuyPrice) * (1 - fee);
 
-        return (int) profit;
+        journal.setProfit( (int) profit );
+
+
+        return journal;
     }
 
 }
