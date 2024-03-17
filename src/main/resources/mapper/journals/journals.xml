@@ -17,6 +17,8 @@
         <result property="status" column="STATUS"/>
         <result property="userId" column="USER_ID"/>
         <result property="strategyId" column="STRATEGY_ID"/>
+        <result property="totalBuyQuantity" column="TOTAL_BUY_QUANTITY"/>
+        <result property="totalSellQuantity" column="TOTAL_SELL_QUANTITY"/>
     </resultMap>
 
     <select id="readJournalsByUserId" resultMap="Journals">

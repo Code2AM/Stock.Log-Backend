@@ -51,6 +51,7 @@ public class BuyService {
         // 평균값 등록 로직
         List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
         Integer buySum = 0;
+        Integer buyQtt = 0;
 
         if(buyList.isEmpty()){
             return "매수 기록이 없습니다.";
@@ -58,7 +59,12 @@ public class BuyService {
             for (BuyDTO buyDTO : buyList) {
                 buySum += buyDTO.getBuyPrice();
             }
+
+            for(BuyDTO buyDTO : buyList) {
+                buyQtt += buyDTO.getBuyQuantity();
+            }
         }
+
 
         Integer buyAvg = buySum / buyList.size();
 
@@ -70,7 +76,9 @@ public class BuyService {
         Journals updateJournalsAvgBuy = updateJournals.get();
         updateJournalsAvgBuy.setAvgBuyPrice(buyAvg);
         updateJournalsAvgBuy.setLastedTradeDate(LocalDateTime.now());
+        updateJournalsAvgBuy.setTotalBuyQuantity(buyQtt);
         updateJournalsAvgBuy.setTotalQuantity(updateJournalsAvgBuy.getTotalQuantity() + buy.getBuyQuantity()); // 보유총량 더하기
+
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
         return "등록 성공";

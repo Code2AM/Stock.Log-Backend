@@ -59,13 +59,13 @@ public class Journals {
     @Column(name = "STATUS")
     private String status;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
-    private Users users;
+    private Integer userId;
 
 
     @Builder
-    public Journals(Integer journalId, LocalDateTime journalDate, String stockName, Integer totalQuantity, Integer avgBuyPrice, Integer avgSellPrice, Integer profit, LocalDateTime lastedTradeDate, Integer strategyId, double fee, String status, Users users) {
+    public Journals(Integer journalId, LocalDateTime journalDate, String stockName, Integer totalQuantity, Integer avgBuyPrice, Integer avgSellPrice, Integer profit, LocalDateTime lastedTradeDate, Integer strategyId, double fee, String status, Integer userId) {
         this.journalId = journalId;
         this.journalDate = journalDate;
         this.stockName = stockName;
@@ -77,6 +77,6 @@ public class Journals {
         this.strategyId = strategyId;
         this.fee = fee;
         this.status = status;
-        this.users = users;
+        this.userId = userId;
     }
 }

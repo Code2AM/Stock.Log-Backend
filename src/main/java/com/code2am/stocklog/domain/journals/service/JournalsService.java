@@ -37,8 +37,8 @@ public class JournalsService {
     public String createJournalsByUserId(JournalsDTO journals, Integer userId) {
 
 
-        if (journals.getFee() <= 0) {
-            return "수수료가 0 이하 값이 될 수는 없습니다.";
+        if (journals.getFee() > 0 && journals.getFee() <= 100) {
+            return "수수료는 0 ~ 100% 사이 값만 사용할 수 있습니다.";
         }
 
         if (journals.getStockName().isEmpty()) {
@@ -63,6 +63,7 @@ public class JournalsService {
         newJournal.setLastedTradeDate(journals.getJournalDate());
         newJournal.setAvgBuyPrice(journals.getBuyPrice());
         newJournal.setTotalQuantity(journals.getBuyQuantity());
+        newJournal.setTotalBuyQuantity(journals.getBuyQuantity());
         newJournal.setAvgSellPrice(0);
         newJournal.setStrategyId(journals.getStrategyId());
         newJournal.setFee(journals.getFee());
