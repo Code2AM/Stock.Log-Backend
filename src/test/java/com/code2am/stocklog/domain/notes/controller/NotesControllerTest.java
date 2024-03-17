@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,9 +82,22 @@ class NotesControllerTest {
 
 
     // 노트가 없는 경우
+    @Test
+    void readNotesByUserId_노트가_없는_경우() throws Exception {
+        // given
+        List<NotesDTO> emptyList = new ArrayList<>();
+
+        // when
+        given(notesService.readNotesByUserId()).willReturn(emptyList);
+
+        // then
+        mockMvc.perform(post("/notes/allNotes"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().string("[]"));
+    }
 
     // 등록된 유저가 없는 경우 -> 인증되지 않은 사용자
-
 
     /* createNoteByJournalId */
     @Test
