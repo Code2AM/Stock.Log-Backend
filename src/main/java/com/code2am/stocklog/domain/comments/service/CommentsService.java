@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.comments.service;
 
 import com.code2am.stocklog.domain.comments.dao.CommentsDAO;
+import com.code2am.stocklog.domain.comments.models.dto.CommentsRequestDTO;
 import com.code2am.stocklog.domain.comments.models.entity.Comments;
 import com.code2am.stocklog.domain.comments.models.vo.CommentsVO;
 import com.code2am.stocklog.domain.comments.repository.CommentsRepository;
@@ -23,17 +24,22 @@ public class CommentsService {
     /**
      * 코멘트 등록
      * */
-    public String createComment(Comments comments) {
+    public String createComment(CommentsRequestDTO comments) {
 
         if(comments.getComment().isEmpty()){
             System.out.println("코멘트 비어있음");
             return null;
         }
 
-        comments.setCommentDate(LocalDateTime.now());
-        comments.setStatus("Y");
 
-        commentsRepository.save(comments);
+        Comments add = new Comments();
+
+        add.getJournals().setJournalId(comments.getJournalId());
+        add.setComment(comments.getComment());
+        add.setCommentDate(LocalDateTime.now());
+        add.setStatus("Y");
+
+        commentsRepository.save(add);
         return "코멘트 등록 성공";
     }
 

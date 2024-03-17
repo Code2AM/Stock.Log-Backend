@@ -1,16 +1,17 @@
 package com.code2am.stocklog.domain.comments.models.dto;
 
 import com.code2am.stocklog.domain.comments.models.entity.Comments;
-import com.code2am.stocklog.domain.labels.models.entity.Labels;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class CommentsDTO {
+public class CommentsRequestDTO {
 
     private Integer commentId;
 
+    @NotBlank(message = "코멘트를 입력해주세요.")
     private String comment;
 
     private LocalDateTime commentDate;

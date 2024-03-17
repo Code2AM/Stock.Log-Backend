@@ -1,6 +1,6 @@
 package com.code2am.stocklog.domain.comments.models.entity;
 
-import com.code2am.stocklog.domain.comments.models.dto.CommentsDTO;
+import com.code2am.stocklog.domain.comments.models.dto.CommentsRequestDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,8 +31,8 @@ public class Comments {
     private Journals journals;
 
     /* DTO Converter */
-    public CommentsDTO convertToDTO() {
-        CommentsDTO comment = new CommentsDTO();
+    public CommentsRequestDTO convertToDTO() {
+        CommentsRequestDTO comment = new CommentsRequestDTO();
         comment.setCommentId(this.commentId);
         comment.setComment(this.comment);
         comment.setCommentDate(this.commentDate);
