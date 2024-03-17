@@ -70,7 +70,7 @@ public class BuyService {
 
         Optional<Journals> updateJournals =  journalsRepoForBuy.findById(journalId);
         if(updateJournals.isEmpty()){
-            return "평균값 등록 실패";
+            return "매수 기록이 없습니다.";
         }
 
         Journals updateJournalsAvgBuy = updateJournals.get();
