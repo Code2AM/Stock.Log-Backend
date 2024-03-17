@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -24,22 +25,16 @@ public class CommentsService {
     /**
      * 코멘트 등록
      * */
-    public String createComment(CommentsRequestDTO comments) {
+    public String createComment(Comments comments) {
 
         if(comments.getComment().isEmpty()){
-            System.out.println("코멘트 비어있음");
-            return null;
+            return "코멘트가 없습니다.";
         }
 
+        comments.setCommentDate(LocalDateTime.now());
+        comments.setStatus("Y");
 
-        Comments add = new Comments();
-
-        add.getJournals().setJournalId(comments.getJournalId());
-        add.setComment(comments.getComment());
-        add.setCommentDate(LocalDateTime.now());
-        add.setStatus("Y");
-
-        commentsRepository.save(add);
+        commentsRepository.save(comments);
         return "코멘트 등록 성공";
     }
 
@@ -47,6 +42,10 @@ public class CommentsService {
      * 코멘트 조회
      * */
     public List<CommentsVO> readCommentsByJournalId(Integer journalId) {
+
+        if(Objects.isNull(journalId)){
+            return null;
+        }
 
         return commentsDAO.readCommentsByJournalId(journalId);
     }
@@ -58,13 +57,16 @@ public class CommentsService {
 
         Optional<Comments> deleteComment = commentsRepository.findById(commentId);
 
-        if(deleteComment.isEmpty()){
-            return "존재하지 않는 데이터입니다.";
-        }else if(deleteComment.get().getStatus().equals("N")){
-            return "이미 삭제된 데이터입니다.";
+        if (deleteComment.isEmpty()) {
+            return "404"; // 존재하지 않는 코멘트를 삭제할 경우 실패로 간주
         }
 
         Comments delete = deleteComment.get();
+
+        if ("N".equals(delete.getStatus())) {
+            return "400"; // 이미 삭제된 코멘트를 삭제할 경우 실패로 간주
+        }
+
         delete.setStatus("N");
         delete.setCommentDate(LocalDateTime.now());
         commentsRepository.save(delete);

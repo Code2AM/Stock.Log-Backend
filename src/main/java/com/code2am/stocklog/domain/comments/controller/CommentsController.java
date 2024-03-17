@@ -1,6 +1,7 @@
 package com.code2am.stocklog.domain.comments.controller;
 
 import com.code2am.stocklog.domain.comments.models.dto.CommentsRequestDTO;
+import com.code2am.stocklog.domain.comments.models.entity.Comments;
 import com.code2am.stocklog.domain.comments.models.vo.CommentsVO;
 import com.code2am.stocklog.domain.comments.service.CommentsService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,20 +33,16 @@ public class CommentsController {
     @Parameter(name = "comments", description = "사용자가 입력한 코멘트")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "코멘트 등록에 성공하였습니다."),
-            @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
+            @ApiResponse(responseCode = "400", description = "코멘트를 입력해주세요.")
     })
     @PostMapping
-    public ResponseEntity<String> createCommentByJournalId(@Valid @RequestBody CommentsRequestDTO comments){
+    public ResponseEntity<String> createCommentByJournalId(@RequestBody Comments comments){
 
-        if(Objects.isNull(comments)){
-            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
+        if(Objects.isNull(comments.getComment())){
+            return ResponseEntity.badRequest().body("코멘트를 입력해주세요.");
         }
 
         String result = commentsService.createComment(comments);
-
-        if(result.isEmpty()){
-            return ResponseEntity.badRequest().body("코멘트가 비어 있습니다.");
-        }
 
         return ResponseEntity.ok(result);
     }
@@ -57,15 +54,12 @@ public class CommentsController {
     )
     @Parameter(name = "comments", description = "매매일지의 번호가 등록된 정보")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "코멘트가 전부 조회되었습니다."),
-            @ApiResponse(responseCode = "400", description = "입력된 정보가 없습니다.")
+            @ApiResponse(responseCode = "200", description = "코멘트가 전부 조회되었습니다.")
     })
     @PostMapping("/read")
     public List<CommentsVO> readCommentsByJournalId(@RequestBody CommentsRequestDTO comments){
 
-        System.out.println(comments);
-
-        if(Objects.isNull(comments)){
+        if(Objects.isNull(comments.getJournalId())){
             return null;
         }
 
@@ -94,6 +88,14 @@ public class CommentsController {
 
         Integer commentId = comments.getCommentId();
         String result = commentsService.deleteCommentByCommentId(commentId);
+
+        if(result.equals("404")){
+            return ResponseEntity.status(404).body("해당하는 데이터가 없습니다.");
+        }
+
+        if(result.equals("400")){
+            return ResponseEntity.status(400).body("이미 변경된 요청입니다.");
+        }
 
         return ResponseEntity.ok(result);
     }
