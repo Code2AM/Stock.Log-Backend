@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/labels")
@@ -48,6 +49,10 @@ public class LabelsController {
     @PostMapping("/create")
     public ResponseEntity<String> createLabelsByUserId(@Valid  @RequestBody LabelsDTO labels){
 
+        if(Objects.isNull(labels.getUserId())){
+            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
+        }
+
         String result = labelsService.createLabelsByUserId(labels);
         return ResponseEntity.ok(result);
     }
@@ -60,6 +65,9 @@ public class LabelsController {
     )
     @PostMapping("/update")
     public ResponseEntity<String> updateLabelsByLabelsId(@Valid @RequestBody LabelsDTO labels){
+        if(Objects.isNull(labels.getUserId())){
+            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
+        }
         System.out.println("수정 도착");
         System.out.println(labels);
         String result = labelsService.updateLabelByLabelsId(labels);
@@ -75,6 +83,9 @@ public class LabelsController {
     )
     @PostMapping("/delete")
     public ResponseEntity<String> deleteLabelsByLabelsId(@RequestBody LabelsDTO labels){
+        if(Objects.isNull(labels.getUserId())){
+            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
+        }
         String result = labelsService.deleteLabelsByLabelsId(labels);
 
         return ResponseEntity.ok(result);

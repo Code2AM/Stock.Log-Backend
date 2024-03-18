@@ -3,12 +3,15 @@ package com.code2am.stocklog.domain.notes.models.entity;
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.notes.models.dto.NotesDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@RequiredArgsConstructor
 @Table(name = "TBL_NOTES")
 public class Notes {
 
@@ -49,4 +52,5 @@ public class Notes {
         noteDTO.setLabelsDTO(this.labels.convertToDTO());
         return noteDTO;
     }
+
 }

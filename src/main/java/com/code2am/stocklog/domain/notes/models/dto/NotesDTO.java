@@ -3,6 +3,7 @@ package com.code2am.stocklog.domain.notes.models.dto;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.notes.models.entity.Notes;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -47,5 +48,16 @@ public class NotesDTO {
         note.setLabels(this.getLabelsDTO().convertToEntity());
 
         return note;
+    }
+
+    @Builder
+    public NotesDTO(Integer noteId, String noteName, String noteContents, LocalDateTime noteDate, String noteStatus, Integer userId, LabelsDTO labelsDTO) {
+        this.noteId = noteId;
+        this.noteName = noteName;
+        this.noteContents = noteContents;
+        this.noteDate = noteDate;
+        this.noteStatus = noteStatus;
+        this.userId = userId;
+        this.labelsDTO = labelsDTO;
     }
 }

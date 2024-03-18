@@ -33,8 +33,12 @@ public class NotesService {
 
         List<NotesDTO> notesDTOS = new ArrayList<>();
 
+        if (authUtil.getUserId() == null) {
+            throw new NullPointerException("userId가 null");
+        }
+
         notesRepository.findAllByUserId(authUtil.getUserId())
-                .forEach( note -> {
+                .forEach(note -> {
                     notesDTOS.add(note.convertToDTO());
                 });
 
@@ -44,7 +48,11 @@ public class NotesService {
     /**
      * 매매일지의 id 값을 받아 매매노트를 생성하는 메소드
      * */
-    public Notes createNoteByUserId(NotesDTO notesDTO) {
+    public String createNoteByUserId(NotesDTO notesDTO) {
+
+        if(notesDTO.getNoteName().isEmpty()){
+            return "제목이 없습니다.";
+        }
 
         // DTO를 앤티티에 담아 JPA를 통해 등록
         Notes newNote = notesDTO.convertToEntity();
@@ -55,14 +63,14 @@ public class NotesService {
 
         notesRepository.save(newNote);
 
-        return newNote;
+        return "성공";
     }
 
 
     /**
      * 매매일지를 삭제하는 메소드
      * */
-    public void deleteNoteByNoteId(NotesDTO notesDTO) {
+    public String deleteNoteByNoteId(NotesDTO notesDTO) {
 
         // 실제로 삭제하는 것이 아니라 단지 상태값을 N으로 만드는 것
         // DTO를 앤티티에 담아 넘긴다.
@@ -70,12 +78,14 @@ public class NotesService {
         deleteNote.setNoteStatus("N");
 
         notesRepository.save(deleteNote);
+        return "삭제 완료";
     }
 
     /* 노트의 내용을 변경하는 메소드 */
-    public void updateNoteByNoteId(NotesDTO notesDTO) {
+    public String updateNoteByNoteId(NotesDTO notesDTO) {
 
         notesDTO.setNoteDate(LocalDateTime.now());
         notesRepository.save(notesDTO.convertToEntity());
+        return "수정 성공";
     }
 }

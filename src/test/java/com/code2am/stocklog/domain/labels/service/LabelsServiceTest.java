@@ -144,7 +144,7 @@ class LabelsServiceTest {
     void createLabelsByUserId_성공(){
         // given
 
-            // 전달받은 dto
+        // 전달받은 dto
         LabelsDTO labelsDTO = LabelsDTO.builder()
                 .labelsTitle("Label1")
                 .build();
