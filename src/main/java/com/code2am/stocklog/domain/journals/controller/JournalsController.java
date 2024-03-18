@@ -87,7 +87,8 @@ public class JournalsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매일지 삭제 성공"),
             @ApiResponse(responseCode = "400", description = "매매일지 정보 없음"),
-            @ApiResponse(responseCode = "404", description = "삭제할 매매일지가 없음")
+            @ApiResponse(responseCode = "404", description = "삭제할 매매일지가 없음"),
+            @ApiResponse(responseCode = "500", description = "이미 삭제된 매매일지입니다.")
     })
     @PostMapping("/delete")
     public ResponseEntity<String> deleteJournalsByJournalsId(@RequestBody JournalsDTO journals){
@@ -100,6 +101,14 @@ public class JournalsController {
         Integer journalId = journals.getJournalId();
 
         String result = journalsService.deleteJournalsByJournalsId(journalId);
+
+        if(result.equals("매매일지 정보가 정상적으로 넘어오지 않았습니다.")){
+            return ResponseEntity.status(400).body("매매일지 정보가 정상적으로 넘어오지 않았습니다.");
+        }
+
+        if(result.equals("이미 삭제된 매매일지입니다.")){
+            return ResponseEntity.status(500).body("이미 삭제된 매매일지입니다.");
+        }
 
         if(result.equals("조회된 결과가 없습니다.")){
             return ResponseEntity.status(404).body("조회된 결과가 없습니다.");
@@ -116,7 +125,8 @@ public class JournalsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매일지 상태 변경 완료"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 입력"),
-            @ApiResponse(responseCode = "404", description = "해당 매매일지 없음")
+            @ApiResponse(responseCode = "404", description = "해당 매매일지 없음"),
+            @ApiResponse(responseCode = "500", description = "이미 바뀐 상태")
     })
     @PostMapping("/change")
     public ResponseEntity<String> updateJournalsStatusByJournalId(@RequestBody JournalsDTO journalsDTO){
@@ -129,6 +139,9 @@ public class JournalsController {
 
         String result = journalsService.updateJournalsStatusByJournalId(journalId);
 
+        if(result.equals("이미 닫힌 매매일지입니다.")){
+            return ResponseEntity.status(500).body("이미 닫힌 매매일지입니다.");
+        }
         if(result.equals("없는 매매일지입니다.")){
             return ResponseEntity.status(404).body("없는 매매일지입니다.");
         }
