@@ -8,6 +8,9 @@ import com.code2am.stocklog.domain.buy.service.BuyService;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,18 +33,31 @@ public class BuyController {
     @Operation(
             summary = "매수 등록",
             description = "매수를 등록합니다.",
-            tags = {"POST"}
+            tags = {"create"}
     )
+    @Parameter(name = "buy", description = "사용자가 매수한 기록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 성공"),
+            @ApiResponse(responseCode = "400", description = "입력값이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 매매일지입니다."),
+            @ApiResponse(responseCode = "400", description = "매수가는 0 이하일 수 없습니다."),
+            @ApiResponse(responseCode = "400", description = "매수량이 0 이하일 수 없습니다."),
+            @ApiResponse(responseCode = "404", description = "매수 기록이 없습니다.")
+    })
     @PostMapping
-    public ResponseEntity createBuy(@RequestBody Buy buy){
+    public ResponseEntity<String> createBuy(@RequestBody Buy buy){
 
         if(Objects.isNull(buy)){
-            return ResponseEntity.badRequest().body("입력값이 존재하지않습니다.");
+            return ResponseEntity.badRequest().body("입력값이 존재하지 않습니다.");
         }
 
         String result = buyService.createBuy(buy);
 
-        return ResponseEntity.ok(result);
+        return switch (result) {
+            case "입력값이 존재하지 않습니다.", "존재하지 않는 매매일지입니다.", "매수가는 0 이하일 수 없습니다.", "매수량이 0 이하일 수 없습니다." -> ResponseEntity.badRequest().body(result);
+            case "매수 기록이 없습니다." -> ResponseEntity.status(404).body(result);
+            default -> ResponseEntity.ok(result);
+        };        
     }
 
     @Operation(
