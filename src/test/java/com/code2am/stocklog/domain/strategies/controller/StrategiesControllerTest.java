@@ -136,9 +136,7 @@ class StrategiesControllerTest {
 
 
     /* deleteStrategyByStrategyIdAndUserId */
-    @Test
-    void deleteStrategyByStrategyIdAndUserId() {
-    }
+
 
     // 성공
     void deleteStrategyByStrategyIdAndUserId_성공() throws Exception{
@@ -187,9 +185,7 @@ class StrategiesControllerTest {
 
 
     /* updateStrategy */
-    @Test
-    void updateStrategy() {
-    }
+
 
     // 성공
     void updateStrategy_성공() throws Exception{

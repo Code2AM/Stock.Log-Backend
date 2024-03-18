@@ -35,7 +35,6 @@ public class NotesController {
     @Operation(
             summary = "매매노트 조회",
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다."
-            description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
 
     )
     @ApiResponses(value = {
