@@ -31,7 +31,12 @@ public class BuyService {
      * */
     public String createBuy(Buy buy) {
 
+        if(buy.getJournals() == null){
+            return "매매일지 정보가 없습니다.";
+        }
+
         Integer journalId = buy.getJournals().getJournalId();
+
 
         if(journalId <= 0){
             return "존재하지 않는 매매일지입니다.";
@@ -70,7 +75,7 @@ public class BuyService {
 
         Optional<Journals> updateJournals =  journalsRepoForBuy.findById(journalId);
         if(updateJournals.isEmpty()){
-            return "매수 기록이 없습니다.";
+            return "매매일지가 없습니다.";
         }
 
         Journals updateJournalsAvgBuy = updateJournals.get();
@@ -91,7 +96,7 @@ public class BuyService {
 
         Optional<Buy> deleteBuy = buyRepository.findById(buyId);
         if(deleteBuy.isEmpty()){
-            return "삭제 실패";
+            return "404";
         }
         Buy buy = deleteBuy.get();
 
@@ -108,7 +113,7 @@ public class BuyService {
         List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
 
         if(buyList.isEmpty()){
-            return "매수기록이 없습니다.";
+            return "404";
         }
 
         Integer buySum = 0;
@@ -130,7 +135,7 @@ public class BuyService {
         updateJournalsAvgBuy.setTotalQuantity(updateJournalsAvgBuy.getTotalQuantity() - minusValue); // 보유 총량 빼기
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
-        return "삭제 성공";
+        return "매수 삭제 성공";
     }
 
     /**
