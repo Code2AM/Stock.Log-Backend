@@ -1,10 +1,14 @@
 package com.code2am.stocklog.domain.labels.service;
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.AuthUtilException;
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.dao.LabelsDAO;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.models.entity.Labels;
 import com.code2am.stocklog.domain.labels.repository.LabelsRepository;
+import com.code2am.stocklog.domain.users.models.entity.Users;
+import com.code2am.stocklog.domain.users.repository.UsersRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,17 +16,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.verify;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LabelsServiceTest {
@@ -38,6 +41,9 @@ class LabelsServiceTest {
 
     @Mock
     private LabelsDAO labelsDAO;
+
+    @Mock
+    private UsersRepository usersRepository;
 
 
     /* readLabelsByUserId */
@@ -159,12 +165,36 @@ class LabelsServiceTest {
     }
 
     // authUtil 관련 예외 상황들
+    @Test
+    void createLabelsByUserId_UserIdIsNull() {
+        // given
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Test Label")
+                .build();
+
+        when(authUtil.getUserId()).thenReturn(null);
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> labelsService.createLabelsByUserId(labelsDTO),
+                "사용자 ID가 없습니다.");
+    }
+
 
     // LabelsDTO 가 null 인 경우
+    @Test
+    void createLabelsByUserId_DTO값이_NULL인경우() {
+        // given
+        LabelsDTO labelsDTO = null;
 
+        // when & then
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> labelsService.createLabelsByUserId(labelsDTO)
+        );
 
-
-
+        // 예외 메시지 확인
+        assertEquals("LabelsDTO의 값이 없습니다.", exception.getMessage());
+    }
 
 
     /* updateLabelByLabelsId */
@@ -190,8 +220,34 @@ class LabelsServiceTest {
     }
 
     // authUtil 예외
+    @Test
+    void updateLabelByLabelsId_UserIdIsNull() {
+        // given
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Test Label")
+                .build();
+
+        when(authUtil.getUserId()).thenReturn(null);
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> labelsService.updateLabelByLabelsId(labelsDTO),
+                "사용자 ID가 없습니다.");
+    }
 
     // repo에서 jpa관련 예외
+    @Test
+    void updateLabelByLabelsId_무결성_제약조건_위반() {
+        // given
+        LabelsDTO labelsDTO = new LabelsDTO();
+        labelsDTO.setLabelsId(1);
+        labelsDTO.setUserId(1); // 사용자 ID 설정
+
+        // save() 메소드가 호출될 때 DataIntegrityViolationException이 발생하도록 설정
+        doThrow(DataIntegrityViolationException.class).when(labelsRepository).save(any());
+
+        // when & then
+        assertEquals("데이터베이스 무결성 제약 조건 위반으로 인한 수정 실패", labelsService.updateLabelByLabelsId(labelsDTO));
+    }
 
     // convertEntity 예외
 
@@ -221,9 +277,39 @@ class LabelsServiceTest {
     }
 
     // authUtil 예외
+    @Test
+    void deleteLabelsByLabelsId_UserIdIsNull() {
+        // given
+        LabelsDTO labelsDTO = LabelsDTO.builder()
+                .labelsTitle("Test Label")
+                .build();
 
-    // repo에서 jpa관련 예외
+        when(authUtil.getUserId()).thenReturn(null);
+
+        // when & then
+        assertThrows(IllegalArgumentException.class, () -> labelsService.deleteLabelsByLabelsId(labelsDTO),
+                "사용자 ID가 없습니다.");
+    }
+
 
     // convertEntity 예외
+
+    // repo에서 jpa관련 예외
+    @Test
+    void deleteLabelsByLabelsId_무결성_제약조건_위반() {
+        // given
+        LabelsDTO labelsDTO = new LabelsDTO();
+        labelsDTO.setLabelsId(1);
+        labelsDTO.setUserId(1); // 사용자 ID 설정
+
+        // labelsRepository.save() 메서드가 호출될 때 DataIntegrityViolationException 발생하도록 설정
+        when(labelsRepository.save(any()))
+                .thenThrow(new DataIntegrityViolationException("데이터베이스 무결성 제약 조건 위반"));
+
+        given(authUtil.getUserId()).willReturn(1);
+
+        // when & then
+        assertEquals("데이터베이스 무결성 제약 조건 위반으로 인한 삭제 실패", labelsService.deleteLabelsByLabelsId(labelsDTO));
+    }
 
 }

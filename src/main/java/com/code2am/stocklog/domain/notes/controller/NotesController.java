@@ -34,8 +34,9 @@ public class NotesController {
      * */
     @Operation(
             summary = "매매노트 조회",
+            description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다."
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
-            tags = {"create"}
+
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
@@ -98,8 +99,7 @@ public class NotesController {
      * */
     @Operation(
             summary = "노트 삭제",
-            description = "이미 존재하고 있는 매매노트를 삭제합니다.",
-            tags = {"DELETE"}
+            description = "이미 존재하고 있는 매매노트를 삭제합니다."
     )
     @ApiResponse(responseCode = "200", description = "노트를 삭제함.")
     @PostMapping("/delete")
@@ -115,8 +115,7 @@ public class NotesController {
     /* Note를 수정하는 메소드 */
     @Operation(
             summary = "노트 수정",
-            description = "이미 존재하고 있는 매매노트를 수정합니다.",
-            tags = {"UPDATE"}
+            description = "이미 존재하고 있는 매매노트를 수정합니다."
     )
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
     @PostMapping("/update")

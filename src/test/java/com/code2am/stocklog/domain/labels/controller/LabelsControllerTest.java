@@ -1,24 +1,33 @@
 package com.code2am.stocklog.domain.labels.controller;
 
 
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.service.LabelsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,6 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(LabelsController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class LabelsControllerTest {
+
+    @InjectMocks
+    private LabelsController labelsController;
 
     @MockBean
     private LabelsService labelsService;
@@ -37,6 +49,8 @@ class LabelsControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private AuthUtil authUtil;
 
     /* readLabelsByUserId */
 
@@ -127,11 +141,26 @@ class LabelsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("라벨 제목, 텅 빈 공간은 NO!"));
+                .andExpect(content().string("최소 한 글자 이상 입력해주세요"));
     }
 
     // 사용자 인증이 되지 않는 경우
+    @Test
+    void createLabelsByUserId_사용자_인증_실패() {
+        // given
+        LabelsDTO labelsDTO = new LabelsDTO();
+        // labelsDTO에 필요한 필드들을 채워넣습니다.
 
+        // 사용자 인증이 실패하는 상황을 설정합니다.
+        given(authUtil.getUserId()).willReturn(null);
+
+        // when
+        ResponseEntity<String> response = labelsController.createLabelsByUserId(labelsDTO);
+
+        // then
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("사용자 인증 실패", response.getBody());
+    }
 
     /* updateLabelsByLabelsId */
 
@@ -177,7 +206,7 @@ class LabelsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("라벨 제목, 텅 빈 공간은 NO!"));
+                .andExpect(content().string("최소 한 글자 이상 입력해주세요"));
     }
 
     // 사용자 인증이 되지 않는 경우
