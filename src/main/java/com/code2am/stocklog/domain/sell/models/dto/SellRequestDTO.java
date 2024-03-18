@@ -3,6 +3,7 @@ package com.code2am.stocklog.domain.sell.models.dto;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;

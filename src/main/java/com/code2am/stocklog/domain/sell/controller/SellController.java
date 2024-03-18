@@ -8,6 +8,7 @@ import com.code2am.stocklog.domain.sell.service.SellService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,11 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/sell")
 @Tag(name = "매도 API", description = "매도 기록을 관리하는 API")
+@RequiredArgsConstructor
 public class SellController {
 
-    @Autowired
-    private SellService sellService;
+
+    private final SellService sellService;
 
     @Operation(
             summary = "매도 등록",
@@ -61,7 +63,7 @@ public class SellController {
             tags = {"POST"}
     )
     @PostMapping("/delete")
-    public ResponseEntity deleteSellBySellId(@Valid @RequestBody SellRequestDTO sellRequestDTO){
+    public ResponseEntity deleteSellBySellId(@RequestBody SellRequestDTO sellRequestDTO){
 
         String result = sellService.deleteSellBySellId(sellRequestDTO);
 
