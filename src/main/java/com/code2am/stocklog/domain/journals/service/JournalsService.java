@@ -27,6 +27,9 @@ public class JournalsService {
     @Autowired
     private JournalsDAO journalsDAO;
 
+    /**
+     * 매매일지 조회
+     * */
     public List<JournalsDTO> readJournalsByUserId(Integer userId) {
         return journalsDAO.readJournalsByUserId(userId);
     }
@@ -91,7 +94,6 @@ public class JournalsService {
         JournalsVO data = journalsDAO.readJournalsByJournalId(journalId);
 
         if(Objects.isNull(data)){
-            System.out.println("조회된 결과값이 없음");
             return "조회된 결과가 없습니다.";
         }
 
