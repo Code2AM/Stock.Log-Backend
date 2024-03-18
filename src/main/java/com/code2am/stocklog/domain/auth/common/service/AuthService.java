@@ -28,9 +28,7 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final TokenUtils tokenUtils;
     private final RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     public String signup(UserDTO userDTO) {
@@ -60,6 +58,8 @@ public class AuthService {
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 AuthDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+        System.out.println(authentication);
 
         System.out.println(3);
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
