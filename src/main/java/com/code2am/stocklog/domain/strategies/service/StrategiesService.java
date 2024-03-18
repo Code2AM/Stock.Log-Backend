@@ -77,7 +77,7 @@ public class StrategiesService {
 
 
     /** 사용자의 매매전략을 수정하는 메소드 */
-    public void updateStrategy(StrategiesDTO strategy) {
+    public String updateStrategy(StrategiesDTO strategy) {
 
         UsersAndStrategies usersAndStrategies = new UsersAndStrategies();
 
@@ -109,10 +109,12 @@ public class StrategiesService {
 
             usersAndStrategiesRepository.save(usersAndStrategies);
         }
+
+        return "수정 성공!";
     }
 
     /** 매매전략을 작성한 사용자의 id 값과 자체 id 값을 이용해 매매전략을 삭제하는 메소드 */
-    public void deleteStrategyByStrategyIdAndUserId(StrategiesDTO strategy) {
+    public String deleteStrategyByStrategyIdAndUserId(StrategiesDTO strategy) {
 
         Integer userId = authUtil.getUserId();
 
@@ -121,6 +123,8 @@ public class StrategiesService {
         System.out.println("userID : "+userId+" strategyId : "+strategyId);
 
         usersAndStrategiesRepository.deleteByUserIdAndStrategyId(userId,strategyId);
+
+        return "성공적으로 삭제되었습니다.";
 
     }
 

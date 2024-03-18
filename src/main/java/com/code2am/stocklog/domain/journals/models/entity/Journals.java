@@ -61,22 +61,24 @@ public class Journals {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
-    private Users users;
+    private Users user;
 
 
     @Builder
-    public Journals(Integer journalId, LocalDateTime journalDate, String stockName, Integer totalQuantity, Integer avgBuyPrice, Integer avgSellPrice, Integer profit, LocalDateTime lastedTradeDate, Integer strategyId, double fee, String status, Users users) {
+    public Journals(Integer journalId, LocalDateTime journalDate, String stockName, Integer totalQuantity, Integer avgBuyPrice, Integer totalBuyQuantity, Integer avgSellPrice, Integer totalSellQuantity, Integer profit, LocalDateTime lastedTradeDate, Integer strategyId, double fee, String status, Users user) {
         this.journalId = journalId;
         this.journalDate = journalDate;
         this.stockName = stockName;
         this.totalQuantity = totalQuantity;
         this.avgBuyPrice = avgBuyPrice;
+        this.totalBuyQuantity = totalBuyQuantity;
         this.avgSellPrice = avgSellPrice;
+        this.totalSellQuantity = totalSellQuantity;
         this.profit = profit;
         this.lastedTradeDate = lastedTradeDate;
         this.strategyId = strategyId;
         this.fee = fee;
         this.status = status;
-        this.users = users;
+        this.user = user;
     }
 }

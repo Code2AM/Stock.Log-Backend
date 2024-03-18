@@ -68,7 +68,7 @@ public class JournalsService {
         newJournal.setFee(journals.getFee());
         newJournal.setProfit(0);
         newJournal.setStatus("open");
-        newJournal.setUserId(userId);
+//        newJournal.setUserId(userId);
 
         Buy newBuy = new Buy();
         newBuy.setJournals(newJournal);
@@ -102,7 +102,7 @@ public class JournalsService {
         delete.setTotalQuantity(data.getTotalQuantity());
         delete.setFee(data.getFee());
         delete.setLastedTradeDate(data.getLastedTradeDate());
-        delete.setUserId(data.getUserId());
+//        delete.setUserId(data.getUserId());
         delete.setAvgSellPrice(data.getAvgSellPrice());
         delete.setAvgBuyPrice(data.getAvgBuyPrice());
         delete.setStrategyId(data.getStrategyId());
@@ -132,7 +132,7 @@ public class JournalsService {
         update.setTotalQuantity(data.getTotalQuantity());
         update.setFee(data.getFee());
         update.setLastedTradeDate(data.getLastedTradeDate());
-        update.setUserId(data.getUserId());
+//        update.setUserId(data.getUserId());
         update.setAvgSellPrice(data.getAvgSellPrice());
         update.setAvgBuyPrice(data.getAvgBuyPrice());
         update.setStrategyId(data.getStrategyId());

@@ -127,7 +127,7 @@ class LabelsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("라벨 제목, 텅 빈 공간은 NO!"));
+                .andExpect(content().string("최소 한 글자 이상 입력해주세요"));
     }
 
     // 사용자 인증이 되지 않는 경우
@@ -177,7 +177,7 @@ class LabelsControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("라벨 제목, 텅 빈 공간은 NO!"));
+                .andExpect(content().string("최소 한 글자 이상 입력해주세요"));
     }
 
     // 사용자 인증이 되지 않는 경우
