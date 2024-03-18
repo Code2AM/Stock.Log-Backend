@@ -31,4 +31,8 @@ public class JournalsVO {
 
     private String status;
 
+    private Integer totalBuyQuantity;
+
+    private Integer totalSellQuantity;
+
 }

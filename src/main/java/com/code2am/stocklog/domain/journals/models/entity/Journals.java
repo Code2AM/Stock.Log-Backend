@@ -5,12 +5,15 @@ import com.code2am.stocklog.domain.comments.models.entity.Comments;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.users.models.entity.Users;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 @Entity
 @Table(name = "TBL_JOURNALS")
 public class Journals {
@@ -32,8 +35,14 @@ public class Journals {
     @Column(name = "AVG_BUY_PRICE")
     private Integer avgBuyPrice;
 
+    @Column(name = "TOTAL_BUY_QUANTITY")
+    private Integer totalBuyQuantity;
+
     @Column(name = "AVG_SELL_PRICE")
     private Integer avgSellPrice;
+
+    @Column(name = "TOTAL_SELL_QUANTITY")
+    private Integer totalSellQuantity;
 
     @Column(name = "PROFIT")
     private Integer profit;
@@ -50,15 +59,24 @@ public class Journals {
     @Column(name = "STATUS")
     private String status;
 
+//    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
     private Integer userId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals")
-    private List<Buy> buy;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals")
-    private List<Sell> sell;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "journals")
-    private List<Comments> comments;
+    @Builder
+    public Journals(Integer journalId, LocalDateTime journalDate, String stockName, Integer totalQuantity, Integer avgBuyPrice, Integer avgSellPrice, Integer profit, LocalDateTime lastedTradeDate, Integer strategyId, double fee, String status, Integer userId) {
+        this.journalId = journalId;
+        this.journalDate = journalDate;
+        this.stockName = stockName;
+        this.totalQuantity = totalQuantity;
+        this.avgBuyPrice = avgBuyPrice;
+        this.avgSellPrice = avgSellPrice;
+        this.profit = profit;
+        this.lastedTradeDate = lastedTradeDate;
+        this.strategyId = strategyId;
+        this.fee = fee;
+        this.status = status;
+        this.userId = userId;
+    }
 }

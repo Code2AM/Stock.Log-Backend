@@ -3,7 +3,9 @@ package com.code2am.stocklog.domain.sell.service;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.sell.Infra.JournalsRepoForSell;
 import com.code2am.stocklog.domain.sell.dao.SellDAO;
+import com.code2am.stocklog.domain.sell.handler.exception.SellException;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
+import com.code2am.stocklog.domain.sell.models.dto.SellRequestDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.sell.repository.SellRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -29,67 +32,58 @@ public class SellService {
     /**
      * 매도 등록
      * */
-    public String createSell(Sell sell) {
+    public String createSell(SellRequestDTO sellRequestDTO) {
 
-        Integer journalId = sell.getJournals().getJournalId();
+        System.out.println(sellRequestDTO);
+        // 받은 dto를 entity로 변환
+        Sell sell = sellRequestDTO.convertToEntity();
 
-        if(journalsRepo.findById(journalId).isPresent() && journalsRepo.findById(journalId).get().getTotalQuantity() < sell.getSellQuantity()){
-            return "매도물량이 보유물량보다 클 수 없습니다.";
+        System.out.println(sell);
+        // 해당 매도의 매매일지 id를 받는다
+        Integer journalId = sell.getJournal().getJournalId();
+
+        System.out.println(journalId);
+        // 해당 매도의 매매일지를 불러온다
+        Journals journal;
+
+        try {
+            journal = journalsRepo.findById(journalId).get();
+        }
+        catch (NoSuchElementException e){
+            throw new SellException("존재하지 않는 매매일지입니다.");
         }
 
-        if(journalId <= 0){
-            return "존재하지 않는 매매일지입니다.";
+
+        if( journal.getTotalQuantity() < sell.getSellQuantity() ){
+            throw new SellException("매도물량이 보유물량보다 클 수 없습니다.");
         }
 
-        if(sell.getSellPrice() <= 0){
-            return "매도가는 0 이하일 수 없습니다.";
-        }
+        /* Sell 저장 */
 
-        if(sell.getSellQuantity() <= 0){
-            return "매도량이 0 이하일 수 없습니다.";
-        }
+        // 매도 entity에 불러온 journal을 담아서 최신화
+        sell.setJournal(journal);
 
+        // 매도의 상태 "Y"
         sell.setStatus("Y");
-        sellRepository.save(sell);
 
-        // 평균값 등록 로직
-        List<SellDTO> sellList = sellDAO.readSellByJournalId(journalId);
+        // 등록
+        Sell saveResult = sellRepository.save(sell);
 
-        Integer sellSum = 0;
+        // 등록 됐는지 확인
+        System.out.println(saveResult);
 
-        for (SellDTO sellDTO : sellList) {
-            sellSum += sellDTO.getSellPrice();
-        }
 
-        Integer sellAvg = sellSum / sellList.size();
 
-        Optional<Journals> updateJournals = journalsRepo.findById(journalId);
-        if(updateJournals.isEmpty()){
-            return "평균값 등록 실패";
-        }
+        /* Journal 저장 */
 
-        Journals updateJournalsAvgSell = updateJournals.get();
-        updateJournalsAvgSell.setAvgSellPrice(sellAvg);
-        updateJournalsAvgSell.setLastedTradeDate(LocalDateTime.now());
-        updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() - sell.getSellQuantity()); // 보유총량 빼기
-        journalsRepo.save(updateJournalsAvgSell);
+        // 해당하는 매매일지에 등록할 평균값 / 총량 update
+        Journals updateJournal = updateSell(journal);
 
-        // 손익 계산 로직
-        Optional<Journals> profitCal = journalsRepo.findById(journalId);
-        if(profitCal.isEmpty()){
-            return "손익계산 실패";
-        }
+        // 저장하기전 값이 제대로 들어갔는지 확인
+        System.out.println(updateJournal);
 
-        Integer avgBuyPrice = profitCal.get().getAvgBuyPrice();
-        Integer avgSellPrice = profitCal.get().getAvgSellPrice();
-        Integer totalQuantity = profitCal.get().getTotalQuantity();
-        double fee = profitCal.get().getFee();
-
-        profitCal.get().setProfit((int) ((avgSellPrice - avgBuyPrice) * totalQuantity * (1 - fee)));
-        System.out.println(profitCal.get().getProfit());
-        Journals updateProfit = profitCal.get();
-
-        journalsRepo.save(updateProfit);
+        // 최신화된 매매일지를 저장
+        journalsRepo.save(updateJournal);
 
         return "등록 성공";
     }
@@ -105,78 +99,92 @@ public class SellService {
     /**
      * 매도 삭제
      * */
-    public String deleteSellBySellId(Integer sellId) {
+    public String deleteSellBySellId(SellRequestDTO sellRequestDTO) {
 
-        Optional<Sell> deleteSell = sellRepository.findById(sellId);
-        if(deleteSell.isEmpty()){
-            return "삭제 실패";
-        } else if (deleteSell.get().getStatus().equals("N")) {
-            return "이미 삭제된 매도기록입니다.";
+        // 받은 dto를 entity로 변환
+        Sell deleteSell = sellRequestDTO.convertToEntity();
+
+        // 해당 매도의 매매일지 id를 받는다
+        Integer journalId = deleteSell.getJournal().getJournalId();
+
+        // 해당 매도의 매매일지를 불러온다
+        Journals journal;
+
+        try {
+            journal = journalsRepo.findById(journalId).get();
+        }
+        catch (NoSuchElementException e){
+            throw new SellException("존재하지 않는 매매일지입니다.");
         }
 
-        Sell sell = deleteSell.get();
-        sell.setStatus("N");
+        // 매도 entity에 불러온 journal을 담아서 최신화
+        deleteSell.setJournal(journal);
 
-        SellDTO oldSellDate = sellDAO.readLastedDateBySellId(sellId); // 값을 미리 빼둔다.
+        /* Sell 삭제 */
+        deleteSell.setStatus("N");
 
-        Integer plusValue = sell.getSellQuantity(); // 값을 미리 빼둔다.
-        sellRepository.save(sell);
+        sellRepository.save(deleteSell);
 
-        Integer journalId = deleteSell.get().getJournals().getJournalId();
 
-        // 평균값 등록 로직
-        List<SellDTO> sellList = sellDAO.readSellByJournalId(journalId);
-        Integer sellSum = 0;
 
-        if(sellList.isEmpty()){
-            sellSum = 0;
-        }else {
-            for (SellDTO sellDTO : sellList) {
-                sellSum += sellDTO.getSellPrice();
-            }
-        }
+        /* Journal 저장 */
 
-        int sellAvg = 0;
+        // 해당하는 매매일지에 등록할 평균값을 구한다
+        Journals updateJournal = updateSell(journal);
 
-        if(sellSum != 0){
-            sellAvg = sellSum / sellList.size();
-        }
+        // 저장하기전 값이 제대로 들어갔는지 확인
+        System.out.println(updateJournal);
 
-        Optional<Journals> updateJournals = journalsRepo.findById(journalId);
-        if(updateJournals.isEmpty()){
-            return "평균값 등록 실패";
-        }
-
-        Journals updateJournalsAvgSell = updateJournals.get();
-        if(!(oldSellDate == null)){
-            updateJournalsAvgSell.setLastedTradeDate(oldSellDate.getSellDate());
-        }
-        updateJournalsAvgSell.setAvgSellPrice(sellAvg);
-        updateJournalsAvgSell.setTotalQuantity(updateJournalsAvgSell.getTotalQuantity() + plusValue); // 보유총량 더하기
-        journalsRepo.save(updateJournalsAvgSell);
-
-        // 손익 계산 로직
-        Optional<Journals> profitCal = journalsRepo.findById(journalId);
-        if(profitCal.isEmpty()){
-            return "손익계산 실패";
-        }
-
-        Integer avgBuyPrice = profitCal.get().getAvgBuyPrice();
-        Integer avgSellPrice = profitCal.get().getAvgSellPrice();
-        Integer totalQuantity = profitCal.get().getTotalQuantity();
-        double fee = profitCal.get().getFee();
-
-        if(avgSellPrice != 0){
-            profitCal.get().setProfit((int) ((avgSellPrice - avgBuyPrice) * totalQuantity * (1 - fee)));
-        }else {
-            profitCal.get().setProfit(0);
-        }
-
-        Journals updateProfit = profitCal.get();
-
-        journalsRepo.save(updateProfit);
+        // 최신화된 매매일지를 저장
+        journalsRepo.save(updateJournal);
 
         return "삭제 성공";
+    }
+
+
+
+    /* 매매일지 정보 최신화 */
+    public Journals updateSell(Journals journal){
+        // journaId 기반 모든 Sell을 불러온다
+        List<Sell> sellList = sellRepository.findAllByJournal(journal);
+
+
+        /* 매도 평균 값 update */
+        // Stream API를 사용하여 평균 값 계산
+        double averagePrice = sellList.stream()
+                .mapToInt(Sell::getSellPrice) // Sell 객체의 sellPrice 필드 추출
+                .average() // 평균 계산
+                .getAsDouble(); // Optional 객체의 값을 double 형으로 변환 // sellList 가 없는 경우 NoSuchElement 에러 반환
+
+        journal.setAvgSellPrice((int) averagePrice);
+
+
+        /* 매도 총량 update */
+        Integer totalSellQuantity = sellList.stream()
+                .mapToInt(Sell::getSellQuantity) // Sell 객체의 sellQuantity 필드 추출
+                .sum(); // 모든 sell의 합계를 구함
+
+        journal.setTotalSellQuantity(totalSellQuantity);
+
+
+        /* profit을 update */
+        // profit = 매도총액 - 매수총액
+
+        // 매도총액
+        Integer totalSellPrice = journal.getAvgSellPrice() * journal.getTotalSellQuantity();
+
+        // 매수총액
+        Integer totalBuyPrice = journal.getAvgBuyPrice() * journal.getTotalSellQuantity();
+
+        // profit 에서 수수료를 뺀다
+        double fee = journal.getFee();
+
+        double profit = (totalSellPrice - totalBuyPrice) - (totalSellPrice * fee);
+
+        journal.setProfit( (int) profit );
+
+
+        return journal;
     }
 
 }

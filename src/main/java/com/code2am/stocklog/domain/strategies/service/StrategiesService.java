@@ -33,13 +33,11 @@ public class StrategiesService {
     @Autowired
     private AuthUtil authUtil;
 
-    /**
-     * 매매전략을 생성하는 메소드
-     * */
+    /** 매매전략 생성 */
     public String createStrategy(StrategiesDTO strategy) {
 
-
-        UsersAndStrategies usersAndStrategies = new UsersAndStrategies(); // 복합키, 중간 테이블을 이용해 직접적인 관계를 만들지 않도록 한다.
+        // 복합키, 중간 테이블을 이용해 직접적인 관계를 만들지 않도록 한다.
+        UsersAndStrategies usersAndStrategies = new UsersAndStrategies();
 
         Integer userId = authUtil.getUserId();
 
@@ -71,78 +69,14 @@ public class StrategiesService {
         return "정상적으로 등록되었습니다.";
     }
 
-    /**
-     * 매매전략을 조회하는 메소드
-     * */
+
+    /** 매매전략을 조회하는 메소드 */
     public List<StrategiesDTO> readStrategies() {
         return strategiesDAO.readStrategies();
     }
 
-    /**
-     * 매매전략을 삭제하는 메소드
-     * */
-    public void deleteStrategyByStrategyId(StrategiesDTO strategy) {
-        // 실제로는 삭제가 아닌 상태를 변경하는 로직
 
-        StrategiesDTO find = readStrategyByStrategyId(strategy.getStrategyId());
-
-        // 상태가 "Y"인 것 중 해당되는 것이 없다면 로직을 정지
-        if(Objects.isNull(find)){
-            return;
-        }
-
-        Strategies deleteStrategy = new Strategies();
-        deleteStrategy.setStrategyId(strategy.getStrategyId());
-        deleteStrategy.setStrategyName(strategy.getStrategyName());
-        deleteStrategy.setStrategyStatus("N");
-
-        strategiesRepository.save(deleteStrategy);
-    }
-
-    /**
-     * 매매전략을 해당 id 값을 이용해 조회하는 메소드
-     * */
-    public StrategiesDTO readStrategyByStrategyId(Integer strategyId){
-        return strategiesDAO.readStrategyByStrategyId(strategyId);
-    }
-
-    /**
-     * 매매전략을 해당 이름으로 조회하는 메소드
-     * */
-    public StrategiesDTO readStrategyByStrategyName(String strategyName){
-        return strategiesDAO.readStrategyByStrategyName(strategyName);
-    }
-
-    /**
-     * 매매전략을 사용자의 id 값을 이용해 리스트로 반환하도록 조회하는 메소드
-     * */
-    public List<StrategiesDTO> readStrategiesByUserId() {
-
-        Integer userId = authUtil.getUserId();
-
-        List<UsersAndStrategies> strategies = usersAndStrategiesRepository.findAllByUserId(userId);
-
-        return strategies.stream()
-                .map(UsersAndStrategies::convertToDTO)
-                .toList();
-    }
-
-    /**
-     * 매매전략을 작성한 사용자의 id 값과 자체 id 값을 이용해 매매전략을 삭제하는 메소드
-     * */
-    public void deleteStrategyByStrategyIdAndUserId(StrategiesDTO strategy) {
-
-        Integer userId = authUtil.getUserId();
-
-        Integer strategyId = strategy.getStrategyId();
-
-        System.out.println("userID : "+userId+" strategyId : "+strategyId);
-
-        usersAndStrategiesRepository.deleteByUserIdAndStrategyId(userId,strategyId);
-
-    }
-
-    /* 사용자의 매매전략을 수정하는 메소드*/
+    /** 사용자의 매매전략을 수정하는 메소드 */
     public void updateStrategy(StrategiesDTO strategy) {
 
         UsersAndStrategies usersAndStrategies = new UsersAndStrategies();
@@ -176,4 +110,77 @@ public class StrategiesService {
             usersAndStrategiesRepository.save(usersAndStrategies);
         }
     }
+
+    /** 매매전략을 작성한 사용자의 id 값과 자체 id 값을 이용해 매매전략을 삭제하는 메소드 */
+    public void deleteStrategyByStrategyIdAndUserId(StrategiesDTO strategy) {
+
+        Integer userId = authUtil.getUserId();
+
+        Integer strategyId = strategy.getStrategyId();
+
+        System.out.println("userID : "+userId+" strategyId : "+strategyId);
+
+        usersAndStrategiesRepository.deleteByUserIdAndStrategyId(userId,strategyId);
+
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 매매전략을 해당 id 값을 이용해 조회하는 메소드
+     * */
+    public StrategiesDTO readStrategyByStrategyId(Integer strategyId){
+        return strategiesDAO.readStrategyByStrategyId(strategyId);
+    }
+
+    /**
+     * 매매전략을 해당 이름으로 조회하는 메소드
+     * */
+    public StrategiesDTO readStrategyByStrategyName(String strategyName){
+        return strategiesDAO.readStrategyByStrategyName(strategyName);
+    }
+
+    /**
+     * 매매전략을 사용자의 id 값을 이용해 리스트로 반환하도록 조회하는 메소드
+     * */
+    public List<StrategiesDTO> readStrategiesByUserId() {
+
+        Integer userId = authUtil.getUserId();
+
+        List<UsersAndStrategies> strategies = usersAndStrategiesRepository.findAllByUserId(userId);
+
+        return strategies.stream()
+                .map(UsersAndStrategies::convertToDTO)
+                .toList();
+    }
+
+    /** 매매전략을 삭제하는 메소드 */
+    public void deleteStrategyByStrategyId(StrategiesDTO strategy) {
+        // 실제로는 삭제가 아닌 상태를 변경하는 로직
+
+        StrategiesDTO find = readStrategyByStrategyId(strategy.getStrategyId());
+
+        // 상태가 "Y"인 것 중 해당되는 것이 없다면 로직을 정지
+        if(Objects.isNull(find)){
+            return;
+        }
+
+        Strategies deleteStrategy = new Strategies();
+        deleteStrategy.setStrategyId(strategy.getStrategyId());
+        deleteStrategy.setStrategyName(strategy.getStrategyName());
+        deleteStrategy.setStrategyStatus("N");
+
+        strategiesRepository.save(deleteStrategy);
+    }
+
+
+
+
 }

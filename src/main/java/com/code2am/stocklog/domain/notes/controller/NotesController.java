@@ -35,6 +35,8 @@ public class NotesController {
     @Operation(
             summary = "매매노트 조회",
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다."
+            description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다.",
+
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
@@ -55,7 +57,9 @@ public class NotesController {
      * */
     @Operation(
             summary = "노트 등록",
-            description = "신규 노트를 등록합니다.")
+            description = "신규 노트를 등록합니다.",
+            tags = {"POST"}
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "노트를 성공적으로 등록함."),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 값이 정상적으로 입력되지 앟음."),
@@ -100,8 +104,10 @@ public class NotesController {
     @ApiResponse(responseCode = "200", description = "노트를 삭제함.")
     @PostMapping("/delete")
     public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
+
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.deleteNoteByNoteId(notesDTO);
+
         return ResponseEntity.ok("삭제성공");
     }
 

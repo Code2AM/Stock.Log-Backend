@@ -2,14 +2,18 @@ package com.code2am.stocklog.domain.sell.models.entity;
 
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
+import com.code2am.stocklog.domain.sell.models.dto.SellResponseDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TBL_SELL")
 @Data
+@RequiredArgsConstructor
 public class Sell {
 
     @Id
@@ -29,20 +33,32 @@ public class Sell {
     @Column(name = "STATUS")
     private String status;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "JOURNAL_ID")
-    private Journals journals;
+    private Journals journal;
 
     /* DTO Converter */
-    public SellDTO convertToDTO() {
-        SellDTO sellDTO = new SellDTO();
-        sellDTO.setSellId(this.sellId);
-        sellDTO.setSellDate(this.sellDate);
-        sellDTO.setSellPrice(this.sellPrice);
-        sellDTO.setSellQuantity(this.sellQuantity);
-        sellDTO.setStatus(this.status);
+    public SellResponseDTO convertToDTO() {
 
-        return sellDTO;
+        return SellResponseDTO.builder()
+                .sellId(this.sellId)
+                .sellDate(this.sellDate)
+                .sellPrice(this.sellPrice)
+                .sellQuantity(this.sellQuantity)
+                .status(this.status)
+                .journalId(this.journal.getJournalId())
+                .build();
+    }
+
+    /* Builder */
+    @Builder
+    public Sell(Integer sellId, LocalDateTime sellDate, Integer sellPrice, Integer sellQuantity, String status, Journals journal) {
+        this.sellId = sellId;
+        this.sellDate = sellDate;
+        this.sellPrice = sellPrice;
+        this.sellQuantity = sellQuantity;
+        this.status = status;
+        this.journal = journal;
     }
 
 }

@@ -53,9 +53,7 @@ class LabelsControllerTest {
     private AuthUtil authUtil;
 
     /* readLabelsByUserId */
-    @Test
-    void readLabelsByUserId() {
-    }
+
 
     // 성공
     @Test

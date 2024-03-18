@@ -2,10 +2,12 @@ package com.code2am.stocklog.domain.sell.controller;
 
 import com.code2am.stocklog.domain.sell.models.dto.InputDTO;
 import com.code2am.stocklog.domain.sell.models.dto.SellDTO;
+import com.code2am.stocklog.domain.sell.models.dto.SellRequestDTO;
 import com.code2am.stocklog.domain.sell.models.entity.Sell;
 import com.code2am.stocklog.domain.sell.service.SellService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +29,9 @@ public class SellController {
             tags = {"POST"}
     )
     @PostMapping
-    public ResponseEntity createSell(@RequestBody Sell sell){
+    public ResponseEntity createSell(@Valid @RequestBody SellRequestDTO sellRequestDTO){
 
-        if(Objects.isNull(sell)){
-            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
-        }
-
-        String result = sellService.createSell(sell);
+        String result = sellService.createSell(sellRequestDTO);
 
         return ResponseEntity.ok(result);
     }
@@ -63,15 +61,9 @@ public class SellController {
             tags = {"POST"}
     )
     @PostMapping("/delete")
-    public ResponseEntity deleteSellBySellId(@RequestBody SellDTO sellDTO){
+    public ResponseEntity deleteSellBySellId(@Valid @RequestBody SellRequestDTO sellRequestDTO){
 
-        Integer sellId = sellDTO.getSellId();
-
-        if(Objects.isNull(sellId)){
-            return ResponseEntity.badRequest().body("잘못된 입력입니다.");
-        }
-
-        String result = sellService.deleteSellBySellId(sellId);
+        String result = sellService.deleteSellBySellId(sellRequestDTO);
 
         return ResponseEntity.ok(result);
     }
