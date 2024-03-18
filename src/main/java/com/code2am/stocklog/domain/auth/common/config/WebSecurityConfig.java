@@ -67,7 +67,9 @@ public class WebSecurityConfig {
                 .requestMatchers(
                         "/auth/*",
                         "/oauth/*",
-                        "/mail/*"
+                        "/mail/*",
+                        "/swagger-ui/**",
+                        "/v3/**"
                 ).permitAll()
                 .anyRequest().authenticated()   // 나머지 API 는 전부 인증 필요
 

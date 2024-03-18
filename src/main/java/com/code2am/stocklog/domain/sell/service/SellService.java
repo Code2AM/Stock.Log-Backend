@@ -34,12 +34,15 @@ public class SellService {
      * */
     public String createSell(SellRequestDTO sellRequestDTO) {
 
+        System.out.println(sellRequestDTO);
         // 받은 dto를 entity로 변환
         Sell sell = sellRequestDTO.convertToEntity();
 
+        System.out.println(sell);
         // 해당 매도의 매매일지 id를 받는다
         Integer journalId = sell.getJournal().getJournalId();
 
+        System.out.println(journalId);
         // 해당 매도의 매매일지를 불러온다
         Journals journal;
 
@@ -171,12 +174,12 @@ public class SellService {
         Integer totalSellPrice = journal.getAvgSellPrice() * journal.getTotalSellQuantity();
 
         // 매수총액
-        Integer totalBuyPrice = journal.getAvgBuyPrice() * journal.getTotalBuyQuantity();
+        Integer totalBuyPrice = journal.getAvgBuyPrice() * journal.getTotalSellQuantity();
 
         // profit 에서 수수료를 뺀다
         double fee = journal.getFee();
 
-        double profit = (totalSellPrice - totalBuyPrice) * (1 - fee);
+        double profit = (totalSellPrice - totalBuyPrice) - (totalSellPrice * fee);
 
         journal.setProfit( (int) profit );
 
