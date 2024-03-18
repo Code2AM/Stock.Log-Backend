@@ -5,6 +5,7 @@ import com.code2am.stocklog.domain.buy.infra.JournalsRepoForBuy;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.dto.InputDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
+import com.code2am.stocklog.domain.buy.repository.BuyRepository;
 import com.code2am.stocklog.domain.buy.service.BuyService;
 import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
@@ -54,6 +55,9 @@ class BuyControllerTest {
 
     @MockBean
     private BuyDAO buyDAO;
+
+    @MockBean
+    private BuyRepository buyRepository;
 
     @Test
     void 매수_등록_성공() throws Exception {
@@ -185,25 +189,110 @@ class BuyControllerTest {
 
     @Test
     void 매수_조회_성공했으나_반환값이_없는_경우() throws Exception {
-        // Given
+
         InputDTO inputDTO = new InputDTO();
         inputDTO.setJournalId(100);
 
         List<BuyDTO> list = new ArrayList<>();
 
         String requestBody = objectMapper.writeValueAsString(inputDTO);
-        String responseBody = objectMapper.writeValueAsString(list);
 
         given(buyService.readBuyByJournalId(inputDTO.getJournalId())).willReturn(list);
 
-        // When and Then
         mockMvc.perform(post("/buy/list")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+                .andExpect(content().string(""));
     }
+
     @Test
-    void deleteBuyByBuyId() {
+    void 매수_삭제_성공() throws Exception {
+
+        BuyDTO buy = new BuyDTO();
+        buy.setBuyId(100);
+
+        String success = "매수 삭제 성공";
+
+        given(buyService.deleteBuyByBuyId(buy.getBuyId())).willReturn(success);
+
+        String requestBody = objectMapper.writeValueAsString(buy);
+
+        mockMvc.perform(post("/buy/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(content().string(success));
     }
+
+    @Test
+    void 삭제하려는_매수_기록의_매개변수가_없는_경우() throws Exception {
+
+        BuyDTO buy = new BuyDTO();
+
+        String error = "존재하지 않는 매수기록입니다.";
+
+        given(buyService.deleteBuyByBuyId(buy.getBuyId())).willReturn(error);
+
+        String requestBody = objectMapper.writeValueAsString(buy);
+
+        mockMvc.perform(post("/buy/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(error));
+    }
+
+    @Test
+    void 해당하는_매수_기록이_존재하지_않는_경우() throws Exception {
+        // Given
+        Journals journals = new Journals();
+        journals.setJournalId(100);
+
+        Buy buy = new Buy();
+        buy.setJournals(journals);
+        BuyDTO buyDTO = new BuyDTO();
+        buyDTO.setBuyId(100);
+
+        String error = "해당하는 매수 기록이 존재하지 않습니다.";
+
+        given(buyRepository.findById(buyDTO.getBuyId())).willReturn(Optional.empty());
+        given(buyService.deleteBuyByBuyId(buyDTO.getBuyId())).willReturn("404");
+
+        String requestBody = objectMapper.writeValueAsString(buyDTO);
+
+        // When & Then
+        mockMvc.perform(post("/buy/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(error));
+    }
+
+    @Test
+    void 해당하는_매매일지가_존재하지_않는_경우() throws Exception {
+
+        Journals journals = new Journals();
+        journals.setJournalId(100);
+
+        Buy buy = new Buy();
+        buy.setJournals(journals);
+        BuyDTO buyDTO = new BuyDTO();
+        buyDTO.setBuyId(100);
+
+        String error = "해당하는 매매일지가 없습니다.";
+
+        given(journalsRepoForBuy.findById(buy.getJournals().getJournalId())).willReturn(Optional.empty());
+        given(buyService.deleteBuyByBuyId(buyDTO.getBuyId())).willReturn("평균값 등록 실패");
+
+        String requestBody = objectMapper.writeValueAsString(buyDTO);
+
+        mockMvc.perform(post("/buy/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(error));
+
+    }
+
 }

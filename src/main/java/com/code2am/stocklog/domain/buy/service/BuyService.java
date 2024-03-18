@@ -91,7 +91,7 @@ public class BuyService {
 
         Optional<Buy> deleteBuy = buyRepository.findById(buyId);
         if(deleteBuy.isEmpty()){
-            return "삭제 실패";
+            return "404";
         }
         Buy buy = deleteBuy.get();
 
@@ -108,7 +108,7 @@ public class BuyService {
         List<BuyDTO> buyList = buyDAO.readBuyByJournalId(journalId);
 
         if(buyList.isEmpty()){
-            return "매수기록이 없습니다.";
+            return "404";
         }
 
         Integer buySum = 0;
@@ -130,7 +130,7 @@ public class BuyService {
         updateJournalsAvgBuy.setTotalQuantity(updateJournalsAvgBuy.getTotalQuantity() - minusValue); // 보유 총량 빼기
         journalsRepoForBuy.save(updateJournalsAvgBuy);
 
-        return "삭제 성공";
+        return "매수 삭제 성공";
     }
 
     /**

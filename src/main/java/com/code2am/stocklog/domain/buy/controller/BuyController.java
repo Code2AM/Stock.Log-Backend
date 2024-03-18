@@ -79,7 +79,7 @@ public class BuyController {
             tags = {"delete"}
     )
     @PostMapping("/delete")
-    public ResponseEntity deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
+    public ResponseEntity<String> deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
 
         Integer buyId = buyDTO.getBuyId();
 
@@ -89,6 +89,12 @@ public class BuyController {
 
         String result = buyService.deleteBuyByBuyId(buyId);
 
-        return ResponseEntity.ok(result);
+        if(result.equals("404")){
+            return ResponseEntity.status(404).body("해당하는 매수 기록이 존재하지 않습니다.");
+        } else if (result.equals("평균값 등록 실패")) {
+            return ResponseEntity.status(404).body("해당하는 매매일지가 없습니다.");
+        }else {
+            return ResponseEntity.ok(result);
+        }
     }
 }
