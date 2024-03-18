@@ -35,7 +35,6 @@ public class NotesController {
     @Operation(
             summary = "매매노트 조회",
             description = "매매일지의 PrimaryKey 값과 노트의 상태가 'Y'인 조건으로 매매노트를 조회합니다."
-
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매노트를 성공적으로 조회함."),
@@ -56,8 +55,7 @@ public class NotesController {
      * */
     @Operation(
             summary = "노트 등록",
-            description = "신규 노트를 등록합니다.",
-            tags = {"POST"}
+            description = "신규 노트를 등록합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "노트를 성공적으로 등록함."),
@@ -72,19 +70,23 @@ public class NotesController {
 
         System.out.println(notesDTO);
         // 요청값이 없는지 확인
-        if(Objects.isNull(notesDTO)){
-            return ResponseEntity.status(400).body("입력값이 없습니다.");
+        if(Objects.isNull(notesDTO.getNoteName())){
+            return ResponseEntity.badRequest().body("제목이 없습니다.");
+        }
+
+        if(Objects.isNull(notesDTO.getUserId())){
+            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
         }
 
         // 실제 입력받은 데이터를 입력 로직으로
-        Notes note = notesService.createNoteByUserId(notesDTO);
+        String result = notesService.createNoteByUserId(notesDTO);
 
         // 요청이 원활히 도착했는지 확인
-        if(Objects.isNull(note)){
+        if(Objects.isNull(result)){
             return ResponseEntity.status(500).body("서버의 통신이 원할치 못합니다.");
         }
 
-        System.out.println(note);
+        System.out.println(result);
         return ResponseEntity.ok("등록에 성공하였습니다.");
     }
 
@@ -104,10 +106,13 @@ public class NotesController {
     @PostMapping("/delete")
     public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
 
+        if(Objects.isNull(notesDTO.getNoteId())){
+            return ResponseEntity.badRequest().body("노트가 없습니다.");
+        }
+        System.out.println("컨트롤러 도착");
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
         notesService.deleteNoteByNoteId(notesDTO);
-
-        return ResponseEntity.ok("삭제성공");
+        return ResponseEntity.ok("삭제 완료");
     }
 
 
@@ -119,6 +124,9 @@ public class NotesController {
     @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
     @PostMapping("/update")
     public ResponseEntity<String> updateNoteByNoteId(@Valid @RequestBody NotesDTO notesDTO){
+        if(Objects.isNull(notesDTO.getNoteId())){
+            return ResponseEntity.badRequest().body("노트가 없습니다.");
+        }
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
 
         System.out.println("컨트롤러 도착");

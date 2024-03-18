@@ -1,24 +1,21 @@
 package com.code2am.stocklog.domain.labels.controller;
 
 
+import com.code2am.stocklog.domain.auth.common.handler.exceptions.AuthUtilException;
 import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.labels.models.dto.LabelsDTO;
 import com.code2am.stocklog.domain.labels.service.LabelsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.mock.mockito.*;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -26,19 +23,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(LabelsController.class)
 @AutoConfigureMockMvc(addFilters = false)
 class LabelsControllerTest {
-
-    @InjectMocks
-    private LabelsController labelsController;
 
     @MockBean
     private LabelsService labelsService;
@@ -49,8 +41,19 @@ class LabelsControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
+    @MockBean
     private AuthUtil authUtil;
+
+    private LabelsDTO labelsDTO;
+
+    @BeforeEach
+    void setup() {
+        labelsDTO = new LabelsDTO();
+        labelsDTO.setLabelsId(1);
+        labelsDTO.setLabelsTitle("라벨");
+        labelsDTO.setUserId(1);
+        labelsDTO.setLabelsStatus("Y");
+    }
 
     /* readLabelsByUserId */
 
@@ -65,14 +68,15 @@ class LabelsControllerTest {
         );
 
         // stub
-        given(labelsService.readLabelsByUserId()).willReturn(expectedLabelsDTOList);
         String requestBody = objectMapper.writeValueAsString(expectedLabelsDTOList);
+
+        given(labelsService.readLabelsByUserId()).willReturn(expectedLabelsDTOList);
 
         // when & then
         mockMvc.perform(post("/labels/get")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(requestBody));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk());
     }
 
     // 반환받은 리스트가 null인 경우
@@ -92,13 +96,9 @@ class LabelsControllerTest {
                 .andExpect(content().string(requestBody));
     }
 
-    // 사용자 인증이 되지 않는 경우
-
-
 
 
     /* createLabelsByUserId */
-
 
     // 성공
     @Test
@@ -106,6 +106,7 @@ class LabelsControllerTest {
         // given
         LabelsDTO newLabelDTO = LabelsDTO.builder()
                 .labelsTitle("Label1")
+                .userId(1)
                 .build();
 
         String message = "라벨추가 성공";
@@ -146,20 +147,24 @@ class LabelsControllerTest {
 
     // 사용자 인증이 되지 않는 경우
     @Test
-    void createLabelsByUserId_사용자_인증_실패() {
+    @DisplayName("인증된 사용자가 없는 경우")
+    public void createLabelsByUserId_실패_1() throws Exception {
         // given
-        LabelsDTO labelsDTO = new LabelsDTO();
-        // labelsDTO에 필요한 필드들을 채워넣습니다.
+        LabelsDTO labels = LabelsDTO.builder()
+                .labelsTitle("라벨")
+                .build();
 
-        // 사용자 인증이 실패하는 상황을 설정합니다.
-        given(authUtil.getUserId()).willReturn(null);
+        String expectedExceptionMessage = "인증된 사용자가 없습니다";
 
-        // when
-        ResponseEntity<String> response = labelsController.createLabelsByUserId(labelsDTO);
+        // stub
+        given(authUtil.getUserId()).willThrow(new AuthUtilException(expectedExceptionMessage));
 
-        // then
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("사용자 인증 실패", response.getBody());
+        // when & then
+        mockMvc.perform(post("/labels/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(labels)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedExceptionMessage));
     }
 
     /* updateLabelsByLabelsId */
@@ -171,6 +176,7 @@ class LabelsControllerTest {
         // given
         LabelsDTO updatedLabelDTO = LabelsDTO.builder()
                 .labelsTitle("updatedLabel")
+                .userId(1)
                 .build();
 
         String message = "수정 성공";
@@ -210,7 +216,26 @@ class LabelsControllerTest {
     }
 
     // 사용자 인증이 되지 않는 경우
+    @Test
+    @DisplayName("인증된 사용자가 없는 경우")
+    public void updateLabelsByUserId_실패_1() throws Exception {
+        // given
+        LabelsDTO labels = LabelsDTO.builder()
+                .labelsTitle("라벨")
+                .build();
 
+        String expectedExceptionMessage = "인증된 사용자가 없습니다";
+
+        // stub
+        given(authUtil.getUserId()).willThrow(new AuthUtilException(expectedExceptionMessage));
+
+        // when & then
+        mockMvc.perform(post("/labels/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(labels)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedExceptionMessage));
+    }
 
 
     /* deleteLabelsByLabelsId */
@@ -222,6 +247,7 @@ class LabelsControllerTest {
         // given
         LabelsDTO deleteLabelDTO = LabelsDTO.builder()
                 .labelsTitle("deleteLabelDTO")
+                .userId(1)
                 .build();
 
         String message = "삭제 성공";
@@ -239,4 +265,24 @@ class LabelsControllerTest {
     }
 
     // 사용자 인증이 되지 않는 경우
+    @Test
+    @DisplayName("인증된 사용자가 없는 경우")
+    public void deleteLabelsByUserId_실패_1() throws Exception {
+        // given
+        LabelsDTO labels = LabelsDTO.builder()
+                .labelsTitle("라벨")
+                .build();
+
+        String expectedExceptionMessage = "인증된 사용자가 없습니다";
+
+        // stub
+        given(authUtil.getUserId()).willThrow(new AuthUtilException(expectedExceptionMessage));
+
+        // when & then
+        mockMvc.perform(post("/labels/delete")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(labels)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(expectedExceptionMessage));
+    }
 }
