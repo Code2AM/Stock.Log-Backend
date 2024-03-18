@@ -143,7 +143,7 @@ public class SellService {
 
 
 
-    /* 매매일지 정보 최신화 */
+    /** 매매일지 정보 최신화 */
     public Journals updateSell(Journals journal){
         // journaId 기반 모든 Sell을 불러온다
         List<Sell> sellList = sellRepository.findAllByJournal(journal);

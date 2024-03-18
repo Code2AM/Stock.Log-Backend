@@ -27,6 +27,9 @@ public class JournalsService {
     @Autowired
     private JournalsDAO journalsDAO;
 
+    /**
+     * 매매일지 조회
+     * */
     public List<JournalsDTO> readJournalsByUserId(Integer userId) {
         return journalsDAO.readJournalsByUserId(userId);
     }
@@ -37,7 +40,7 @@ public class JournalsService {
     public String createJournalsByUserId(JournalsDTO journals, Integer userId) {
 
 
-        if (journals.getFee() > 0 && journals.getFee() <= 100) {
+        if (!(journals.getFee() >= 0 && journals.getFee() <= 1)) {
             return "수수료는 0 ~ 100% 사이 값만 사용할 수 있습니다.";
         }
 
@@ -50,10 +53,10 @@ public class JournalsService {
         }
 
         if (journals.getBuyQuantity() <= 0) {
-            return "매매주가 없습니다.";
+            return "매수량이 0보다 적습니다.";
         }
 
-        if (journals.getStrategyId() < 0) {
+        if (journals.getStrategyId() <= 0) {
             return "불가능한 매매전략 값입니다.";
         }
 
@@ -84,15 +87,23 @@ public class JournalsService {
         return "등록 성공";
     }
 
+    /**
+     * 매매일지 삭제
+     * */
     public String deleteJournalsByJournalsId(Integer journalId) {
 
-        System.out.println("서비스까지는 넘어왔니?" + journalId);
+        if(journalId == null){
+            return "매매일지 정보가 정상적으로 넘어오지 않았습니다.";
+        }
 
         JournalsVO data = journalsDAO.readJournalsByJournalId(journalId);
 
         if(Objects.isNull(data)){
-            System.out.println("조회된 결과값이 없음");
             return "조회된 결과가 없습니다.";
+        }
+
+        if(data.getStatus().equals("N")){
+            return "이미 삭제된 매매일지입니다.";
         }
 
         Journals delete = new Journals();
@@ -123,6 +134,10 @@ public class JournalsService {
 
         if(Objects.isNull(data)){
             return "없는 매매일지입니다.";
+        }
+
+        if(data.getStatus().equals("close")){
+            return "이미 닫힌 매매일지입니다.";
         }
 
         Journals update = new Journals();

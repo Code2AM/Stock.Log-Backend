@@ -27,9 +27,6 @@ public class BuyController {
     @Autowired
     private BuyService buyService;
 
-    @Autowired
-    private AuthUtil authUtil;
-
     @Operation(
             summary = "매수 등록",
             description = "매수를 등록합니다.",
@@ -47,15 +44,11 @@ public class BuyController {
     @PostMapping
     public ResponseEntity<String> createBuy(@RequestBody Buy buy){
 
-        if(Objects.isNull(buy)){
-            return ResponseEntity.badRequest().body("입력값이 존재하지 않습니다.");
-        }
-
         String result = buyService.createBuy(buy);
 
         return switch (result) {
-            case "입력값이 존재하지 않습니다.", "존재하지 않는 매매일지입니다.", "매수가는 0 이하일 수 없습니다.", "매수량이 0 이하일 수 없습니다." -> ResponseEntity.badRequest().body(result);
-            case "매수 기록이 없습니다." -> ResponseEntity.status(404).body(result);
+            case "매매일지 정보가 없습니다.", "존재하지 않는 매매일지입니다.", "매수가는 0 이하일 수 없습니다.", "매수량이 0 이하일 수 없습니다." -> ResponseEntity.badRequest().body(result);
+            case "매수 기록이 없습니다.", "매매일지가 없습니다." -> ResponseEntity.status(404).body(result);
             default -> ResponseEntity.ok(result);
         };        
     }
@@ -63,7 +56,7 @@ public class BuyController {
     @Operation(
             summary = "매수 조회",
             description = "유저 정보를 통해 매수기록을 조회합니다.",
-            tags = {"POST"}
+            tags = {"read"}
     )
     @PostMapping("/list")
     public List<BuyDTO> readBuyByJournalId(@RequestBody InputDTO inputDTO){
@@ -83,10 +76,10 @@ public class BuyController {
     @Operation(
             summary = "매수 삭제",
             description = "매수 기록을 삭제합니다.",
-            tags = {"POST"}
+            tags = {"delete"}
     )
     @PostMapping("/delete")
-    public ResponseEntity deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
+    public ResponseEntity<String> deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){
 
         Integer buyId = buyDTO.getBuyId();
 
@@ -96,6 +89,12 @@ public class BuyController {
 
         String result = buyService.deleteBuyByBuyId(buyId);
 
-        return ResponseEntity.ok(result);
+        if(result.equals("404")){
+            return ResponseEntity.status(404).body("해당하는 매수 기록이 존재하지 않습니다.");
+        } else if (result.equals("평균값 등록 실패")) {
+            return ResponseEntity.status(404).body("해당하는 매매일지가 없습니다.");
+        }else {
+            return ResponseEntity.ok(result);
+        }
     }
 }

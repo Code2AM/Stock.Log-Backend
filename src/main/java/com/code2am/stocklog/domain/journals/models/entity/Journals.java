@@ -59,7 +59,7 @@ public class Journals {
     @Column(name = "STATUS")
     private String status;
 
-//    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "USER_ID")
     private Users users;
 
