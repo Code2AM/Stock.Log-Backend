@@ -1,17 +1,15 @@
 package com.code2am.stocklog.domain.buy.controller;
 
-import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.dto.InputDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.service.BuyService;
-import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
-import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +20,10 @@ import java.util.Objects;
 @RestController
 @RequestMapping("/buy")
 @Tag(name = "매수 관리 API", description = "매수 기록을 관리하는 API")
+@RequiredArgsConstructor
 public class BuyController {
 
-    @Autowired
-    private BuyService buyService;
+    private final BuyService buyService;
 
     @Operation(
             summary = "매수 등록",

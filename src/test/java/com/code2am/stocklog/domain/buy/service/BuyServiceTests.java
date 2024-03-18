@@ -3,7 +3,6 @@ package com.code2am.stocklog.domain.buy.service;
 import static org.mockito.BDDMockito.given;
 
 import com.code2am.stocklog.domain.buy.dao.BuyDAO;
-import com.code2am.stocklog.domain.buy.infra.JournalsRepoForBuy;
 import com.code2am.stocklog.domain.buy.models.dto.BuyDTO;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.buy.repository.BuyRepository;
@@ -32,8 +31,6 @@ class BuyServiceTests {
     @Mock
     BuyRepository buyRepository;
 
-    @Mock
-    JournalsRepoForBuy journalsRepoForBuy;
 
     @Test
     void 매개변수가_정상적으로_넘어오지_않은_경우(){
