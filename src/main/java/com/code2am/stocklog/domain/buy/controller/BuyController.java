@@ -47,7 +47,7 @@ public class BuyController {
         String result = buyService.createBuy(buy);
 
         return switch (result) {
-            case "존재하지 않는 매매일지입니다.", "매수가는 0 이하일 수 없습니다.", "매수량이 0 이하일 수 없습니다." -> ResponseEntity.badRequest().body(result);
+            case "매매일지 정보가 없습니다.", "존재하지 않는 매매일지입니다.", "매수가는 0 이하일 수 없습니다.", "매수량이 0 이하일 수 없습니다." -> ResponseEntity.badRequest().body(result);
             case "매수 기록이 없습니다.", "매매일지가 없습니다." -> ResponseEntity.status(404).body(result);
             default -> ResponseEntity.ok(result);
         };        

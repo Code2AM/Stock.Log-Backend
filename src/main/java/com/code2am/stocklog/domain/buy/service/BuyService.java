@@ -31,7 +31,12 @@ public class BuyService {
      * */
     public String createBuy(Buy buy) {
 
+        if(buy.getJournals() == null){
+            return "매매일지 정보가 없습니다.";
+        }
+
         Integer journalId = buy.getJournals().getJournalId();
+
 
         if(journalId <= 0){
             return "존재하지 않는 매매일지입니다.";
