@@ -6,11 +6,13 @@ import com.code2am.stocklog.domain.users.models.entity.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 // @IdClass(UsersAndStrategiesId.class) // 복합키 사용을 위한 식별자 클래스
 @Table(name = "TBL_USERS_AND_STRATEGIES")
 @Data
+@RequiredArgsConstructor
 public class UsersAndStrategies {
 
 //    @Id
@@ -45,4 +47,11 @@ public class UsersAndStrategies {
         return strategiesDTO;
     }
 
+    @Builder
+    public UsersAndStrategies(Integer userAndStrategyId, Integer userId, Integer strategyId, String strategyName) {
+        UserAndStrategyId = userAndStrategyId;
+        this.userId = userId;
+        this.strategyId = strategyId;
+        this.strategyName = strategyName;
+    }
 }
