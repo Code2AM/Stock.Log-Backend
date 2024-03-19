@@ -1,12 +1,15 @@
 package com.code2am.stocklog.domain.journals.service;
 
+import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
 import com.code2am.stocklog.domain.journals.infra.BuyRepo;
+import com.code2am.stocklog.domain.journals.infra.UsersRepo;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.journals.models.vo.JournalsVO;
 import com.code2am.stocklog.domain.journals.repository.JournalsRepository;
+import com.code2am.stocklog.domain.users.models.entity.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,12 @@ public class JournalsService {
 
     @Autowired
     private JournalsDAO journalsDAO;
+
+    @Autowired
+    private AuthUtil authUtil;
+
+    @Autowired
+    private UsersRepo usersRepo;
 
     /**
      * 매매일지 조회
@@ -60,6 +69,14 @@ public class JournalsService {
             return "불가능한 매매전략 값입니다.";
         }
 
+        Users users;
+
+        if(usersRepo.findById(userId).isEmpty()){
+            return "유저 정보 없음";
+        }else {
+            users = usersRepo.findById(userId).get();
+        }
+
         Journals newJournal = new Journals();
         newJournal.setStockName(journals.getStockName());
         newJournal.setJournalDate(LocalDateTime.now());
@@ -72,6 +89,7 @@ public class JournalsService {
         newJournal.setFee(journals.getFee());
         newJournal.setProfit(0);
         newJournal.setStatus("open");
+        newJournal.setUsers(users);
 //        newJournal.setUserId(userId);
 
         Buy newBuy = new Buy();
@@ -106,6 +124,14 @@ public class JournalsService {
             return "이미 삭제된 매매일지입니다.";
         }
 
+        Users users;
+        Integer userId = authUtil.getUserId();
+        if(usersRepo.findById(userId).isEmpty()){
+            return "유저 정보 없음";
+        }else {
+            users = usersRepo.findById(userId).get();
+        }
+
         Journals delete = new Journals();
         delete.setStockName(data.getStockName());
         delete.setJournalId(data.getJournalId());
@@ -115,6 +141,7 @@ public class JournalsService {
         delete.setFee(data.getFee());
         delete.setLastedTradeDate(data.getLastedTradeDate());
 //        delete.setUserId(data.getUserId());
+        delete.setUsers(users);
         delete.setAvgSellPrice(data.getAvgSellPrice());
         delete.setAvgBuyPrice(data.getAvgBuyPrice());
         delete.setStrategyId(data.getStrategyId());
@@ -140,6 +167,14 @@ public class JournalsService {
             return "이미 닫힌 매매일지입니다.";
         }
 
+        Users users;
+        Integer userId = authUtil.getUserId();
+        if(usersRepo.findById(userId).isEmpty()){
+            return "유저 정보 없음";
+        }else {
+            users = usersRepo.findById(userId).get();
+        }
+
         Journals update = new Journals();
         update.setStockName(data.getStockName());
         update.setJournalId(data.getJournalId());
@@ -149,6 +184,7 @@ public class JournalsService {
         update.setFee(data.getFee());
         update.setLastedTradeDate(data.getLastedTradeDate());
 //        update.setUserId(data.getUserId());
+        update.setUsers(users);
         update.setAvgSellPrice(data.getAvgSellPrice());
         update.setAvgBuyPrice(data.getAvgBuyPrice());
         update.setStrategyId(data.getStrategyId());
