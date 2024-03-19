@@ -74,9 +74,9 @@ public class NotesController {
             return ResponseEntity.badRequest().body("제목이 없습니다.");
         }
 
-        if(Objects.isNull(notesDTO.getUserId())){
-            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
-        }
+//        if(Objects.isNull(notesDTO.getUserId())){
+//            return ResponseEntity.badRequest().body("인증된 사용자가 없습니다");
+//        }
 
         // 실제 입력받은 데이터를 입력 로직으로
         String result = notesService.createNoteByUserId(notesDTO);
@@ -128,7 +128,7 @@ public class NotesController {
             return ResponseEntity.badRequest().body("노트가 없습니다.");
         }
         // 실제로는 삭제 메카니즘이 아니라 상태를 수정함
-
+        System.out.println(notesDTO);
         System.out.println("컨트롤러 도착");
         notesService.updateNoteByNoteId(notesDTO);
         return ResponseEntity.ok("수정 성공");
