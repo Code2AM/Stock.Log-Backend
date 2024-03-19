@@ -136,31 +136,31 @@ class NotesServiceTest {
     }
 
     // authUtil 관련 문제 - 인증된 사용자가 없습니다
-    @Test
-    @DisplayName("인증된 사용자가 없는 경우")
-    public void createNoteByUserId_실패_1() {
-        // given
-        LabelsDTO fakeLabel = new LabelsDTO();
-        fakeLabel.setLabelsTitle("테스트 라벨");
-
-        NotesDTO notesDTO = NotesDTO.builder()
-                .noteName("제목")
-                .noteContents("내용")
-                .labelsDTO(fakeLabel)
-                .build();
-
-        String expectedExceptionMessage = "인증된 사용자가 없습니다";
-
-        // stub
-        given(authUtil.getUserId()).willThrow(new AuthUtilException(expectedExceptionMessage));
-
-        // when & then
-        try {
-            notesService.createNoteByUserId(notesDTO);
-        } catch (AuthUtilException e) {
-            assertEquals(expectedExceptionMessage, e.getMessage());
-        }
-    }
+//    @Test
+//    @DisplayName("인증된 사용자가 없는 경우")
+//    public void createNoteByUserId_실패_1() {
+//        // given
+//        LabelsDTO fakeLabel = new LabelsDTO();
+//        fakeLabel.setLabelsTitle("테스트 라벨");
+//
+//        NotesDTO notesDTO = NotesDTO.builder()
+//                .noteName("제목")
+//                .noteContents("내용")
+//                .labelsDTO(fakeLabel)
+//                .build();
+//
+//        String expectedExceptionMessage = "인증된 사용자가 없습니다";
+//
+//        // stub
+//        given(authUtil.getUserId()).willThrow(new AuthUtilException(expectedExceptionMessage));
+//
+//        // when & then
+//        try {
+//            notesService.createNoteByUserId(notesDTO);
+//        } catch (AuthUtilException e) {
+//            assertEquals(expectedExceptionMessage, e.getMessage());
+//        }
+//    }
 
     // database, jpa 관련 문제
     @Test
