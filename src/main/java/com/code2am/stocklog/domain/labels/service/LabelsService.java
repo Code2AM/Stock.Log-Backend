@@ -58,6 +58,7 @@ public class LabelsService {
     // 라벨을 수정하는 메소드
     @Transactional
     public String updateLabelByLabelsId(LabelsDTO labelsDTO) {
+
         // userId가 null값인 경우
         if (authUtil.getUserId() == null) {
             throw new IllegalArgumentException("사용자 ID가 없습니다.");
@@ -82,7 +83,6 @@ public class LabelsService {
         }
 
         try {
-            labelsDTO.setUserId(authUtil.getUserId());
             labelsDTO.setLabelsStatus("N");
             labelsRepository.save(labelsDTO.convertToEntity());
             return "삭제 성공";
