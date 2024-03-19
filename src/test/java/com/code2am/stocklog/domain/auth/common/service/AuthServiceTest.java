@@ -41,7 +41,6 @@ import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 // 1. 성공 케이스
 // 2. 입력 데이터 검증
 // 3. 인증과 권한

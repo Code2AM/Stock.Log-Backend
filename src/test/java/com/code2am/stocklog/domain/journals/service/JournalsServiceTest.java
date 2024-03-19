@@ -23,6 +23,30 @@ import static org.mockito.BDDMockito.*;
 @ExtendWith(MockitoExtension.class)
 class JournalsServiceTest {
 
+//    AuthServiceTest > login_성공() FAILED
+//    com.code2am.stocklog.domain.auth.common.handler.exceptions.AuthUtilException at AuthServiceTest.java:245
+//
+//    JournalsServiceTest > 매매일지 삭제 성공 FAILED
+//    java.lang.NullPointerException at JournalsServiceTest.java:186
+//
+//    JournalsServiceTest > 매매일지 거래 상태 변경 성공 FAILED
+//    java.lang.NullPointerException at JournalsServiceTest.java:236
+//
+//    JournalsServiceTest > 매매일지 등록 성공 FAILED
+//    java.lang.NullPointerException at JournalsServiceTest.java:83
+//
+//    LabelsControllerTest > 인증된 사용자가 없는 경우 FAILED
+//    java.lang.AssertionError at LabelsControllerTest.java:285
+//
+//    LabelsControllerTest > 인증된 사용자가 없는 경우 FAILED
+//    java.lang.AssertionError at LabelsControllerTest.java:166
+//
+//    LabelsControllerTest > 인증된 사용자가 없는 경우 FAILED
+//    java.lang.AssertionError at LabelsControllerTest.java:236
+//
+//    NotesControllerTest > 인증된 사용자가 없는 경우 FAILED
+//    java.lang.AssertionError at NotesControllerTest.java:167
+
     @InjectMocks
     private JournalsService journalsService;
 
