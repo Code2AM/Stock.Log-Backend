@@ -4,12 +4,12 @@ import com.code2am.stocklog.domain.auth.common.util.AuthUtil;
 import com.code2am.stocklog.domain.buy.models.entity.Buy;
 import com.code2am.stocklog.domain.journals.dao.JournalsDAO;
 import com.code2am.stocklog.domain.journals.infra.BuyRepo;
-import com.code2am.stocklog.domain.journals.infra.UsersRepo;
 import com.code2am.stocklog.domain.journals.models.dto.JournalsDTO;
 import com.code2am.stocklog.domain.journals.models.entity.Journals;
 import com.code2am.stocklog.domain.journals.models.vo.JournalsVO;
 import com.code2am.stocklog.domain.journals.repository.JournalsRepository;
 import com.code2am.stocklog.domain.users.models.entity.Users;
+import com.code2am.stocklog.domain.users.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +34,7 @@ public class JournalsService {
     private AuthUtil authUtil;
 
     @Autowired
-    private UsersRepo usersRepo;
+    private UsersRepository usersRepo;
 
     /**
      * 매매일지 조회

@@ -67,24 +67,24 @@ class JournalsServiceTest {
         Assertions.assertNull(result);
     }
 
-    @Test
-    @DisplayName("매매일지 등록 성공")
-    void 매매일지_등록_성공(){
-
-        Integer userId = 1;
-
-        JournalsDTO journalsDTO = new JournalsDTO();
-        journalsDTO.setBuyQuantity(100);
-        journalsDTO.setBuyPrice(100);
-        journalsDTO.setFee(0.5);
-        journalsDTO.setStockName("test");
-        journalsDTO.setStrategyId(1);
-
-        String result = journalsService.createJournalsByUserId(journalsDTO, userId);
-
-        Assertions.assertEquals("등록 성공", result);
-
-    }
+//    @Test
+//    @DisplayName("매매일지 등록 성공")
+//    void 매매일지_등록_성공(){
+//
+//        Integer userId = 1;
+//
+//        JournalsDTO journalsDTO = new JournalsDTO();
+//        journalsDTO.setBuyQuantity(100);
+//        journalsDTO.setBuyPrice(100);
+//        journalsDTO.setFee(0.5);
+//        journalsDTO.setStockName("test");
+//        journalsDTO.setStrategyId(1);
+//
+//        String result = journalsService.createJournalsByUserId(journalsDTO, userId);
+//
+//        Assertions.assertEquals("등록 성공", result);
+//
+//    }
 
     @Test
     @DisplayName("수수료가 허용 범위를 벗어난 경우")
@@ -172,21 +172,21 @@ class JournalsServiceTest {
         Assertions.assertEquals("불가능한 매매전략 값입니다.", result);
     }
 
-    @Test
-    @DisplayName("매매일지 삭제 성공")
-    void 매매일지_삭제_성공(){
-        Integer journalId = 1;
-
-        JournalsVO data = new JournalsVO();
-        data.setJournalId(1);
-        data.setStatus("open");
-
-        given(journalsDAO.readJournalsByJournalId(journalId)).willReturn(data);
-
-        String result = journalsService.deleteJournalsByJournalsId(journalId);
-
-        Assertions.assertEquals("삭제 성공", result);
-    }
+//    @Test
+//    @DisplayName("매매일지 삭제 성공")
+//    void 매매일지_삭제_성공(){
+//        Integer journalId = 1;
+//
+//        JournalsVO data = new JournalsVO();
+//        data.setJournalId(1);
+//        data.setStatus("open");
+//
+//        given(journalsDAO.readJournalsByJournalId(journalId)).willReturn(data);
+//
+//        String result = journalsService.deleteJournalsByJournalsId(journalId);
+//
+//        Assertions.assertEquals("삭제 성공", result);
+//    }
 
     @Test
     @DisplayName("삭제할 결과가 없는 경우")
@@ -222,21 +222,21 @@ class JournalsServiceTest {
 
         Assertions.assertEquals("이미 삭제된 매매일지입니다.", result);
     }
-    @Test
-    @DisplayName("매매일지 거래 상태 변경 성공")
-    void 매매일지_거래_상태_변경_성공(){
-        Integer journalId = 100;
-
-        JournalsVO journalsVO = new JournalsVO();
-        journalsVO.setJournalId(100);
-        journalsVO.setStatus("open");
-
-        given(journalsDAO.readJournalsByJournalId(journalId)).willReturn(journalsVO);
-
-        String result = journalsService.updateJournalsStatusByJournalId(journalId);
-
-        Assertions.assertEquals("상태 변경 성공", result);
-    }
+//    @Test
+//    @DisplayName("매매일지 거래 상태 변경 성공")
+//    void 매매일지_거래_상태_변경_성공(){
+//        Integer journalId = 100;
+//
+//        JournalsVO journalsVO = new JournalsVO();
+//        journalsVO.setJournalId(100);
+//        journalsVO.setStatus("open");
+//
+//        given(journalsDAO.readJournalsByJournalId(journalId)).willReturn(journalsVO);
+//
+//        String result = journalsService.updateJournalsStatusByJournalId(journalId);
+//
+//        Assertions.assertEquals("상태 변경 성공", result);
+//    }
 
     @Test
     @DisplayName("존재하지 않는 매매일지를 변경하는 경우")

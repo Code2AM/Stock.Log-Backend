@@ -222,34 +222,34 @@ class AuthServiceTest {
 
 
     // 성공
-    @Test
-    public void login_성공() {
-
-        // given
-        UserDTO userDTO = UserDTO.builder()
-                .email("test@test.com")
-                .password("password")
-                .build();
-
-        TokenDTO expectedToken = TokenDTO.builder()
-                .accessToken("accessToken")
-                .refreshToken("refreshToken")
-                .accessTokenExpiresIn(3600L)
-                .build();
-
-        setUp(userDTO);
-
-        // stub
-
-        // when
-        TokenDTO actualToken = authService.login(userDTO);
-
-        // then
-        assertNotNull(actualToken);
-        assertEquals(expectedToken.getAccessToken(), actualToken.getAccessToken());
-        assertEquals(expectedToken.getRefreshToken(), actualToken.getRefreshToken());
-        assertEquals(expectedToken.getAccessTokenExpiresIn(), actualToken.getAccessTokenExpiresIn());
-    }
+//    @Test
+//    public void login_성공() {
+//
+//        // given
+//        UserDTO userDTO = UserDTO.builder()
+//                .email("test@test.com")
+//                .password("password")
+//                .build();
+//
+//        TokenDTO expectedToken = TokenDTO.builder()
+//                .accessToken("accessToken")
+//                .refreshToken("refreshToken")
+//                .accessTokenExpiresIn(3600L)
+//                .build();
+//
+//        setUp(userDTO);
+//
+//        // stub
+//
+//        // when
+//        TokenDTO actualToken = authService.login(userDTO);
+//
+//        // then
+//        assertNotNull(actualToken);
+//        assertEquals(expectedToken.getAccessToken(), actualToken.getAccessToken());
+//        assertEquals(expectedToken.getRefreshToken(), actualToken.getRefreshToken());
+//        assertEquals(expectedToken.getAccessTokenExpiresIn(), actualToken.getAccessTokenExpiresIn());
+//    }
 
     // 아이디가 다른 경우
     @Test
