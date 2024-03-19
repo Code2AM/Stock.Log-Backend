@@ -103,6 +103,7 @@ public class SellService {
 
         // 받은 dto를 entity로 변환
         Sell deleteSell = sellRequestDTO.convertToEntity();
+        System.out.println(deleteSell);
 
         // 해당 매도의 매매일지 id를 받는다
         Integer journalId = deleteSell.getJournal().getJournalId();
@@ -117,6 +118,7 @@ public class SellService {
             throw new SellException("존재하지 않는 매매일지입니다.");
         }
 
+        System.out.println(journal);
         // 매도 entity에 불러온 journal을 담아서 최신화
         deleteSell.setJournal(journal);
 
@@ -133,7 +135,7 @@ public class SellService {
         Journals updateJournal = updateSell(journal);
 
         // 저장하기전 값이 제대로 들어갔는지 확인
-        System.out.println(updateJournal);
+        System.out.println("매도삭제시" + updateJournal);
 
         // 최신화된 매매일지를 저장
         journalsRepo.save(updateJournal);
@@ -148,41 +150,45 @@ public class SellService {
         // journaId 기반 모든 Sell을 불러온다
         List<Sell> sellList = sellRepository.findAllByJournal(journal);
 
+        if(!(sellList.isEmpty())){
+            /* 매도 평균 값 update */
+            // Stream API를 사용하여 평균 값 계산
+            double averagePrice = sellList.stream()
+                    .mapToInt(Sell::getSellPrice) // Sell 객체의 sellPrice 필드 추출
+                    .average() // 평균 계산
+                    .getAsDouble(); // Optional 객체의 값을 double 형으로 변환 // sellList 가 없는 경우 NoSuchElement 에러 반환
 
-        /* 매도 평균 값 update */
-        // Stream API를 사용하여 평균 값 계산
-        double averagePrice = sellList.stream()
-                .mapToInt(Sell::getSellPrice) // Sell 객체의 sellPrice 필드 추출
-                .average() // 평균 계산
-                .getAsDouble(); // Optional 객체의 값을 double 형으로 변환 // sellList 가 없는 경우 NoSuchElement 에러 반환
-
-        journal.setAvgSellPrice((int) averagePrice);
-
-
-        /* 매도 총량 update */
-        Integer totalSellQuantity = sellList.stream()
-                .mapToInt(Sell::getSellQuantity) // Sell 객체의 sellQuantity 필드 추출
-                .sum(); // 모든 sell의 합계를 구함
-
-        journal.setTotalSellQuantity(totalSellQuantity);
+            journal.setAvgSellPrice((int) averagePrice);
 
 
-        /* profit을 update */
-        // profit = 매도총액 - 매수총액
+            /* 매도 총량 update */
+            Integer totalSellQuantity = sellList.stream()
+                    .mapToInt(Sell::getSellQuantity) // Sell 객체의 sellQuantity 필드 추출
+                    .sum(); // 모든 sell의 합계를 구함
 
-        // 매도총액
-        Integer totalSellPrice = journal.getAvgSellPrice() * journal.getTotalSellQuantity();
+            journal.setTotalSellQuantity(totalSellQuantity);
 
-        // 매수총액
-        Integer totalBuyPrice = journal.getAvgBuyPrice() * journal.getTotalSellQuantity();
 
-        // profit 에서 수수료를 뺀다
-        double fee = journal.getFee();
+            /* profit을 update */
+            // profit = 매도총액 - 매수총액
 
-        double profit = (totalSellPrice - totalBuyPrice) - (totalSellPrice * fee);
+            // 매도총액
+            Integer totalSellPrice = journal.getAvgSellPrice() * journal.getTotalSellQuantity();
 
-        journal.setProfit( (int) profit );
+            // 매수총액
+            Integer totalBuyPrice = journal.getAvgBuyPrice() * journal.getTotalSellQuantity();
 
+            // profit 에서 수수료를 뺀다
+            double fee = journal.getFee();
+
+            double profit = (totalSellPrice - totalBuyPrice) - (totalSellPrice * fee);
+
+            journal.setProfit( (int) profit );
+        }else {
+            journal.setAvgSellPrice(0);
+            journal.setTotalSellQuantity(0);
+            journal.setProfit(0);
+        }
 
         return journal;
     }
