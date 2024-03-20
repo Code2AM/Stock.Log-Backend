@@ -44,7 +44,7 @@ public class OAuthService {
             //카카오 유저 만듬
             UserDTO newKakaoUser = UserDTO.builder()
                     .email(email)
-                    .password("123")
+                    .password("123123")
                     .social("KAKAO")
                     .userRole(UserRole.ROLE_USER)
                     .build();
@@ -66,7 +66,7 @@ public class OAuthService {
             System.out.println(kakaoUser);
 
             // 인증 객체 통과를 위해 임시 비밀번호 설정
-            UserDTO userDTO = UserDTO.builder().email(kakaoUser.getEmail()).password("123").build();
+            UserDTO userDTO = UserDTO.builder().email(kakaoUser.getEmail()).password("123123").build();
 
             System.out.println("Ready for War");
             System.out.println(userDTO);
