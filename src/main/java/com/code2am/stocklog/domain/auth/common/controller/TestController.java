@@ -17,4 +17,13 @@ public class TestController {
 
         return ResponseEntity.ok("success");
     }
+
+    @GetMapping("/test2")
+    public ResponseEntity<String> test2() {
+        System.out.println("test/도착");
+
+        return ResponseEntity.ok("this is Test, " +
+                "so, there is no problem with https " +
+                "NICE!!");
+    }
 }
