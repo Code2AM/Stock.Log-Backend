@@ -64,5 +64,5 @@ yarn-error.log*
 *.yml
 .yml
 
-
+keystore.p12
 
