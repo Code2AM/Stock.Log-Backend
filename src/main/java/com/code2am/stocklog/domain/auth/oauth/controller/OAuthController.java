@@ -6,6 +6,8 @@ import com.code2am.stocklog.domain.auth.oauth.model.dto.OAuthRequest;
 import com.code2am.stocklog.domain.auth.oauth.model.dto.OAuthToken;
 import com.code2am.stocklog.domain.auth.oauth.service.OAuthService;
 import com.code2am.stocklog.domain.auth.oauth.util.KakaoAPI;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +25,11 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
 
+    @Operation(
+            summary = "카카오 인증 요청",
+            description = "카카오 계정을 이용해 로그인을 할 수 있도록 요청을 보냅니다."
+    )
+    @Parameter(name = "request", description = "회원의 인증을 요청하는 코드")
     @PostMapping("/kakao")
     public ResponseEntity<?> getKakaoAuthorizeCode(@RequestBody OAuthRequest request){
 

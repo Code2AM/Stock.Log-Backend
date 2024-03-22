@@ -41,7 +41,7 @@ public class NotesController {
             @ApiResponse(responseCode = "404", description = "해당하는 매매일지가 존재하지 않음."),
             @ApiResponse(responseCode = "500", description = "서버가 원할히 동작하지 않거나 DB의 값이 존재하지 않음.")
     })
-    @PostMapping ("/allNotes")
+    @GetMapping ("/allNotes")
     public ResponseEntity<List<NotesDTO>> readNotesByUserId(){
         return ResponseEntity.ok(notesService.readNotesByUserId());
     }
@@ -102,7 +102,13 @@ public class NotesController {
             summary = "노트 삭제",
             description = "이미 존재하고 있는 매매노트를 삭제합니다."
     )
-    @ApiResponse(responseCode = "200", description = "노트를 삭제함.")
+    @Parameter(name = "notesDTO", description = "매매노트에 해당하는 정보")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "노트를 삭제함."),
+            @ApiResponse(responseCode = "400", description = "삭제하고자 하는 노트 정보 오입력"),
+            @ApiResponse(responseCode = "404", description = "삭제하고자 하는 노트 없음")
+
+    })
     @PostMapping("/delete")
     public ResponseEntity<String> deleteNoteByNoteId(@RequestBody NotesDTO notesDTO){
 
@@ -121,7 +127,12 @@ public class NotesController {
             summary = "노트 수정",
             description = "이미 존재하고 있는 매매노트를 수정합니다."
     )
-    @ApiResponse(responseCode = "200", description = "매매노트를 삭제함.")
+    @Parameter(name = "notesDTO", description = "수정하고자 하는 노트에 대한 정보")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "매매노트를 삭제함."),
+            @ApiResponse(responseCode = "400", description = "수정하고자 하는 노트의 내용 오입력"),
+            @ApiResponse(responseCode = "404", description = "수정하고자 하는 노트 없음")
+    })
     @PostMapping("/update")
     public ResponseEntity<String> updateNoteByNoteId(@Valid @RequestBody NotesDTO notesDTO){
         if(Objects.isNull(notesDTO.getNoteId())){

@@ -26,8 +26,7 @@ public class EmailController {
     /* 메일을 통해 인증 번호를 보낸다 */
     @Operation(
             summary = "인증번호 발송",
-            description = "인증번호를 발송합니다.",
-            tags = {"EmailController","post","Email"}
+            description = "인증번호를 발송합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "이메일을 성공적으로 발송함"),
@@ -49,14 +48,14 @@ public class EmailController {
     /* 입력한 값과 받은 인증번호를 확인한다 */
     @Operation(
             summary = "인증번호 확인",
-            description = "인증번호를 확인합니다.",
-            tags = {"EmailController","post","Email"}
+            description = "인증번호를 확인합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "인증번호를 확인했습니다."),
             @ApiResponse(responseCode = "404", description = "요청에 필요한 값이 정상적으로 입력되지 앟음."),
             @ApiResponse(responseCode = "500", description = "요청받은 서버가 정상적으로 동작하지 않음.")
     })
+    @Parameter(name = "emailDTO", description = "입력받은 이용자의 이메일 정보")
     @PostMapping("/mailVerify")
     public ResponseEntity<Integer> authCheck(@RequestBody EmailDTO emailDTO){
 

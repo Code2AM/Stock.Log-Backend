@@ -27,8 +27,7 @@ public class CommentsController {
 
     @Operation(
             summary = "코멘트 등록",
-            description = "매매일지에 코멘트를 등록합니다.",
-            tags = {"create"}
+            description = "매매일지에 코멘트를 등록합니다."
     )
     @Parameter(name = "comments", description = "사용자가 입력한 코멘트")
     @ApiResponses(value = {
@@ -49,8 +48,7 @@ public class CommentsController {
 
     @Operation(
             summary = "코멘트 조회",
-            description = "매매일지의 코멘트를 조회합니다.",
-            tags = {"read"}
+            description = "매매일지의 코멘트를 조회합니다."
     )
     @Parameter(name = "comments", description = "매매일지의 번호가 등록된 정보")
     @ApiResponses(value = {
@@ -70,8 +68,7 @@ public class CommentsController {
 
     @Operation(
             summary = "코멘트 삭제",
-            description = "매매일지의 코멘트를 삭제합니다.",
-            tags = {"delete"}
+            description = "매매일지의 코멘트를 삭제합니다."
     )
     @Parameter(name = "comments", description = "코멘트의 번호를 담은 정보")
     @ApiResponses(value = {

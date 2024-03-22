@@ -27,8 +27,7 @@ public class BuyController {
 
     @Operation(
             summary = "매수 등록",
-            description = "매수를 등록합니다.",
-            tags = {"create"}
+            description = "매수를 등록합니다."
     )
     @Parameter(name = "buy", description = "사용자가 매수한 기록")
     @ApiResponses(value = {
@@ -53,8 +52,7 @@ public class BuyController {
 
     @Operation(
             summary = "매수 조회",
-            description = "유저 정보를 통해 매수기록을 조회합니다.",
-            tags = {"read"}
+            description = "유저 정보를 통해 매수기록을 조회합니다."
     )
     @PostMapping("/list")
     public List<BuyDTO> readBuyByJournalId(@RequestBody InputDTO inputDTO){
@@ -73,8 +71,7 @@ public class BuyController {
 
     @Operation(
             summary = "매수 삭제",
-            description = "매수 기록을 삭제합니다.",
-            tags = {"delete"}
+            description = "매수 기록을 삭제합니다."
     )
     @PostMapping("/delete")
     public ResponseEntity<String> deleteBuyByBuyId(@RequestBody BuyDTO buyDTO){

@@ -30,8 +30,7 @@ public class JournalsController {
 
     @Operation(
             summary = "매매일지 등록",
-            description = "입력값을 받아 매매일지를 등록합니다.",
-            tags = {"POST"}
+            description = "입력값을 받아 매매일지를 등록합니다."
     )
     @Parameter(name = "journals", description = "새롭게 만들 매매일지의 데이터")
     @ApiResponses(value = {
@@ -55,8 +54,7 @@ public class JournalsController {
 
     @Operation(
             summary = "매매일지 조회",
-            description = "유저 정보를 받아 매매일지를 조회합니다.",
-            tags = {"GET"}
+            description = "유저 정보를 받아 매매일지를 조회합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매일지 조회 성공"),
@@ -80,8 +78,7 @@ public class JournalsController {
 
     @Operation(
             summary = "매매일지 삭제",
-            description = "매매일지를 삭제합니다.",
-            tags = {"POST"}
+            description = "매매일지를 삭제합니다."
     )
     @Parameter(name = "journals", description = "삭제할 매매일지의 정보")
     @ApiResponses(value = {
@@ -118,8 +115,7 @@ public class JournalsController {
 
     @Operation(
             summary = "매매일지 거래 상태 변경",
-            description = "매매일지의 거래 상태를 종료합니다.",
-            tags = {"POST"}
+            description = "매매일지의 거래 상태를 종료합니다."
     )
     @Parameter(name = "journalsDTO", description = "수정할 매매일지 정보")
     @ApiResponses(value = {

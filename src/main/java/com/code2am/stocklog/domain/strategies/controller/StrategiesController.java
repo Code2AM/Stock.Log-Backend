@@ -58,7 +58,7 @@ public class StrategiesController {
             @ApiResponse(responseCode = "200", description = "매매전략 조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
     })
-    @PostMapping("/findAll")
+    @GetMapping("/findAll")
     public ResponseEntity<List<StrategiesDTO>> readStrategiesByUserId(){
 
         return ResponseEntity.ok(strategiesService.readStrategiesByUserId());
@@ -72,8 +72,10 @@ public class StrategiesController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매전략 삭제 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
+            @ApiResponse(responseCode = "400", description = "잘못된 입력입니다."),
+            @ApiResponse(responseCode = "404", description = "삭제하고자 하는 매매전략 없음")
     })
+    @Parameter(name = "strategy", description = "삭제하고자 하는 매매전략의 정보")
     @PostMapping("/delete")
     public ResponseEntity <String> deleteStrategyByStrategyIdAndUserId(@Valid @RequestBody StrategiesDTO strategy){
 
@@ -90,8 +92,10 @@ public class StrategiesController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "매매전략 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
+            @ApiResponse(responseCode = "400", description = "잘못된 입력입니다."),
+            @ApiResponse(responseCode = "404", description = "수정하고자 하는 매매전략 없음")
     })
+    @Parameter(name = "strategy", description = "수정하고자 하는 매매전략 정보")
     @PostMapping("/update")
     public ResponseEntity<String> updateStrategy(@RequestBody StrategiesDTO strategy){ // 매개변수는 추후 수정
 
@@ -108,6 +112,7 @@ public class StrategiesController {
             @ApiResponse(responseCode = "200", description = "매매전략 조회 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 입력입니다.")
     })
+    @Parameter(name = "strategiesDTO", description = "조회하고자 하는 매매전략의 이름 정보")
     @PostMapping("/read")
     public StrategiesDTO readStrategyByStrategyId(@RequestBody StrategiesDTO strategiesDTO){
 
