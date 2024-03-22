@@ -119,6 +119,7 @@ public class SellService {
         }
 
         System.out.println(journal);
+
         // 매도 entity에 불러온 journal을 담아서 최신화
         deleteSell.setJournal(journal);
 
@@ -184,11 +185,16 @@ public class SellService {
             double profit = (totalSellPrice - totalBuyPrice) - (totalSellPrice * fee);
 
             journal.setProfit( (int) profit );
+
+            // total quantity 최신화
+            journal.setTotalQuantity(journal.getTotalQuantity() - totalSellQuantity);
         }else {
             journal.setAvgSellPrice(0);
             journal.setTotalSellQuantity(0);
             journal.setProfit(0);
         }
+
+
 
         return journal;
     }
