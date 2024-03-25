@@ -18,7 +18,7 @@ public interface UsersAndStrategiesRepository extends JpaRepository<UsersAndStra
 //    void findAllByUserIdAndStrategyId();
 //    void findByUserIdAndStrategyId(Integer userId, Integer strategyId);
 
-    boolean deleteByUserIdAndStrategyId(Integer userId, Integer strategyId);
+    Integer deleteByUserIdAndStrategyId(Integer userId, Integer strategyId);
 
 
     UsersAndStrategies findByUserIdAndStrategyId(Integer userId, Integer strategyId);
