@@ -109,7 +109,7 @@ public class AuthController {
             summary = "비밀번호 변경",
             description = "사용자에게 UserDTO를 받아, DB에 있는 경우 user 정보를 update 합니다."
     )
-    @Parameter(name = "userDTO", description = "이용자의 회원 정보")
+    @Parameter(name = "userDTO", description = "이용자의 회원 정보")s
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경됨"),
             @ApiResponse(responseCode = "400", description = "전달 받은 회원 정보가 없음"),
@@ -121,4 +121,15 @@ public class AuthController {
         return ResponseEntity.ok(authService.changePassword(userDTO));
     }
 
+    @PostMapping("/test")
+    public ResponseEntity<String> test123(){
+
+        String response = "this is test";
+
+        return ResponseEntity.ok(response)
+    }
+
 }
+
+// this is testing 
+// this is testing 2
